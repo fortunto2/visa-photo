@@ -643,7 +643,6 @@ fn app() -> Element {
                                 }
                                 span { class: "sep", "|" }
                                 // Apple Vision (macOS only, native Neural Engine)
-                                #[cfg(target_os = "macos")]
                                 button { class: "ctrl-btn vision-btn",
                                     onclick: move |_| {
                                         let idx = match *selected_photo.read() { Some(i) => i, None => return };
@@ -696,9 +695,9 @@ fn app() -> Element {
                                             }
                                         }
                                     },
-                                    "Vision"
+                                    "Убрать фон"
                                 }
-                                // ONNX models
+                                // ONNX (опционально, для Linux/Windows)
                                 button { class: "ctrl-btn bg-btn",
                                     onclick: move |_| {
                                         #[cfg(feature = "rembg")]
@@ -773,7 +772,7 @@ fn app() -> Element {
                                             }
                                         }
                                     },
-                                    "Убрать фон"
+                                    "ONNX"
                                 }
                             }
 
@@ -960,10 +959,10 @@ body { font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif; ba
 .ctrl-btn.active { background: #e94560; color: white; border-color: #e94560; }
 .scale-label { font-size: 10px; color: #888; }
 .scale-slider { width: 80px; accent-color: #e94560; }
-.vision-btn { background: #1565c0 !important; color: white !important; border-color: #1565c0 !important; }
-.vision-btn:hover { background: #1976d2 !important; }
-.bg-btn { background: #2d6a4f !important; color: white !important; border-color: #2d6a4f !important; }
-.bg-btn:hover { background: #40916c !important; }
+.vision-btn { background: #2d6a4f !important; color: white !important; border-color: #2d6a4f !important; }
+.vision-btn:hover { background: #40916c !important; }
+.bg-btn { background: #1a1a3e !important; color: #aaa !important; border-color: #444 !important; }
+.bg-btn:hover { background: #252550 !important; border-color: #e94560 !important; }
 .sep { color: #333; font-size: 14px; margin: 0 4px; }
 
 .adjustments { padding: 8px; background: #16213e; border-radius: 4px; }
