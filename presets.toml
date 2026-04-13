@@ -1,60 +1,55 @@
 # Visa Photo Presets
-# face_height_percent = высота головы (макушка→подбородок) в % от высоты фото
-# face_top_margin_percent = отступ от верхнего края до макушки в %
-# eye_line_from_bottom_percent = линия глаз от нижнего края в %
+# face_height_percent = head height (crown to chin) as % of photo height
+# face_top_margin_percent = gap from top edge to crown as %
+# eye_line_from_bottom_percent = eye line from bottom edge as %
 
 [turkey]
-name = "Турция (ikamet)"
+name = "Turkey (ikamet)"
 digital_width = 600
 digital_height = 720
 max_file_size_kb = 300
 print_width_mm = 50
 print_height_mm = 60
-# Лицо 34мм/60мм=56.7%, отступ сверху 10мм/60мм=16.7%
 face_height_percent = 56.7
 face_top_margin_percent = 16.7
 eye_line_from_bottom_percent = 60.0
 background = "white"
 photo_count = 4
 format = "jpeg"
-notes = "Белый фон, без головных уборов, не старше 120 дней"
+notes = "White bg, no headwear, max 120 days old"
 
 [usa_greencard]
-name = "США (Green Card)"
+name = "USA (Green Card)"
 digital_width = 600
 digital_height = 600
 max_file_size_kb = 240
 print_width_mm = 51
 print_height_mm = 51
-# Голова 50-69% (300-414px на 600px)
-# Глаза 56-69% от низа (336-414px от низа)
-# Сверху ~15% отступ по референсу
 face_height_percent = 56.0
 face_top_margin_percent = 15.0
 eye_line_from_bottom_percent = 62.5
 background = "white"
 photo_count = 2
 format = "jpeg"
-notes = "Белый фон, 2x2 дюйма, голова 50-69%"
+notes = "White bg, 2x2 inch, head 50-69%"
 
 [eu_schengen]
-name = "Шенген (Европа)"
+name = "Schengen (EU)"
 digital_width = 413
 digital_height = 531
 max_file_size_kb = 500
 print_width_mm = 35
 print_height_mm = 45
-# Лицо 32-36мм/45мм (71-80%), отступ 2-4мм/45мм
 face_height_percent = 75.6
 face_top_margin_percent = 5.5
 eye_line_from_bottom_percent = 62.5
 background = "white"
 photo_count = 2
 format = "jpeg"
-notes = "Белый фон, 35x45мм, лицо 32-36мм"
+notes = "White bg, 35x45mm, face 32-36mm"
 
 [custom]
-name = "Свой размер"
+name = "Custom"
 digital_width = 600
 digital_height = 600
 max_file_size_kb = 1000
@@ -66,4 +61,4 @@ eye_line_from_bottom_percent = 62.0
 background = "white"
 photo_count = 4
 format = "jpeg"
-notes = "Задайте свои размеры"
+notes = "Set your own dimensions"

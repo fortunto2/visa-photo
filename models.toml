@@ -1,6 +1,6 @@
-# Модели для удаления фона
-# Добавляйте свои модели — формат ONNX, вход NCHW [1,3,H,W]
-# id — уникальный, файл сохранится как models/{id}.onnx
+# Background removal ONNX models
+# Add your own — format ONNX, input NCHW [1,3,H,W]
+# id must be unique, file saves as models/{id}.onnx
 
 [[models]]
 id = "silueta"

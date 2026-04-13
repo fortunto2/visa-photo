@@ -139,7 +139,7 @@ static BG_REMOVER: std::sync::OnceLock<StdMutex<Option<(background::BgRemover, S
 fn load_bg_model(info: &models::ModelInfo) -> Result<(), String> {
     let path = models::model_path(info);
     if !path.exists() {
-        return Err(format!("Модель не скачана: {}", info.name));
+        return Err(format!("Model not downloaded: {}", info.name));
     }
     let remover = background::BgRemover::new(
         &path.to_string_lossy(), info.input_size, &info.input_name, &info.id,
@@ -163,13 +163,13 @@ fn app() -> Element {
         keys
     };
     let mut selected_preset = use_signal(|| "turkey".to_string());
-    let mut sidebar_tab: Signal<u8> = use_signal(|| 0); // 0=Фото, 1=Настройки
+    let mut sidebar_tab: Signal<u8> = use_signal(|| 0); // 0=Photos, 1=Settings
     let mut photos: Signal<Vec<PathBuf>> = use_signal(Vec::new);
     let mut selected_photo: Signal<Option<usize>> = use_signal(|| None);
     let mut current_thumb: Signal<Option<ThumbInfo>> = use_signal(|| None);
     let mut available_models = use_signal(|| models::load_models());
     let mut results: Signal<Vec<String>> = use_signal(Vec::new);
-    let mut status: Signal<String> = use_signal(|| "Готово к работе".to_string());
+    let mut status: Signal<String> = use_signal(|| "Ready".to_string());
     let mut crop_cx: Signal<f64> = use_signal(|| 0.5);
     let mut crop_cy: Signal<f64> = use_signal(|| 0.4);
     let mut dragging: Signal<bool> = use_signal(|| false);
@@ -295,18 +295,18 @@ fn app() -> Element {
                         button {
                             class: if *sidebar_tab.read() == 0 { "tab active" } else { "tab" },
                             onclick: move |_| sidebar_tab.set(0),
-                            "Фото"
+                            "Photos"
                         }
                         button {
                             class: if *sidebar_tab.read() == 1 { "tab active" } else { "tab" },
                             onclick: move |_| sidebar_tab.set(1),
-                            "Настройки"
+                            "Settings"
                         }
                     }
 
                     // Tab 0: Photos
                     if *sidebar_tab.read() == 0 {
-                        h3 { "Страна" }
+                        h3 { "Country" }
                         for key in preset_keys.iter() {
                             {
                                 let k = key.clone();
@@ -322,7 +322,7 @@ fn app() -> Element {
                         }
                         if let Some(ref pr) = current_preset {
                             div { class: "preset-info",
-                                p { "{pr.digital_width}x{pr.digital_height}px | {pr.print_width_mm}x{pr.print_height_mm}mm | {pr.photo_count}шт" }
+                                p { "{pr.digital_width}x{pr.digital_height}px | {pr.print_width_mm}x{pr.print_height_mm}mm | {pr.photo_count}pcs" }
                                 p { class: "notes", "{pr.notes}" }
                             }
                             if *selected_preset.read() == "custom" {
@@ -340,7 +340,7 @@ fn app() -> Element {
                             }
                         }
 
-                        h3 { "Фотографии" }
+                        h3 { "Photos" }
                         button {
                             class: "add-btn",
                             onclick: move |_| {
@@ -364,7 +364,7 @@ fn app() -> Element {
                                     photos.set(current);
                                 }
                             },
-                            "+ Добавить"
+                            "+ Add"
                         }
                         div { class: "photo-list",
                             for (i, path) in photos.read().iter().enumerate() {
@@ -395,7 +395,7 @@ fn app() -> Element {
 
                     // Tab 1: Settings
                     if *sidebar_tab.read() == 1 {
-                        h3 { "Движок фона" }
+                        h3 { "BG Engine" }
                         div { class: "model-list",
                             // Apple Vision (built-in)
                             div { class: if *active_bg_engine.read() == "apple_vision" { "model-row active" } else { "model-row" },
@@ -406,7 +406,7 @@ fn app() -> Element {
                                 if *active_bg_engine.read() != "apple_vision" {
                                     button { class: "use-btn",
                                         onclick: move |_| active_bg_engine.set("apple_vision".into()),
-                                        "Выбрать"
+                                        "Select"
                                     }
                                 }
                                 if *active_bg_engine.read() == "apple_vision" {
@@ -434,17 +434,17 @@ fn app() -> Element {
                                                 button { class: "dl-btn",
                                                     onclick: move |_| {
                                                         downloading.set(Some(id2.clone()));
-                                                        status.set(format!("Скачивание {}...", info_clone.name));
+                                                        status.set(format!("Downloading {}...", info_clone.name));
                                                         match models::download_model(&info_clone) {
                                                             Ok(()) => {
                                                                 active_bg_engine.set(id2.clone());
-                                                                status.set(format!("{} скачана!", info_clone.name));
+                                                                status.set(format!("{} downloaded!", info_clone.name));
                                                             }
-                                                            Err(e) => status.set(format!("Ошибка: {e}")),
+                                                            Err(e) => status.set(format!("Error: {e}")),
                                                         }
                                                         downloading.set(None);
                                                     },
-                                                    "Скачать"
+                                                    "Download"
                                                 }
                                             }
                                             if is_downloading {
@@ -453,7 +453,7 @@ fn app() -> Element {
                                             if downloaded && !is_active {
                                                 button { class: "use-btn",
                                                     onclick: move |_| active_bg_engine.set(id3.clone()),
-                                                    "Выбрать"
+                                                    "Select"
                                                 }
                                             }
                                             if downloaded && is_active {
@@ -465,7 +465,7 @@ fn app() -> Element {
                             }
                         }
 
-                        h3 { "Конфигурация" }
+                        h3 { "Config" }
                         button { class: "cfg-btn",
                             onclick: move |_| {
                                 let p = project_dir().join("models.toml");
@@ -488,7 +488,7 @@ fn app() -> Element {
                             onclick: move |_| {
                                 let _ = std::process::Command::new("open").arg(project_dir().join("photos/originals")).spawn();
                             },
-                            "Папка фото"
+                            "Photos folder"
                         }
                     }
                 }
@@ -507,7 +507,7 @@ fn app() -> Element {
                                                 let path = project_dir().join(fname);
                                                 match std::fs::write(&path, text) {
                                                     Ok(()) => {
-                                                        status.set(format!("{fname} сохранён!"));
+                                                        status.set(format!("{fname} saved!"));
                                                         // Reload if needed
                                                         if fname == "models.toml" {
                                                             available_models.set(models::load_models());
@@ -516,11 +516,11 @@ fn app() -> Element {
                                                             presets.set(load_embedded_presets());
                                                         }
                                                     }
-                                                    Err(e) => status.set(format!("Ошибка: {e}")),
+                                                    Err(e) => status.set(format!("Error: {e}")),
                                                 }
                                             }
                                         },
-                                        "Сохранить"
+                                        "Save"
                                     }
                                     button { class: "close-btn",
                                         onclick: move |_| editing_config.set(None),
@@ -628,7 +628,7 @@ fn app() -> Element {
                                 button { class: "ctrl-btn",
                                     onclick: move |_| {
                                         if let Some(ref p) = photo_for_ccw {
-                                            status.set("Поворот...".to_string());
+                                            status.set("Rotating...".to_string());
                                             if let Ok(img) = image::open(p) {
                                                 let rotated = img.rotate270();
                                                 let _ = rotated.save(p);
@@ -638,7 +638,7 @@ fn app() -> Element {
                                                 rotations.set(rots);
                                                 // Refresh thumbnails
                                                 current_thumb.set(make_thumbnail(p, 0));
-                                                status.set("Готово".to_string());
+                                                status.set("Done".to_string());
                                             }
                                         }
                                     }, "CCW"
@@ -646,7 +646,7 @@ fn app() -> Element {
                                 button { class: "ctrl-btn",
                                     onclick: move |_| {
                                         if let Some(ref p) = photo_for_cw {
-                                            status.set("Поворот...".to_string());
+                                            status.set("Rotating...".to_string());
                                             if let Ok(img) = image::open(p) {
                                                 let rotated = img.rotate90();
                                                 let _ = rotated.save(p);
@@ -654,13 +654,13 @@ fn app() -> Element {
                                                 rots.insert(p.clone(), 0);
                                                 rotations.set(rots);
                                                 current_thumb.set(make_thumbnail(p, 0));
-                                                status.set("Готово".to_string());
+                                                status.set("Done".to_string());
                                             }
                                         }
                                     }, "CW"
                                 }
                                 span { class: "sep", "|" }
-                                label { class: "scale-label", "Кроп:" }
+                                label { class: "scale-label", "Crop:" }
                                 input { r#type: "range", class: "scale-slider",
                                     min: "30", max: "100", value: "{(*crop_scale.read() * 100.0) as i32}",
                                     oninput: move |e: Event<FormData>| {
@@ -685,7 +685,7 @@ fn app() -> Element {
                                         let out = photo_path.parent().unwrap().join(format!("{stem}_nobg.png"));
 
                                         if engine == "apple_vision" {
-                                            status.set("Удаление фона (Vision)...".into());
+                                            status.set("Removing bg (Vision)...".into());
                                             let input_path = if rotation != 0 {
                                                 if let Ok(img) = image::open(&photo_path) {
                                                     let rotated = match rotation {
@@ -702,10 +702,10 @@ fn app() -> Element {
                                             match std::process::Command::new(&tool).arg(&input_path).arg(&out).arg("accurate").output() {
                                                 Ok(o) if o.status.success() => {
                                                     let stderr = String::from_utf8_lossy(&o.stderr);
-                                                    status.set(format!("Готово! {}", stderr.lines().next().unwrap_or("")));
+                                                    status.set(format!("Done! {}", stderr.lines().next().unwrap_or("")));
                                                 }
-                                                Ok(o) => { status.set(format!("Ошибка: {}", String::from_utf8_lossy(&o.stderr))); return; }
-                                                Err(e) => { status.set(format!("Vision не найден: {e}")); return; }
+                                                Ok(o) => { status.set(format!("Error: {}", String::from_utf8_lossy(&o.stderr))); return; }
+                                                Err(e) => { status.set(format!("Vision not found: {e}")); return; }
                                             }
                                         } else {
                                             #[cfg(feature = "rembg")]
@@ -713,10 +713,10 @@ fn app() -> Element {
                                                 let models_list = available_models.read().clone();
                                                 let info = match models_list.iter().find(|m| m.id == engine) {
                                                     Some(i) => i.clone(),
-                                                    None => { status.set("Модель не найдена".into()); return; }
+                                                    None => { status.set("Model not found".into()); return; }
                                                 };
                                                 if !models::is_downloaded(&info) {
-                                                    status.set(format!("Сначала скачайте {}", info.name)); return;
+                                                    status.set(format!("Download first: {}", info.name)); return;
                                                 }
                                                 let need_load = {
                                                     let lock = BG_REMOVER.get_or_init(|| StdMutex::new(None));
@@ -724,10 +724,10 @@ fn app() -> Element {
                                                     match &*guard { Some((_, cur_id)) => *cur_id != engine, None => true }
                                                 };
                                                 if need_load {
-                                                    status.set(format!("Загрузка {}...", info.name));
-                                                    if let Err(e) = load_bg_model(&info) { status.set(format!("Ошибка: {e}")); return; }
+                                                    status.set(format!("Loading {}...", info.name));
+                                                    if let Err(e) = load_bg_model(&info) { status.set(format!("Error: {e}")); return; }
                                                 }
-                                                status.set("Удаление фона (ONNX)...".into());
+                                                status.set("Removing bg (ONNX)...".into());
                                                 let lock = BG_REMOVER.get().unwrap();
                                                 let guard = lock.lock().unwrap();
                                                 if let Some((ref remover, _)) = *guard {
@@ -739,13 +739,13 @@ fn app() -> Element {
                                                             };
                                                             match remover.remove_bg(&img) {
                                                                 Ok(result) => { let _ = result.save(&out); drop(guard); }
-                                                                Err(e) => { status.set(format!("Ошибка: {e}")); return; }
+                                                                Err(e) => { status.set(format!("Error: {e}")); return; }
                                                             }
                                                         }
-                                                        Err(e) => { status.set(format!("Ошибка: {e}")); return; }
+                                                        Err(e) => { status.set(format!("Error: {e}")); return; }
                                                     }
                                                 }
-                                                status.set("Фон удалён!".into());
+                                                status.set("BG removed!".into());
                                             }
                                         }
                                         // Update photo list
@@ -759,27 +759,27 @@ fn app() -> Element {
                                         selected_photo.set(Some(new_idx));
                                         current_thumb.set(make_thumbnail(&out, 0));
                                     },
-                                    "Убрать фон"
+                                    "Remove BG"
                                 }
                             }
 
                             div { class: "adjustments",
                                 div { class: "slider-row",
-                                    label { "Яркость" }
+                                    label { "Brightness" }
                                     input { r#type: "range", min: "-50", max: "50", value: "{brightness}",
                                         oninput: move |e: Event<FormData>| { if let Ok(v) = e.value().parse::<f32>() { brightness.set(v); } },
                                     }
                                     span { "{brightness:.0}" }
                                 }
                                 div { class: "slider-row",
-                                    label { "Контраст" }
+                                    label { "Contrast" }
                                     input { r#type: "range", min: "-50", max: "50", value: "{contrast}",
                                         oninput: move |e: Event<FormData>| { if let Ok(v) = e.value().parse::<f32>() { contrast.set(v); } },
                                     }
                                     span { "{contrast:.0}" }
                                 }
                                 div { class: "slider-row",
-                                    label { "Тени" }
+                                    label { "Shadows" }
                                     input { r#type: "range", min: "0", max: "80", value: "{shadows}",
                                         oninput: move |e: Event<FormData>| { if let Ok(v) = e.value().parse::<f32>() { shadows.set(v); } },
                                     }
@@ -787,13 +787,13 @@ fn app() -> Element {
                                 }
                                 button { class: "reset-btn",
                                     onclick: move |_| { brightness.set(0.0); contrast.set(0.0); shadows.set(0.0); },
-                                    "Сбросить"
+                                    "Reset"
                                 }
                             }
 
                             div { class: "bottom-row",
                                 input { r#type: "text", class: "name-field",
-                                    placeholder: "Имя (Алина, Рустам...)",
+                                    placeholder: "Name (e.g. John)",
                                     value: "{person_name}",
                                     oninput: move |e: Event<FormData>| person_name.set(e.value().clone()),
                                 }
@@ -806,7 +806,7 @@ fn app() -> Element {
                                         let rotation = rotations.read().get(&photo_path).copied().unwrap_or(0);
                                         let pr = presets.read();
                                         if let Some(preset) = pr.get(&key) {
-                                            status.set("Обработка...".to_string());
+                                            status.set("Processing...".to_string());
                                             match image::open(&photo_path) {
                                                 Ok(mut img) => {
                                                     img = match rotation {
@@ -832,22 +832,22 @@ fn app() -> Element {
                                                     match processing::save_processed(&processed, preset, &out_dir, &stem, &key, *use_png.read()) {
                                                         Ok(p) => {
                                                             let mut r = results.read().clone(); r.push(p.clone()); results.set(r);
-                                                            status.set(format!("Сохранено: {p}"));
+                                                            status.set(format!("Saved: {p}"));
                                                         }
-                                                        Err(e) => status.set(format!("Ошибка: {e}")),
+                                                        Err(e) => status.set(format!("Error: {e}")),
                                                     }
                                                     let _ = processing::generate_print_layout(&processed, preset, &out_dir, &stem, &key);
                                                 }
-                                                Err(e) => status.set(format!("Ошибка: {e}")),
+                                                Err(e) => status.set(format!("Error: {e}")),
                                             }
                                         }
                                     },
-                                    "Сохранить"
+                                    "Save"
                                 }
                             }
                         }
                     } else {
-                        div { class: "placeholder", p { "Выберите фото слева" } }
+                        div { class: "placeholder", p { "Select a photo" } }
                     }
 
                     if !results.read().is_empty() {
@@ -857,7 +857,7 @@ fn app() -> Element {
                             }
                             button { class: "open-btn",
                                 onclick: move |_| { let _ = std::process::Command::new("open").arg(project_dir().join("photos/processed")).spawn(); },
-                                "Открыть папку"
+                                "Open folder"
                             }
                         }
                     }
