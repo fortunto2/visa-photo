@@ -25,6 +25,10 @@ jobs:
             os: ubuntu-22.04
             name: visa-photo-linux-x64
             features: "--no-default-features"
+          - target: x86_64-pc-windows-msvc
+            os: windows-latest
+            name: visa-photo-windows-x64
+            features: "--no-default-features"
 
     runs-on: ${{ matrix.os }}
 
@@ -52,7 +56,8 @@ jobs:
           swiftc -O -o tools/rembg-vision tools/rembg-vision.swift \
             -framework Vision -framework AppKit -framework CoreImage
 
-      - name: Package
+      - name: Package (Unix)
+        if: runner.os != 'Windows'
         run: |
           mkdir -p dist
           cp target/${{ matrix.target }}/release/visa-photo dist/
@@ -61,10 +66,21 @@ jobs:
           cp -r tools dist/ 2>/dev/null || true
           cd dist && tar czf ../${{ matrix.name }}.tar.gz *
 
+      - name: Package (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force dist
+          Copy-Item target/${{ matrix.target }}/release/visa-photo.exe dist/
+          Copy-Item presets.toml, models.toml dist/
+          Compress-Archive -Path dist/* -DestinationPath ${{ matrix.name }}.zip
+
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.name }}
-          path: ${{ matrix.name }}.tar.gz
+          path: |
+            ${{ matrix.name }}.tar.gz
+            ${{ matrix.name }}.zip
 
   release:
     needs: build
@@ -80,5 +96,7 @@ jobs:
 
       - uses: softprops/action-gh-release@v2
         with:
-          files: '*.tar.gz'
+          files: |
+            *.tar.gz
+            *.zip
           generate_release_notes: true
