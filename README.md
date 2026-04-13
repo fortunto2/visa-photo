@@ -1,89 +1,89 @@
 # Visa Photo
 
-Desktop app for preparing biometric visa/passport photos. Built with Rust + Dioxus.
+**Free, offline, AI-powered tool for biometric visa & passport photos.**
 
-## Features
+Crop to exact country specs, remove background with Apple Vision AI (0.2s), add face guides per ICAO standards. No cloud, no subscription, no watermarks. Your photos never leave your machine.
 
-- **Country presets**: Turkey (ikamet), USA (Green Card), Schengen, custom sizes
-- **Crop & scale**: drag to position, scroll wheel or slider to zoom
-- **Face guides**: head/chin/eye lines and face oval per ICAO standards
-- **Background removal**: Apple Vision (macOS, 0.2s) or ONNX models (cross-platform)
-- **Rotation**: 90 CW/CCW, saves to file immediately
-- **Adjustments**: brightness, contrast, shadow lift with live CSS preview
-- **Export**: JPEG (with size limit) or PNG (lossless)
-- **Print layout**: A4 sheet with N copies at 300 DPI
-- **HEIC import**: auto-converts via `sips` (macOS)
-- **Config editor**: edit `presets.toml` and `models.toml` from the app
-- **Model manager**: download/select ONNX models from UI
+## Highlights
+
+- **AI Background Removal** — Apple Vision Neural Engine (macOS) or ONNX models (cross-platform)
+- **Country Presets** — Turkey, USA Green Card, Schengen, custom sizes
+- **ICAO Face Guides** — head, chin, eye lines + face oval overlay
+- **Print Layout** — A4 sheet with N copies at 300 DPI, ready for print shop
+- **Fully Offline** — no internet needed after install
 
 ## Install
 
-### macOS (recommended)
+### macOS (Homebrew)
 
 ```bash
-# Build
-cargo build --release
-
-# Compile Vision tool (background removal via Neural Engine)
-swiftc -O -o tools/rembg-vision tools/rembg-vision.swift \
-  -framework Vision -framework AppKit -framework CoreImage
-
-# Download ONNX models (optional, Vision is better on macOS)
-bash models/download.sh
-
-# Run
-cargo run --release
+brew install fortunto2/tap/visa-photo
 ```
 
-### Linux / Windows
+### macOS / Linux / Windows (Download)
+
+Download from [Releases](https://github.com/fortunto2/visa-photo/releases/latest):
+
+| Platform | File |
+|----------|------|
+| macOS Apple Silicon (M1/M2/M3) | `visa-photo-macos-arm64.tar.gz` |
+| macOS Intel | `visa-photo-macos-x64.tar.gz` |
+| Linux x64 | `visa-photo-linux-x64.tar.gz` |
+| Windows x64 | `visa-photo-windows-x64.zip` |
 
 ```bash
-# Build (no Apple Vision, ONNX models only)
+# macOS/Linux: extract and run
+tar xzf visa-photo-*.tar.gz
+./visa-photo
+```
+
+### Build from source
+
+```bash
+git clone https://github.com/fortunto2/visa-photo.git
+cd visa-photo
 cargo build --release
 
-# Download at least one ONNX model
-bash models/download.sh
-
-# Select model in Settings tab, then run
-cargo run --release
+# macOS: compile Vision AI tool (optional, for background removal)
+swiftc -O -o tools/rembg-vision tools/rembg-vision.swift \
+  -framework Vision -framework AppKit -framework CoreImage
 ```
 
 ## Usage
 
-1. Drop photos into `photos/originals/` or click "+ Add"
-2. Select a country preset
-3. Click a photo, drag the crop frame, align face with guides
-4. Adjust crop scale with scroll wheel or slider
-5. Click "Remove bg" if needed (Apple Vision or ONNX)
-6. Enter a name, click "Save"
+1. Add photos (drag to `photos/originals/` or click "+ Add")
+2. Pick a country preset
+3. Click a photo — drag crop frame, align face with guides
+4. Zoom crop with scroll wheel or slider
+5. Click **"Remove bg"** for white background
+6. Enter name, click **"Save"**
 
 Output: `photos/processed/{name}/`
 
+## Background Removal
+
+| Engine | Size | Speed | Quality | Platform |
+|--------|------|-------|---------|----------|
+| Apple Vision | built-in | 0.2s | Best | macOS 13+ |
+| Silueta | 43 MB | <1s | OK | all |
+| U2Net Human | 176 MB | 2-4s | Good | all |
+
+Select engine in **Settings** tab. ONNX models download on demand from the app.
+
 ## Presets
 
-Edit `presets.toml` to add countries. Built-in:
+Edit `presets.toml` to add countries (or use the built-in editor):
 
-| Preset | Size | Print | Face |
-|--------|------|-------|------|
-| Turkey | 600x720 | 50x60mm | 56.7% |
-| USA | 600x600 | 51x51mm | 50-69% |
+| Preset | Digital | Print | Face height |
+|--------|---------|-------|-------------|
+| Turkey (ikamet) | 600x720 | 50x60mm | 56.7% |
+| USA (Green Card) | 600x600 | 51x51mm | 50-69% |
 | Schengen | 413x531 | 35x45mm | 71-80% |
+| Custom | any | any | configurable |
 
-## Background Removal Models
+## Tech Stack
 
-Edit `models.toml` to add models. Built-in options:
-
-| Engine | Size | Speed | Quality |
-|--------|------|-------|---------|
-| Apple Vision | 0 | 0.2s | Best (macOS only) |
-| Silueta | 43MB | <1s | OK |
-| U2Net Human | 176MB | 2-4s | Good |
-
-## Requirements
-
-- Rust 1.75+
-- macOS 13+ for Apple Vision background removal
-- macOS `sips` for HEIC conversion
+Rust + [Dioxus](https://dioxuslabs.com) desktop (webview) + [image](https://crates.io/crates/image) + [ort](https://crates.io/crates/ort) (ONNX Runtime) + Apple Vision framework
 
 ## License
 
