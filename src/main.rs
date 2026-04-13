@@ -12,19 +12,35 @@ use processing::Adjustments;
 use std::collections::HashMap;
 use std::path::PathBuf;
 
-const PRESETS_TOML: &str = include_str!("../presets.toml");
+const DEFAULT_PRESETS: &str = include_str!("../presets.toml");
+const DEFAULT_MODELS: &str = include_str!("../models.toml");
 const MAX_W: f64 = 500.0;
 const MAX_H: f64 = 620.0;
 
+/// Create default config files if they don't exist
+fn ensure_configs() {
+    let dir = project_dir();
+    let presets_path = dir.join("presets.toml");
+    let models_path = dir.join("models.toml");
+    if !presets_path.exists() {
+        let _ = std::fs::write(&presets_path, DEFAULT_PRESETS);
+    }
+    if !models_path.exists() {
+        let _ = std::fs::write(&models_path, DEFAULT_MODELS);
+    }
+    let _ = std::fs::create_dir_all(dir.join("photos/originals"));
+    let _ = std::fs::create_dir_all(dir.join("photos/processed"));
+    let _ = std::fs::create_dir_all(dir.join("models"));
+}
+
 fn load_embedded_presets() -> HashMap<String, Preset> {
-    // Try loading from file first (allows runtime edits), fallback to embedded
     let path = project_dir().join("presets.toml");
     if let Ok(content) = std::fs::read_to_string(&path) {
         if let Ok(p) = toml::from_str(&content) {
             return p;
         }
     }
-    toml::from_str(PRESETS_TOML).expect("Invalid embedded presets.toml")
+    toml::from_str(DEFAULT_PRESETS).expect("Invalid embedded presets.toml")
 }
 
 #[derive(Clone)]
@@ -134,6 +150,7 @@ fn load_bg_model(info: &models::ModelInfo) -> Result<(), String> {
 }
 
 fn main() {
+    ensure_configs();
     dioxus::launch(app);
 }
 
