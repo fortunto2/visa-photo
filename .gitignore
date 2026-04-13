@@ -2,3 +2,4 @@
 *.DS_Store
 photos/originals/
 photos/processed/
+models/*.onnx

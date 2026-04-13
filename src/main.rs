@@ -1,3 +1,4 @@
+mod background;
 mod preset;
 mod processing;
 
@@ -92,6 +93,26 @@ fn crop_rect_px(
 
 fn project_dir() -> PathBuf {
     std::env::current_dir().unwrap_or_else(|_| PathBuf::from("."))
+}
+
+#[cfg(feature = "rembg")]
+static BG_REMOVER: std::sync::OnceLock<Option<background::BgRemover>> = std::sync::OnceLock::new();
+
+#[cfg(feature = "rembg")]
+fn get_bg_remover() -> Option<&'static background::BgRemover> {
+    BG_REMOVER.get_or_init(|| {
+        let model_path = project_dir().join("models/u2netp.onnx");
+        match background::BgRemover::new(&model_path.to_string_lossy()) {
+            Ok(r) => {
+                eprintln!("[rembg] Model loaded: {}", model_path.display());
+                Some(r)
+            }
+            Err(e) => {
+                eprintln!("[rembg] Failed to load model: {e}");
+                None
+            }
+        }
+    }).as_ref()
 }
 
 fn main() {
@@ -433,6 +454,57 @@ fn app() -> Element {
                                 button { class: if *use_png.read() { "ctrl-btn active" } else { "ctrl-btn" },
                                     onclick: move |_| use_png.set(true), "PNG"
                                 }
+                                span { class: "sep", "|" }
+                                button { class: "ctrl-btn bg-btn",
+                                    onclick: move |_| {
+                                        #[cfg(feature = "rembg")]
+                                        {
+                                            let idx = match *selected_photo.read() { Some(i) => i, None => return };
+                                            let photo_path = match photos.read().get(idx).cloned() { Some(p) => p, None => return };
+                                            let rotation = rotations.read().get(&photo_path).copied().unwrap_or(0);
+                                            status.set("Удаление фона...".to_string());
+                                            if let Some(remover) = get_bg_remover() {
+                                                match image::open(&photo_path) {
+                                                    Ok(mut img) => {
+                                                        img = match rotation {
+                                                            90 => img.rotate90(),
+                                                            180 => img.rotate180(),
+                                                            270 => img.rotate270(),
+                                                            _ => img,
+                                                        };
+                                                        match remover.remove_bg(&img) {
+                                                            Ok(result) => {
+                                                                // Save as new file with _nobg suffix
+                                                                let stem = photo_path.file_stem().unwrap().to_string_lossy();
+                                                                let out = photo_path.parent().unwrap()
+                                                                    .join(format!("{stem}_nobg.png"));
+                                                                if let Ok(()) = result.save(&out) {
+                                                                    // Reset rotation since we baked it in
+                                                                    let mut rots = rotations.read().clone();
+                                                                    rots.insert(out.clone(), 0);
+                                                                    rotations.set(rots);
+                                                                    // Add to photo list and select
+                                                                    let mut cur = photos.read().clone();
+                                                                    let new_idx = cur.len();
+                                                                    cur.push(out.clone());
+                                                                    photos.set(cur);
+                                                                    selected_photo.set(Some(new_idx));
+                                                                    current_thumb.set(make_thumbnail(&out, 0));
+                                                                    status.set("Фон удалён!".to_string());
+                                                                }
+                                                            }
+                                                            Err(e) => status.set(format!("Ошибка: {e}")),
+                                                        }
+                                                    }
+                                                    Err(e) => status.set(format!("Ошибка: {e}")),
+                                                }
+                                            } else {
+                                                status.set("Модель не загружена (models/u2netp.onnx)".to_string());
+                                            }
+                                        }
+                                    },
+                                    "Убрать фон"
+                                }
                             }
 
                             div { class: "adjustments",
@@ -601,6 +673,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif; ba
 .ctrl-btn.active { background: #e94560; color: white; border-color: #e94560; }
 .scale-label { font-size: 10px; color: #888; }
 .scale-slider { width: 80px; accent-color: #e94560; }
+.bg-btn { background: #2d6a4f !important; color: white !important; border-color: #2d6a4f !important; }
+.bg-btn:hover { background: #40916c !important; }
 .sep { color: #333; font-size: 14px; margin: 0 4px; }
 
 .adjustments { padding: 8px; background: #16213e; border-radius: 4px; }
