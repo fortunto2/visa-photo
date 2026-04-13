@@ -4,6 +4,10 @@
 
 Crop to exact country specs, remove background with Apple Vision AI (0.2s), add face guides per ICAO standards. No cloud, no subscription, no watermarks. Your photos never leave your machine.
 
+<p align="center">
+  <img src="docs/demo.png" alt="Visa Photo app" width="600">
+</p>
+
 ## Highlights
 
 - **AI Background Removal** — Apple Vision Neural Engine (macOS) or ONNX models (cross-platform)
