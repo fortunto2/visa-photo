@@ -3,3 +3,5 @@
 photos/originals/
 photos/processed/
 models/*.onnx
+models/photos/
+tools/rembg-vision

@@ -1,0 +1,57 @@
+# Модели для удаления фона
+# Добавляйте свои модели — формат ONNX, вход NCHW [1,3,H,W]
+# id — уникальный, файл сохранится как models/{id}.onnx
+
+[[models]]
+id = "silueta"
+name = "Silueta"
+size_mb = 43
+input_size = 320
+input_name = "input.1"
+url = "https://github.com/danielgatis/rembg/releases/download/v0.0.0/silueta.onnx"
+quality = 2
+
+[[models]]
+id = "u2netp"
+name = "U2Net-P"
+size_mb = 5
+input_size = 320
+input_name = "input.1"
+url = "https://github.com/danielgatis/rembg/releases/download/v0.0.0/u2netp.onnx"
+quality = 1
+
+[[models]]
+id = "u2net_human_seg"
+name = "U2Net Human"
+size_mb = 176
+input_size = 320
+input_name = "input.1"
+url = "https://github.com/danielgatis/rembg/releases/download/v0.0.0/u2net_human_seg.onnx"
+quality = 4
+
+[[models]]
+id = "u2net"
+name = "U2Net Full"
+size_mb = 176
+input_size = 320
+input_name = "input.1"
+url = "https://github.com/danielgatis/rembg/releases/download/v0.0.0/u2net.onnx"
+quality = 3
+
+[[models]]
+id = "isnet"
+name = "ISNet General"
+size_mb = 176
+input_size = 1024
+input_name = "input_image"
+url = "https://github.com/danielgatis/rembg/releases/download/v0.0.0/isnet-general-use.onnx"
+quality = 3
+
+[[models]]
+id = "birefnet_portrait_fp16"
+name = "BiRefNet Portrait FP16"
+size_mb = 470
+input_size = 1024
+input_name = "input_image"
+url = "https://huggingface.co/onnx-community/BiRefNet-portrait-ONNX/resolve/main/onnx/model_fp16.onnx"
+quality = 5

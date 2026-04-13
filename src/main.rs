@@ -1,4 +1,5 @@
 mod background;
+mod models;
 mod preset;
 mod processing;
 
@@ -16,6 +17,13 @@ const MAX_W: f64 = 500.0;
 const MAX_H: f64 = 620.0;
 
 fn load_embedded_presets() -> HashMap<String, Preset> {
+    // Try loading from file first (allows runtime edits), fallback to embedded
+    let path = project_dir().join("presets.toml");
+    if let Ok(content) = std::fs::read_to_string(&path) {
+        if let Ok(p) = toml::from_str(&content) {
+            return p;
+        }
+    }
     toml::from_str(PRESETS_TOML).expect("Invalid embedded presets.toml")
 }
 
@@ -24,6 +32,16 @@ struct ThumbInfo {
     data_uri: String,
     orig_w: u32,
     orig_h: u32,
+}
+
+/// Tiny thumbnail for sidebar list (60px)
+fn make_mini_thumb(path: &PathBuf) -> Option<String> {
+    let img = image::open(path).ok()?;
+    let thumb = img.thumbnail(60, 60);
+    let mut buf = std::io::Cursor::new(Vec::new());
+    thumb.write_to(&mut buf, image::ImageFormat::Jpeg).ok()?;
+    let b64 = base64::engine::general_purpose::STANDARD.encode(buf.into_inner());
+    Some(format!("data:image/jpeg;base64,{b64}"))
 }
 
 fn make_thumbnail(path: &PathBuf, rotation: u32) -> Option<ThumbInfo> {
@@ -96,23 +114,23 @@ fn project_dir() -> PathBuf {
 }
 
 #[cfg(feature = "rembg")]
-static BG_REMOVER: std::sync::OnceLock<Option<background::BgRemover>> = std::sync::OnceLock::new();
+use std::sync::Mutex as StdMutex;
 
 #[cfg(feature = "rembg")]
-fn get_bg_remover() -> Option<&'static background::BgRemover> {
-    BG_REMOVER.get_or_init(|| {
-        let model_path = project_dir().join("models/u2netp.onnx");
-        match background::BgRemover::new(&model_path.to_string_lossy()) {
-            Ok(r) => {
-                eprintln!("[rembg] Model loaded: {}", model_path.display());
-                Some(r)
-            }
-            Err(e) => {
-                eprintln!("[rembg] Failed to load model: {e}");
-                None
-            }
-        }
-    }).as_ref()
+static BG_REMOVER: std::sync::OnceLock<StdMutex<Option<(background::BgRemover, String)>>> = std::sync::OnceLock::new();
+
+#[cfg(feature = "rembg")]
+fn load_bg_model(info: &models::ModelInfo) -> Result<(), String> {
+    let path = models::model_path(info);
+    if !path.exists() {
+        return Err(format!("Модель не скачана: {}", info.name));
+    }
+    let remover = background::BgRemover::new(
+        &path.to_string_lossy(), info.input_size, &info.input_name, &info.id,
+    )?;
+    let lock = BG_REMOVER.get_or_init(|| StdMutex::new(None));
+    *lock.lock().unwrap() = Some((remover, info.id.to_string()));
+    Ok(())
 }
 
 fn main() {
@@ -120,7 +138,7 @@ fn main() {
 }
 
 fn app() -> Element {
-    let presets = use_signal(|| load_embedded_presets());
+    let mut presets = use_signal(|| load_embedded_presets());
     let preset_keys: Vec<String> = {
         let p = presets.read();
         let mut keys: Vec<String> = p.keys().cloned().collect();
@@ -128,9 +146,11 @@ fn app() -> Element {
         keys
     };
     let mut selected_preset = use_signal(|| "turkey".to_string());
+    let mut sidebar_tab: Signal<u8> = use_signal(|| 0); // 0=Фото, 1=Настройки
     let mut photos: Signal<Vec<PathBuf>> = use_signal(Vec::new);
     let mut selected_photo: Signal<Option<usize>> = use_signal(|| None);
     let mut current_thumb: Signal<Option<ThumbInfo>> = use_signal(|| None);
+    let mut available_models = use_signal(|| models::load_models());
     let mut results: Signal<Vec<String>> = use_signal(Vec::new);
     let mut status: Signal<String> = use_signal(|| "Готово к работе".to_string());
     let mut crop_cx: Signal<f64> = use_signal(|| 0.5);
@@ -145,6 +165,12 @@ fn app() -> Element {
     let mut crop_scale: Signal<f64> = use_signal(|| 1.0); // 0.3..1.0, 1.0 = max crop
     let mut custom_w: Signal<String> = use_signal(|| "600".to_string());
     let mut custom_h: Signal<String> = use_signal(|| "600".to_string());
+    // Config editor state: (filename, content)
+    let mut editing_config: Signal<Option<(String, String)>> = use_signal(|| None);
+    #[cfg(feature = "rembg")]
+    let mut active_model_id: Signal<String> = use_signal(|| "u2net_human_seg".to_string());
+    #[cfg(feature = "rembg")]
+    let mut downloading: Signal<Option<String>> = use_signal(|| None); // model id being downloaded
 
     use_effect(move || {
         let dir = project_dir().join("photos/originals");
@@ -248,91 +274,240 @@ fn app() -> Element {
 
             div { class: "main-layout",
                 div { class: "sidebar",
-                    h3 { "Страна" }
-                    for key in preset_keys.iter() {
-                        {
-                            let k = key.clone();
-                            let k2 = key.clone();
-                            rsx! {
-                                button {
-                                    class: if *selected_preset.read() == k { "preset-btn active" } else { "preset-btn" },
-                                    onclick: move |_| selected_preset.set(k2.clone()),
-                                    { presets.read().get(&k).map(|pr| pr.name.clone()).unwrap_or(k.clone()) }
+                    // Tabs
+                    div { class: "tabs",
+                        button {
+                            class: if *sidebar_tab.read() == 0 { "tab active" } else { "tab" },
+                            onclick: move |_| sidebar_tab.set(0),
+                            "Фото"
+                        }
+                        button {
+                            class: if *sidebar_tab.read() == 1 { "tab active" } else { "tab" },
+                            onclick: move |_| sidebar_tab.set(1),
+                            "Настройки"
+                        }
+                    }
+
+                    // Tab 0: Photos
+                    if *sidebar_tab.read() == 0 {
+                        h3 { "Страна" }
+                        for key in preset_keys.iter() {
+                            {
+                                let k = key.clone();
+                                let k2 = key.clone();
+                                rsx! {
+                                    button {
+                                        class: if *selected_preset.read() == k { "preset-btn active" } else { "preset-btn" },
+                                        onclick: move |_| selected_preset.set(k2.clone()),
+                                        { presets.read().get(&k).map(|pr| pr.name.clone()).unwrap_or(k.clone()) }
+                                    }
                                 }
                             }
                         }
-                    }
-                    if let Some(ref pr) = current_preset {
-                        div { class: "preset-info",
-                            p { "{pr.digital_width}x{pr.digital_height}px | {pr.print_width_mm}x{pr.print_height_mm}mm | {pr.photo_count}шт" }
-                            p { class: "notes", "{pr.notes}" }
+                        if let Some(ref pr) = current_preset {
+                            div { class: "preset-info",
+                                p { "{pr.digital_width}x{pr.digital_height}px | {pr.print_width_mm}x{pr.print_height_mm}mm | {pr.photo_count}шт" }
+                                p { class: "notes", "{pr.notes}" }
+                            }
+                            if *selected_preset.read() == "custom" {
+                                div { class: "custom-size",
+                                    label { "W:" }
+                                    input { r#type: "number", value: "{custom_w}", class: "size-input",
+                                        oninput: move |e: Event<FormData>| custom_w.set(e.value().clone()),
+                                    }
+                                    label { "H:" }
+                                    input { r#type: "number", value: "{custom_h}", class: "size-input",
+                                        oninput: move |e: Event<FormData>| custom_h.set(e.value().clone()),
+                                    }
+                                    span { class: "size-hint", "px" }
+                                }
+                            }
                         }
-                        if *selected_preset.read() == "custom" {
-                            div { class: "custom-size",
-                                label { "W:" }
-                                input { r#type: "number", value: "{custom_w}", class: "size-input",
-                                    oninput: move |e: Event<FormData>| custom_w.set(e.value().clone()),
+
+                        h3 { "Фотографии" }
+                        button {
+                            class: "add-btn",
+                            onclick: move |_| {
+                                let files = rfd::FileDialog::new()
+                                    .add_filter("Images", &["png", "jpg", "jpeg", "heic", "HEIC"])
+                                    .pick_files();
+                                if let Some(paths) = files {
+                                    let originals_dir = project_dir().join("photos/originals");
+                                    let _ = std::fs::create_dir_all(&originals_dir);
+                                    let mut current = photos.read().clone();
+                                    for p in paths {
+                                        let ext = p.extension().and_then(|e| e.to_str()).unwrap_or("");
+                                        let final_path = if ext.eq_ignore_ascii_case("heic") {
+                                            let out = originals_dir.join(p.file_stem().unwrap()).with_extension("png");
+                                            let _ = std::process::Command::new("sips")
+                                                .args(["-s", "format", "png"]).arg(&p).arg("--out").arg(&out).output();
+                                            out
+                                        } else { p };
+                                        current.push(final_path);
+                                    }
+                                    photos.set(current);
                                 }
-                                label { "H:" }
-                                input { r#type: "number", value: "{custom_h}", class: "size-input",
-                                    oninput: move |e: Event<FormData>| custom_h.set(e.value().clone()),
+                            },
+                            "+ Добавить"
+                        }
+                        div { class: "photo-list",
+                            for (i, path) in photos.read().iter().enumerate() {
+                                {
+                                let name_str = path.file_name().unwrap_or_default().to_string_lossy().to_string();
+                                if !name_str.contains("_nobg") {
+                                    let path_clone = path.clone();
+                                    rsx! {
+                                        button {
+                                            class: if *selected_photo.read() == Some(i) { "photo-item active" } else { "photo-item" },
+                                            onclick: move |_| {
+                                                selected_photo.set(Some(i));
+                                                crop_cx.set(0.5);
+                                                crop_cy.set(0.4);
+                                                let rot = rotations.read().get(&path_clone).copied().unwrap_or(0);
+                                                current_thumb.set(make_thumbnail(&path_clone, rot));
+                                            },
+                                            "{name_str}"
+                                        }
+                                    }
+                                } else {
+                                    rsx! {}
                                 }
-                                span { class: "size-hint", "px" }
+                                }
                             }
                         }
                     }
 
-                    h3 { "Фотографии" }
-                    button {
-                        class: "add-btn",
-                        onclick: move |_| {
-                            let files = rfd::FileDialog::new()
-                                .add_filter("Images", &["png", "jpg", "jpeg", "heic", "HEIC"])
-                                .pick_files();
-                            if let Some(paths) = files {
-                                let originals_dir = project_dir().join("photos/originals");
-                                let _ = std::fs::create_dir_all(&originals_dir);
-                                let mut current = photos.read().clone();
-                                for p in paths {
-                                    let ext = p.extension().and_then(|e| e.to_str()).unwrap_or("");
-                                    let final_path = if ext.eq_ignore_ascii_case("heic") {
-                                        let out = originals_dir.join(p.file_stem().unwrap()).with_extension("png");
-                                        let _ = std::process::Command::new("sips")
-                                            .args(["-s", "format", "png"]).arg(&p).arg("--out").arg(&out).output();
-                                        out
-                                    } else { p };
-                                    current.push(final_path);
-                                }
-                                photos.set(current);
-                            }
-                        },
-                        "+ Добавить"
-                    }
-                    div { class: "photo-list",
-                        for (i, path) in photos.read().iter().enumerate() {
-                            {
-                                let name = path.file_name().map(|n| n.to_string_lossy().to_string()).unwrap_or_default();
-                                let path_clone = path.clone();
-                                rsx! {
-                                    button {
-                                        class: if *selected_photo.read() == Some(i) { "photo-item active" } else { "photo-item" },
-                                        onclick: move |_| {
-                                            selected_photo.set(Some(i));
-                                            crop_cx.set(0.5);
-                                            crop_cy.set(0.4);
-                                            let rot = rotations.read().get(&path_clone).copied().unwrap_or(0);
-                                            current_thumb.set(make_thumbnail(&path_clone, rot));
-                                        },
-                                        "{name}"
+                    // Tab 1: Settings
+                    if *sidebar_tab.read() == 1 {
+                        h3 { "Модели фона" }
+                        p { class: "hint", "Редактируйте models.toml для добавления" }
+                        div { class: "model-list",
+                            for info in available_models.read().iter() {
+                                {
+                                    let id = info.id.clone();
+                                    let id2 = id.clone();
+                                    let id3 = id.clone();
+                                    let info_clone = info.clone();
+                                    let downloaded = models::is_downloaded(info);
+                                    let is_active = *active_model_id.read() == id;
+                                    let is_downloading = downloading.read().as_deref() == Some(id.as_str());
+                                    let stars = "*".repeat(info.quality as usize);
+                                    rsx! {
+                                        div { class: if is_active { "model-row active" } else { "model-row" },
+                                            div { class: "model-info",
+                                                span { class: "model-name", "{info.name}" }
+                                                span { class: "model-meta", " {info.size_mb}MB {stars}" }
+                                            }
+                                            if !downloaded && !is_downloading {
+                                                button { class: "dl-btn",
+                                                    onclick: move |_| {
+                                                        downloading.set(Some(id2.clone()));
+                                                        status.set(format!("Скачивание {}...", info_clone.name));
+                                                        match models::download_model(&info_clone) {
+                                                            Ok(()) => {
+                                                                active_model_id.set(id2.clone());
+                                                                status.set(format!("{} скачана!", info_clone.name));
+                                                            }
+                                                            Err(e) => status.set(format!("Ошибка: {e}")),
+                                                        }
+                                                        downloading.set(None);
+                                                    },
+                                                    "Скачать"
+                                                }
+                                            }
+                                            if is_downloading {
+                                                span { class: "dl-progress", "..." }
+                                            }
+                                            if downloaded && !is_active {
+                                                button { class: "use-btn",
+                                                    onclick: move |_| active_model_id.set(id3.clone()),
+                                                    "Выбрать"
+                                                }
+                                            }
+                                            if downloaded && is_active {
+                                                span { class: "active-mark", "v" }
+                                            }
+                                        }
                                     }
                                 }
                             }
+                        }
+
+                        h3 { "Конфигурация" }
+                        button { class: "cfg-btn",
+                            onclick: move |_| {
+                                let p = project_dir().join("models.toml");
+                                if let Ok(c) = std::fs::read_to_string(&p) {
+                                    editing_config.set(Some(("models.toml".into(), c)));
+                                }
+                            },
+                            "models.toml"
+                        }
+                        button { class: "cfg-btn",
+                            onclick: move |_| {
+                                let p = project_dir().join("presets.toml");
+                                if let Ok(c) = std::fs::read_to_string(&p) {
+                                    editing_config.set(Some(("presets.toml".into(), c)));
+                                }
+                            },
+                            "presets.toml"
+                        }
+                        button { class: "cfg-btn",
+                            onclick: move |_| {
+                                let _ = std::process::Command::new("open").arg(project_dir().join("photos/originals")).spawn();
+                            },
+                            "Папка фото"
                         }
                     }
                 }
 
                 div { class: "workspace",
-                    if thumb_info.is_some() {
+                    // Config editor
+                    if let Some((ref filename, ref content)) = *editing_config.read() {
+                        div { class: "config-editor",
+                            div { class: "editor-header",
+                                h3 { "{filename}" }
+                                div { class: "editor-actions",
+                                    button { class: "save-btn",
+                                        onclick: move |_| {
+                                            let cfg = editing_config.read().clone();
+                                            if let Some((ref fname, ref text)) = cfg {
+                                                let path = project_dir().join(fname);
+                                                match std::fs::write(&path, text) {
+                                                    Ok(()) => {
+                                                        status.set(format!("{fname} сохранён!"));
+                                                        // Reload if needed
+                                                        if fname == "models.toml" {
+                                                            available_models.set(models::load_models());
+                                                        }
+                                                        if fname == "presets.toml" {
+                                                            presets.set(load_embedded_presets());
+                                                        }
+                                                    }
+                                                    Err(e) => status.set(format!("Ошибка: {e}")),
+                                                }
+                                            }
+                                        },
+                                        "Сохранить"
+                                    }
+                                    button { class: "close-btn",
+                                        onclick: move |_| editing_config.set(None),
+                                        "X"
+                                    }
+                                }
+                            }
+                            textarea {
+                                class: "config-textarea",
+                                value: "{content}",
+                                oninput: move |evt: Event<FormData>| {
+                                    let cfg = editing_config.read().clone();
+                                    if let Some((fname, _)) = cfg {
+                                        editing_config.set(Some((fname, evt.value().clone())));
+                                    }
+                                },
+                            }
+                        }
+                    } else if thumb_info.is_some() {
                         div { class: "preview-area",
                             div {
                                 class: "image-container",
@@ -420,22 +595,34 @@ fn app() -> Element {
                                 button { class: "ctrl-btn",
                                     onclick: move |_| {
                                         if let Some(ref p) = photo_for_ccw {
-                                            let mut rots = rotations.read().clone();
-                                            let new_rot = (rots.get(p).copied().unwrap_or(0) + 270) % 360;
-                                            rots.insert(p.clone(), new_rot);
-                                            rotations.set(rots);
-                                            current_thumb.set(make_thumbnail(p, new_rot));
+                                            status.set("Поворот...".to_string());
+                                            if let Ok(img) = image::open(p) {
+                                                let rotated = img.rotate270();
+                                                let _ = rotated.save(p);
+                                                // Clear rotation state, file is already rotated
+                                                let mut rots = rotations.read().clone();
+                                                rots.insert(p.clone(), 0);
+                                                rotations.set(rots);
+                                                // Refresh thumbnails
+                                                current_thumb.set(make_thumbnail(p, 0));
+                                                status.set("Готово".to_string());
+                                            }
                                         }
                                     }, "CCW"
                                 }
                                 button { class: "ctrl-btn",
                                     onclick: move |_| {
                                         if let Some(ref p) = photo_for_cw {
-                                            let mut rots = rotations.read().clone();
-                                            let new_rot = (rots.get(p).copied().unwrap_or(0) + 90) % 360;
-                                            rots.insert(p.clone(), new_rot);
-                                            rotations.set(rots);
-                                            current_thumb.set(make_thumbnail(p, new_rot));
+                                            status.set("Поворот...".to_string());
+                                            if let Ok(img) = image::open(p) {
+                                                let rotated = img.rotate90();
+                                                let _ = rotated.save(p);
+                                                let mut rots = rotations.read().clone();
+                                                rots.insert(p.clone(), 0);
+                                                rotations.set(rots);
+                                                current_thumb.set(make_thumbnail(p, 0));
+                                                status.set("Готово".to_string());
+                                            }
                                         }
                                     }, "CW"
                                 }
@@ -455,6 +642,63 @@ fn app() -> Element {
                                     onclick: move |_| use_png.set(true), "PNG"
                                 }
                                 span { class: "sep", "|" }
+                                // Apple Vision (macOS only, native Neural Engine)
+                                #[cfg(target_os = "macos")]
+                                button { class: "ctrl-btn vision-btn",
+                                    onclick: move |_| {
+                                        let idx = match *selected_photo.read() { Some(i) => i, None => return };
+                                        let photo_path = match photos.read().get(idx).cloned() { Some(p) => p, None => return };
+                                        let rotation = rotations.read().get(&photo_path).copied().unwrap_or(0);
+                                        status.set("Vision: удаление фона...".into());
+
+                                        // Rotate first if needed
+                                        let input_path = if rotation != 0 {
+                                            if let Ok(img) = image::open(&photo_path) {
+                                                let rotated = match rotation {
+                                                    90 => img.rotate90(), 180 => img.rotate180(),
+                                                    270 => img.rotate270(), _ => img,
+                                                };
+                                                let tmp = std::env::temp_dir().join("visa_photo_tmp.png");
+                                                let _ = rotated.save(&tmp);
+                                                tmp
+                                            } else { photo_path.clone() }
+                                        } else { photo_path.clone() };
+
+                                        let stem = photo_path.file_stem().unwrap().to_string_lossy();
+                                        let out = photo_path.parent().unwrap().join(format!("{stem}_nobg.png"));
+                                        let tool = project_dir().join("tools/rembg-vision");
+
+                                        let result = std::process::Command::new(&tool)
+                                            .arg(&input_path)
+                                            .arg(&out)
+                                            .arg("accurate")
+                                            .output();
+
+                                        match result {
+                                            Ok(output) if output.status.success() => {
+                                                let mut rots = rotations.read().clone();
+                                                rots.insert(out.clone(), 0);
+                                                rotations.set(rots);
+                                                let mut cur = photos.read().clone();
+                                                let new_idx = cur.len();
+                                                cur.push(out.clone());
+                                                photos.set(cur);
+                                                selected_photo.set(Some(new_idx));
+                                                current_thumb.set(make_thumbnail(&out, 0));
+                                                let stderr = String::from_utf8_lossy(&output.stderr);
+                                                status.set(format!("Готово! {}", stderr.lines().next().unwrap_or("")));
+                                            }
+                                            Ok(output) => {
+                                                status.set(format!("Ошибка: {}", String::from_utf8_lossy(&output.stderr)));
+                                            }
+                                            Err(e) => {
+                                                status.set(format!("Скомпилируйте: swiftc -O -o tools/rembg-vision tools/rembg-vision.swift -framework Vision -framework AppKit -framework CoreImage | {e}"));
+                                            }
+                                        }
+                                    },
+                                    "Vision"
+                                }
+                                // ONNX models
                                 button { class: "ctrl-btn bg-btn",
                                     onclick: move |_| {
                                         #[cfg(feature = "rembg")]
@@ -462,8 +706,38 @@ fn app() -> Element {
                                             let idx = match *selected_photo.read() { Some(i) => i, None => return };
                                             let photo_path = match photos.read().get(idx).cloned() { Some(p) => p, None => return };
                                             let rotation = rotations.read().get(&photo_path).copied().unwrap_or(0);
-                                            status.set("Удаление фона...".to_string());
-                                            if let Some(remover) = get_bg_remover() {
+                                            let mid = active_model_id.read().clone();
+                                            let models_list = available_models.read().clone();
+                                            let info = match models_list.iter().find(|m| m.id == mid) {
+                                                Some(i) => i.clone(),
+                                                None => { status.set("Модель не найдена".into()); return; }
+                                            };
+                                            if !models::is_downloaded(&info) {
+                                                status.set(format!("Сначала скачайте модель {}", info.name));
+                                                return;
+                                            }
+
+                                            // Load model if different from current
+                                            let need_load = {
+                                                let lock = BG_REMOVER.get_or_init(|| StdMutex::new(None));
+                                                let guard = lock.lock().unwrap();
+                                                match &*guard {
+                                                    Some((_, cur_id)) => *cur_id != mid,
+                                                    None => true,
+                                                }
+                                            };
+                                            if need_load {
+                                                status.set(format!("Загрузка {}...", info.name));
+                                                if let Err(e) = load_bg_model(&info) {
+                                                    status.set(format!("Ошибка: {e}"));
+                                                    return;
+                                                }
+                                            }
+
+                                            status.set("Удаление фона...".into());
+                                            let lock = BG_REMOVER.get().unwrap();
+                                            let guard = lock.lock().unwrap();
+                                            if let Some((ref remover, _)) = *guard {
                                                 match image::open(&photo_path) {
                                                     Ok(mut img) => {
                                                         img = match rotation {
@@ -474,23 +748,21 @@ fn app() -> Element {
                                                         };
                                                         match remover.remove_bg(&img) {
                                                             Ok(result) => {
-                                                                // Save as new file with _nobg suffix
                                                                 let stem = photo_path.file_stem().unwrap().to_string_lossy();
                                                                 let out = photo_path.parent().unwrap()
                                                                     .join(format!("{stem}_nobg.png"));
                                                                 if let Ok(()) = result.save(&out) {
-                                                                    // Reset rotation since we baked it in
+                                                                    drop(guard);
                                                                     let mut rots = rotations.read().clone();
                                                                     rots.insert(out.clone(), 0);
                                                                     rotations.set(rots);
-                                                                    // Add to photo list and select
                                                                     let mut cur = photos.read().clone();
                                                                     let new_idx = cur.len();
                                                                     cur.push(out.clone());
                                                                     photos.set(cur);
                                                                     selected_photo.set(Some(new_idx));
                                                                     current_thumb.set(make_thumbnail(&out, 0));
-                                                                    status.set("Фон удалён!".to_string());
+                                                                    status.set("Фон удалён!".into());
                                                                 }
                                                             }
                                                             Err(e) => status.set(format!("Ошибка: {e}")),
@@ -498,8 +770,6 @@ fn app() -> Element {
                                                     }
                                                     Err(e) => status.set(format!("Ошибка: {e}")),
                                                 }
-                                            } else {
-                                                status.set("Модель не загружена (models/u2netp.onnx)".to_string());
                                             }
                                         }
                                     },
@@ -629,7 +899,12 @@ body { font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif; ba
 .header h1 { font-size: 16px; font-weight: 600; }
 .main-layout { display: flex; flex: 1; overflow: hidden; }
 
-.sidebar { width: 240px; padding: 10px; background: #0f3460; overflow-y: auto; border-right: 1px solid #333; }
+.sidebar { width: 240px; padding: 0 10px 10px; background: #0f3460; overflow-y: auto; border-right: 1px solid #333; }
+.tabs { display: flex; margin: 0 -10px; border-bottom: 1px solid #333; }
+.tab { flex: 1; padding: 8px; background: transparent; border: none; color: #888; cursor: pointer; font-size: 12px; border-bottom: 2px solid transparent; }
+.tab:hover { color: #ccc; }
+.tab.active { color: white; border-bottom-color: #e94560; }
+.hint { font-size: 9px; color: #555; margin-bottom: 4px; }
 .sidebar h3 { font-size: 10px; text-transform: uppercase; color: #666; margin: 10px 0 4px; }
 .sidebar h3:first-child { margin-top: 0; }
 .preset-btn { display: block; width: 100%; padding: 7px 8px; margin-bottom: 2px; background: #1a1a3e; border: 1px solid #333; border-radius: 4px; color: #ccc; text-align: left; cursor: pointer; font-size: 11px; }
@@ -643,7 +918,19 @@ body { font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif; ba
 .size-input:focus { border-color: #e94560; }
 .size-hint { font-size: 9px; color: #666; }
 .add-btn { width: 100%; padding: 6px; background: #533483; border: none; border-radius: 4px; color: white; cursor: pointer; font-size: 11px; margin-bottom: 4px; }
-.photo-list { display: flex; flex-direction: column; }
+.model-list { display: flex; flex-direction: column; gap: 2px; }
+.model-row { display: flex; align-items: center; gap: 4px; padding: 3px 4px; background: #1a1a3e; border-radius: 3px; font-size: 10px; border: 1px solid transparent; }
+.model-row.active { border-color: #4caf50; background: #1a2e1a; }
+.model-info { flex: 1; min-width: 0; }
+.model-name { color: #ccc; font-weight: 500; }
+.model-meta { color: #666; margin-left: 4px; }
+.dl-btn { padding: 2px 8px; background: #533483; border: none; border-radius: 3px; color: white; cursor: pointer; font-size: 9px; white-space: nowrap; }
+.dl-btn:hover { background: #6a42a0; }
+.use-btn { padding: 2px 8px; background: #1a1a3e; border: 1px solid #444; border-radius: 3px; color: #aaa; cursor: pointer; font-size: 9px; white-space: nowrap; }
+.use-btn:hover { border-color: #e94560; }
+.active-mark { color: #4caf50; font-weight: bold; }
+.dl-progress { color: #888; font-size: 9px; }
+.photo-list { display: flex; flex-direction: column; gap: 1px; max-height: 400px; overflow-y: auto; }
 .photo-item { display: block; width: 100%; padding: 5px 6px; background: transparent; border: 1px solid transparent; border-radius: 3px; color: #aaa; text-align: left; cursor: pointer; font-size: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .photo-item:hover { background: #1a1a3e; }
 .photo-item.active { background: #1a1a3e; color: white; border-color: #e94560; }
@@ -673,6 +960,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif; ba
 .ctrl-btn.active { background: #e94560; color: white; border-color: #e94560; }
 .scale-label { font-size: 10px; color: #888; }
 .scale-slider { width: 80px; accent-color: #e94560; }
+.vision-btn { background: #1565c0 !important; color: white !important; border-color: #1565c0 !important; }
+.vision-btn:hover { background: #1976d2 !important; }
 .bg-btn { background: #2d6a4f !important; color: white !important; border-color: #2d6a4f !important; }
 .bg-btn:hover { background: #40916c !important; }
 .sep { color: #333; font-size: 14px; margin: 0 4px; }
@@ -690,6 +979,18 @@ body { font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif; ba
 .process-btn { padding: 7px 18px; background: #e94560; border: none; border-radius: 4px; color: white; cursor: pointer; font-size: 12px; font-weight: 600; }
 .process-btn:hover { background: #d63851; }
 
+.config-editor { display: flex; flex-direction: column; height: calc(100vh - 80px); }
+.editor-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.editor-header h3 { font-size: 14px; color: #ccc; }
+.editor-actions { display: flex; gap: 6px; }
+.save-btn { padding: 4px 14px; background: #4caf50; border: none; border-radius: 3px; color: white; cursor: pointer; font-size: 11px; font-weight: 600; }
+.save-btn:hover { background: #66bb6a; }
+.close-btn { padding: 4px 10px; background: #444; border: none; border-radius: 3px; color: #ccc; cursor: pointer; font-size: 11px; }
+.close-btn:hover { background: #666; }
+.config-textarea { flex: 1; background: #0a0a1a; color: #e0e0e0; border: 1px solid #333; border-radius: 4px; padding: 10px; font-family: 'SF Mono', 'Menlo', monospace; font-size: 12px; line-height: 1.5; resize: none; outline: none; tab-size: 4; }
+.config-textarea:focus { border-color: #e94560; }
+.cfg-btn { width: 100%; padding: 6px 8px; background: #1a1a3e; border: 1px solid #333; border-radius: 3px; color: #aaa; cursor: pointer; font-size: 11px; text-align: left; margin-bottom: 2px; }
+.cfg-btn:hover { background: #252550; border-color: #e94560; }
 .placeholder { display: flex; align-items: center; justify-content: center; height: 300px; color: #555; }
 .results { margin-top: 8px; padding: 8px; background: #16213e; border-radius: 4px; }
 .result-item { font-size: 10px; color: #aaa; padding: 2px 0; word-break: break-all; }
