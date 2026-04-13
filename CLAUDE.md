@@ -5,12 +5,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Build & Run
 
 ```bash
-cargo build          # build debug
-cargo run            # launch desktop app
-cargo build --release  # release build
+cargo build                    # debug build
+cargo run                      # launch desktop app
+cargo build --release          # release build
+cargo clippy -- -D warnings    # lint
+
+# macOS: compile Vision bg removal tool
+swiftc -O -o tools/rembg-vision tools/rembg-vision.swift \
+  -framework Vision -framework AppKit -framework CoreImage
+
+# Download ONNX models (optional)
+bash models/download.sh
 ```
 
-No test suite yet. Lint with `cargo clippy -- -D warnings`.
+No test suite yet.
 
 ## Architecture
 
@@ -18,19 +26,24 @@ Dioxus 0.6 desktop app (webview-based) for cropping/resizing photos to biometric
 
 ### Modules
 
-- **`src/main.rs`** — Dioxus UI: sidebar (presets, photo list), workspace (image preview with crop overlay, guides, adjustments), controls. All state is signals. Images displayed as base64 data URIs (thumbnails generated at 800px). Rotation baked into thumbnail, not CSS transform.
-- **`src/preset.rs`** — `Preset` struct deserialized from TOML. Fields: digital/print dimensions, face height %, top margin %, eye line position %.
-- **`src/processing.rs`** — Image manipulation: `crop_and_resize` (with scale parameter), `apply_adjustments` (brightness/contrast/shadows pixel-level), `rotate_cw/ccw`, `encode_jpeg` (auto quality reduction to fit size limit), `save_processed`, `generate_print_layout` (A4 300dpi).
-- **`presets.toml`** — Country presets (turkey, usa_greencard, eu_schengen, custom). Embedded via `include_str!`.
+- **`src/main.rs`** — Dioxus UI with tabbed sidebar (Photos/Settings), workspace (crop preview with guides), controls. All state is signals. Thumbnails as base64 data URIs (800px JPEG). Sidebar tabs: photo list + presets | model manager + config editor.
+- **`src/preset.rs`** — `Preset` struct from TOML. Fields: digital/print dimensions, face height %, top margin %, eye line %.
+- **`src/processing.rs`** — `crop_and_resize` (with scale), `apply_adjustments` (brightness/contrast/shadows), `rotate_cw/ccw`, `encode_jpeg` (auto quality), `save_processed`, `generate_print_layout` (A4 300dpi).
+- **`src/background.rs`** — ONNX background removal via `ort` crate. Supports multiple models (320px and 1024px input). Behind `rembg` feature flag.
+- **`src/models.rs`** — Model registry loaded from `models.toml`. Download via curl, model path management.
+- **`tools/rembg-vision.swift`** — Swift CLI for Apple Vision person segmentation. Compiled binary at `tools/rembg-vision`.
+- **`presets.toml`** — Country presets, editable from app UI. Loaded at runtime (not embedded).
+- **`models.toml`** — ONNX model registry, editable from app UI.
 
 ### Key Design Decisions
 
-- **Thumbnails as base64 data URIs** — Dioxus desktop webview blocks `file://` URLs. Thumbnails are JPEG-encoded in memory and embedded as `data:image/jpeg;base64,...`.
-- **Rotation is non-destructive** — Stored as `HashMap<PathBuf, u32>` (degrees). Applied to thumbnail on change, applied to full image only at export.
-- **Crop scale** — `crop_scale` signal (0.3–1.0) controls crop rect size. Both UI overlay and `processing::crop_and_resize` use the same scale value.
-- **Face guides** — Computed from preset percentages (face_height, face_top_margin, eye_line_from_bottom). Rendered as absolute-positioned divs inside the image container.
-- **Container sizing** — Container matches image aspect ratio (no letterbox). Computed by `container_for_image()`.
-- **HEIC conversion** — Uses macOS `sips` command, converts to PNG on import.
+- **Thumbnails as base64** — Dioxus webview blocks `file://`. JPEG thumbnail encoded in memory as `data:image/jpeg;base64,...`.
+- **Rotation saves to file** — CW/CCW immediately overwrite the original PNG. No rotation state needed.
+- **Crop overlay** — Container sized to image (no letterbox). Crop rect + shade bands + face guides computed from preset percentages.
+- **Face guides** — Head top/chin lines (yellow), eye line (green), face oval (blue). Positions from ICAO/country standards in presets.toml.
+- **Dual bg removal** — Apple Vision (macOS, 0.2s via Neural Engine, best quality) + ONNX models (cross-platform fallback). Selected in Settings tab.
+- **Config files** — `presets.toml` and `models.toml` loaded from disk, editable in built-in editor, reload without restart.
+- **HEIC conversion** — macOS `sips` command on import.
 
 ### Output Structure
 

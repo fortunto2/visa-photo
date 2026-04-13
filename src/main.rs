@@ -167,10 +167,9 @@ fn app() -> Element {
     let mut custom_h: Signal<String> = use_signal(|| "600".to_string());
     // Config editor state: (filename, content)
     let mut editing_config: Signal<Option<(String, String)>> = use_signal(|| None);
-    #[cfg(feature = "rembg")]
-    let mut active_model_id: Signal<String> = use_signal(|| "u2net_human_seg".to_string());
-    #[cfg(feature = "rembg")]
-    let mut downloading: Signal<Option<String>> = use_signal(|| None); // model id being downloaded
+    // bg engine: "apple_vision" or ONNX model id
+    let mut active_bg_engine: Signal<String> = use_signal(|| "apple_vision".to_string());
+    let mut downloading: Signal<Option<String>> = use_signal(|| None);
 
     use_effect(move || {
         let dir = project_dir().join("photos/originals");
@@ -379,9 +378,25 @@ fn app() -> Element {
 
                     // Tab 1: Settings
                     if *sidebar_tab.read() == 1 {
-                        h3 { "Модели фона" }
-                        p { class: "hint", "Редактируйте models.toml для добавления" }
+                        h3 { "Движок фона" }
                         div { class: "model-list",
+                            // Apple Vision (built-in)
+                            div { class: if *active_bg_engine.read() == "apple_vision" { "model-row active" } else { "model-row" },
+                                div { class: "model-info",
+                                    span { class: "model-name", "Apple Vision" }
+                                    span { class: "model-meta", " macOS *****" }
+                                }
+                                if *active_bg_engine.read() != "apple_vision" {
+                                    button { class: "use-btn",
+                                        onclick: move |_| active_bg_engine.set("apple_vision".into()),
+                                        "Выбрать"
+                                    }
+                                }
+                                if *active_bg_engine.read() == "apple_vision" {
+                                    span { class: "active-mark", "v" }
+                                }
+                            }
+                            // ONNX models
                             for info in available_models.read().iter() {
                                 {
                                     let id = info.id.clone();
@@ -389,7 +404,7 @@ fn app() -> Element {
                                     let id3 = id.clone();
                                     let info_clone = info.clone();
                                     let downloaded = models::is_downloaded(info);
-                                    let is_active = *active_model_id.read() == id;
+                                    let is_active = *active_bg_engine.read() == id;
                                     let is_downloading = downloading.read().as_deref() == Some(id.as_str());
                                     let stars = "*".repeat(info.quality as usize);
                                     rsx! {
@@ -405,7 +420,7 @@ fn app() -> Element {
                                                         status.set(format!("Скачивание {}...", info_clone.name));
                                                         match models::download_model(&info_clone) {
                                                             Ok(()) => {
-                                                                active_model_id.set(id2.clone());
+                                                                active_bg_engine.set(id2.clone());
                                                                 status.set(format!("{} скачана!", info_clone.name));
                                                             }
                                                             Err(e) => status.set(format!("Ошибка: {e}")),
@@ -420,7 +435,7 @@ fn app() -> Element {
                                             }
                                             if downloaded && !is_active {
                                                 button { class: "use-btn",
-                                                    onclick: move |_| active_model_id.set(id3.clone()),
+                                                    onclick: move |_| active_bg_engine.set(id3.clone()),
                                                     "Выбрать"
                                                 }
                                             }
@@ -536,6 +551,7 @@ fn app() -> Element {
                                 onmouseup: move |_| dragging.set(false),
                                 onmouseleave: move |_| dragging.set(false),
                                 onwheel: move |evt: Event<WheelData>| {
+                                    evt.prevent_default();
                                     let dy = match evt.delta() {
                                         WheelDelta::Pixels(p) => p.y / 100.0,
                                         WheelDelta::Lines(l) => l.y,
@@ -642,137 +658,91 @@ fn app() -> Element {
                                     onclick: move |_| use_png.set(true), "PNG"
                                 }
                                 span { class: "sep", "|" }
-                                // Apple Vision (macOS only, native Neural Engine)
                                 button { class: "ctrl-btn vision-btn",
                                     onclick: move |_| {
                                         let idx = match *selected_photo.read() { Some(i) => i, None => return };
                                         let photo_path = match photos.read().get(idx).cloned() { Some(p) => p, None => return };
                                         let rotation = rotations.read().get(&photo_path).copied().unwrap_or(0);
-                                        status.set("Vision: удаление фона...".into());
-
-                                        // Rotate first if needed
-                                        let input_path = if rotation != 0 {
-                                            if let Ok(img) = image::open(&photo_path) {
-                                                let rotated = match rotation {
-                                                    90 => img.rotate90(), 180 => img.rotate180(),
-                                                    270 => img.rotate270(), _ => img,
-                                                };
-                                                let tmp = std::env::temp_dir().join("visa_photo_tmp.png");
-                                                let _ = rotated.save(&tmp);
-                                                tmp
-                                            } else { photo_path.clone() }
-                                        } else { photo_path.clone() };
-
-                                        let stem = photo_path.file_stem().unwrap().to_string_lossy();
+                                        let engine = active_bg_engine.read().clone();
+                                        let stem = photo_path.file_stem().unwrap().to_string_lossy().to_string();
                                         let out = photo_path.parent().unwrap().join(format!("{stem}_nobg.png"));
-                                        let tool = project_dir().join("tools/rembg-vision");
 
-                                        let result = std::process::Command::new(&tool)
-                                            .arg(&input_path)
-                                            .arg(&out)
-                                            .arg("accurate")
-                                            .output();
+                                        if engine == "apple_vision" {
+                                            status.set("Удаление фона (Vision)...".into());
+                                            let input_path = if rotation != 0 {
+                                                if let Ok(img) = image::open(&photo_path) {
+                                                    let rotated = match rotation {
+                                                        90 => img.rotate90(), 180 => img.rotate180(),
+                                                        270 => img.rotate270(), _ => img,
+                                                    };
+                                                    let tmp = std::env::temp_dir().join("visa_photo_tmp.png");
+                                                    let _ = rotated.save(&tmp);
+                                                    tmp
+                                                } else { photo_path.clone() }
+                                            } else { photo_path.clone() };
 
-                                        match result {
-                                            Ok(output) if output.status.success() => {
-                                                let mut rots = rotations.read().clone();
-                                                rots.insert(out.clone(), 0);
-                                                rotations.set(rots);
-                                                let mut cur = photos.read().clone();
-                                                let new_idx = cur.len();
-                                                cur.push(out.clone());
-                                                photos.set(cur);
-                                                selected_photo.set(Some(new_idx));
-                                                current_thumb.set(make_thumbnail(&out, 0));
-                                                let stderr = String::from_utf8_lossy(&output.stderr);
-                                                status.set(format!("Готово! {}", stderr.lines().next().unwrap_or("")));
+                                            let tool = project_dir().join("tools/rembg-vision");
+                                            match std::process::Command::new(&tool).arg(&input_path).arg(&out).arg("accurate").output() {
+                                                Ok(o) if o.status.success() => {
+                                                    let stderr = String::from_utf8_lossy(&o.stderr);
+                                                    status.set(format!("Готово! {}", stderr.lines().next().unwrap_or("")));
+                                                }
+                                                Ok(o) => { status.set(format!("Ошибка: {}", String::from_utf8_lossy(&o.stderr))); return; }
+                                                Err(e) => { status.set(format!("Vision не найден: {e}")); return; }
                                             }
-                                            Ok(output) => {
-                                                status.set(format!("Ошибка: {}", String::from_utf8_lossy(&output.stderr)));
-                                            }
-                                            Err(e) => {
-                                                status.set(format!("Скомпилируйте: swiftc -O -o tools/rembg-vision tools/rembg-vision.swift -framework Vision -framework AppKit -framework CoreImage | {e}"));
+                                        } else {
+                                            #[cfg(feature = "rembg")]
+                                            {
+                                                let models_list = available_models.read().clone();
+                                                let info = match models_list.iter().find(|m| m.id == engine) {
+                                                    Some(i) => i.clone(),
+                                                    None => { status.set("Модель не найдена".into()); return; }
+                                                };
+                                                if !models::is_downloaded(&info) {
+                                                    status.set(format!("Сначала скачайте {}", info.name)); return;
+                                                }
+                                                let need_load = {
+                                                    let lock = BG_REMOVER.get_or_init(|| StdMutex::new(None));
+                                                    let guard = lock.lock().unwrap();
+                                                    match &*guard { Some((_, cur_id)) => *cur_id != engine, None => true }
+                                                };
+                                                if need_load {
+                                                    status.set(format!("Загрузка {}...", info.name));
+                                                    if let Err(e) = load_bg_model(&info) { status.set(format!("Ошибка: {e}")); return; }
+                                                }
+                                                status.set("Удаление фона (ONNX)...".into());
+                                                let lock = BG_REMOVER.get().unwrap();
+                                                let guard = lock.lock().unwrap();
+                                                if let Some((ref remover, _)) = *guard {
+                                                    match image::open(&photo_path) {
+                                                        Ok(mut img) => {
+                                                            img = match rotation {
+                                                                90 => img.rotate90(), 180 => img.rotate180(),
+                                                                270 => img.rotate270(), _ => img,
+                                                            };
+                                                            match remover.remove_bg(&img) {
+                                                                Ok(result) => { let _ = result.save(&out); drop(guard); }
+                                                                Err(e) => { status.set(format!("Ошибка: {e}")); return; }
+                                                            }
+                                                        }
+                                                        Err(e) => { status.set(format!("Ошибка: {e}")); return; }
+                                                    }
+                                                }
+                                                status.set("Фон удалён!".into());
                                             }
                                         }
+                                        // Update photo list
+                                        let mut rots = rotations.read().clone();
+                                        rots.insert(out.clone(), 0);
+                                        rotations.set(rots);
+                                        let mut cur = photos.read().clone();
+                                        let new_idx = cur.len();
+                                        cur.push(out.clone());
+                                        photos.set(cur);
+                                        selected_photo.set(Some(new_idx));
+                                        current_thumb.set(make_thumbnail(&out, 0));
                                     },
                                     "Убрать фон"
-                                }
-                                // ONNX (опционально, для Linux/Windows)
-                                button { class: "ctrl-btn bg-btn",
-                                    onclick: move |_| {
-                                        #[cfg(feature = "rembg")]
-                                        {
-                                            let idx = match *selected_photo.read() { Some(i) => i, None => return };
-                                            let photo_path = match photos.read().get(idx).cloned() { Some(p) => p, None => return };
-                                            let rotation = rotations.read().get(&photo_path).copied().unwrap_or(0);
-                                            let mid = active_model_id.read().clone();
-                                            let models_list = available_models.read().clone();
-                                            let info = match models_list.iter().find(|m| m.id == mid) {
-                                                Some(i) => i.clone(),
-                                                None => { status.set("Модель не найдена".into()); return; }
-                                            };
-                                            if !models::is_downloaded(&info) {
-                                                status.set(format!("Сначала скачайте модель {}", info.name));
-                                                return;
-                                            }
-
-                                            // Load model if different from current
-                                            let need_load = {
-                                                let lock = BG_REMOVER.get_or_init(|| StdMutex::new(None));
-                                                let guard = lock.lock().unwrap();
-                                                match &*guard {
-                                                    Some((_, cur_id)) => *cur_id != mid,
-                                                    None => true,
-                                                }
-                                            };
-                                            if need_load {
-                                                status.set(format!("Загрузка {}...", info.name));
-                                                if let Err(e) = load_bg_model(&info) {
-                                                    status.set(format!("Ошибка: {e}"));
-                                                    return;
-                                                }
-                                            }
-
-                                            status.set("Удаление фона...".into());
-                                            let lock = BG_REMOVER.get().unwrap();
-                                            let guard = lock.lock().unwrap();
-                                            if let Some((ref remover, _)) = *guard {
-                                                match image::open(&photo_path) {
-                                                    Ok(mut img) => {
-                                                        img = match rotation {
-                                                            90 => img.rotate90(),
-                                                            180 => img.rotate180(),
-                                                            270 => img.rotate270(),
-                                                            _ => img,
-                                                        };
-                                                        match remover.remove_bg(&img) {
-                                                            Ok(result) => {
-                                                                let stem = photo_path.file_stem().unwrap().to_string_lossy();
-                                                                let out = photo_path.parent().unwrap()
-                                                                    .join(format!("{stem}_nobg.png"));
-                                                                if let Ok(()) = result.save(&out) {
-                                                                    drop(guard);
-                                                                    let mut rots = rotations.read().clone();
-                                                                    rots.insert(out.clone(), 0);
-                                                                    rotations.set(rots);
-                                                                    let mut cur = photos.read().clone();
-                                                                    let new_idx = cur.len();
-                                                                    cur.push(out.clone());
-                                                                    photos.set(cur);
-                                                                    selected_photo.set(Some(new_idx));
-                                                                    current_thumb.set(make_thumbnail(&out, 0));
-                                                                    status.set("Фон удалён!".into());
-                                                                }
-                                                            }
-                                                            Err(e) => status.set(format!("Ошибка: {e}")),
-                                                        }
-                                                    }
-                                                    Err(e) => status.set(format!("Ошибка: {e}")),
-                                                }
-                                            }
-                                        }
-                                    },
-                                    "ONNX"
                                 }
                             }
 
