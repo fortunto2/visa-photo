@@ -127,9 +127,21 @@ export default function App() {
 
   return (
     <div class="flex flex-col h-screen bg-[#1a1a2e] text-gray-200">
-      <div class="px-5 py-2 bg-[#16213e] border-b border-gray-700">
-        <h1 class="text-lg font-semibold">Visa Photo</h1>
-        <p class="text-xs text-gray-500">Free, offline, AI-powered biometric photo tool</p>
+      <div class="px-5 py-2 bg-[#16213e] border-b border-gray-700 flex items-center justify-between">
+        <div>
+          <h1 class="text-lg font-semibold">Visa Photo</h1>
+          <p class="text-xs text-gray-500">Free, offline, AI-powered biometric photo tool</p>
+        </div>
+        <div class="flex gap-3 items-center">
+          <a href="https://github.com/fortunto2/visa-photo/releases/latest" target="_blank"
+            class="text-[10px] text-gray-500 hover:text-[#e94560] flex items-center gap-1">
+            Desktop App
+          </a>
+          <a href="https://github.com/fortunto2/visa-photo" target="_blank"
+            class="text-[10px] text-gray-500 hover:text-[#e94560]">
+            GitHub
+          </a>
+        </div>
       </div>
 
       <div class="flex flex-1 overflow-hidden">

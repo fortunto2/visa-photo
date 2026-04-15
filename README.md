@@ -2,21 +2,37 @@
 
 **Free, offline, AI-powered tool for biometric visa & passport photos.**
 
-Crop to exact country specs, remove background with Apple Vision AI (0.2s), add face guides per ICAO standards. No cloud, no subscription, no watermarks. Your photos never leave your machine.
+Crop to exact country specs, remove background with AI, add face guides per ICAO standards. No cloud, no subscription, no watermarks. Your photos never leave your device.
+
+**[Try Web Version](https://photo.superduperai.co)** — works in browser, no install needed
 
 <p align="center">
   <img src="docs/demo.png" alt="Visa Photo app" width="600">
 </p>
 
-## Highlights
+## Web vs Desktop
 
-- **AI Background Removal** — Apple Vision Neural Engine (macOS) or ONNX models (cross-platform)
-- **Country Presets** — Turkey, USA Green Card, Schengen, custom sizes
-- **ICAO Face Guides** — head, chin, eye lines + face oval overlay
-- **Print Layout** — A4 sheet with N copies at 300 DPI, ready for print shop
-- **Fully Offline** — no internet needed after install
+| Feature | [Web](https://photo.superduperai.co) | Desktop |
+|---------|------|---------|
+| **Install** | None — open in browser | Download binary |
+| **BG Removal** | ONNX in browser (WASM) | Apple Vision (0.2s) + ONNX |
+| **Speed** | Good (WebGPU/WASM) | Best (Neural Engine) |
+| **Offline** | After first model download | Always |
+| **PDF Export** | Yes | PNG only |
+| **Auto Enhance** | Yes | Manual |
+| **Platforms** | Any browser | macOS, Linux, Windows |
+| **Model cache** | IndexedDB (persistent) | Disk |
+| **Cost** | Free (Cloudflare Pages) | Free |
+
+## 13 Country Presets
+
+Turkey, USA (Passport + Visa), Schengen (EU), UK, Canada, China, India, Japan, South Korea, Australia, Russia + Custom sizes.
 
 ## Install
+
+### Web (recommended)
+
+**[photo.superduperai.co](https://photo.superduperai.co)** — open and use, nothing to install.
 
 ### macOS (Homebrew)
 
@@ -24,45 +40,36 @@ Crop to exact country specs, remove background with Apple Vision AI (0.2s), add 
 brew install fortunto2/tap/visa-photo
 ```
 
-### macOS / Linux / Windows (Download)
+### Download Binary
 
-Download from [Releases](https://github.com/fortunto2/visa-photo/releases/latest):
+[Latest Release](https://github.com/fortunto2/visa-photo/releases/latest) — macOS (ARM/Intel), Linux, Windows.
 
-| Platform | File |
-|----------|------|
-| macOS Apple Silicon (M1/M2/M3) | `visa-photo-macos-arm64.tar.gz` |
-| macOS Intel | `visa-photo-macos-x64.tar.gz` |
-| Linux x64 | `visa-photo-linux-x64.tar.gz` |
-| Windows x64 | `visa-photo-windows-x64.zip` |
-
-```bash
-# macOS/Linux: extract and run
-tar xzf visa-photo-*.tar.gz
-./visa-photo
-```
-
-### Build from source
+### Build from Source
 
 ```bash
 git clone https://github.com/fortunto2/visa-photo.git
 cd visa-photo
 cargo build --release
 
-# macOS: compile Vision AI tool (optional, for background removal)
+# macOS: compile Vision AI tool (best bg removal)
 swiftc -O -o tools/rembg-vision tools/rembg-vision.swift \
   -framework Vision -framework AppKit -framework CoreImage
 ```
 
-## Usage
+## Features
 
-1. Add photos (drag to `photos/originals/` or click "+ Add")
-2. Pick a country preset
-3. Click a photo — drag crop frame, align face with guides
-4. Zoom crop with scroll wheel or slider
-5. Click **"Remove bg"** for white background
-6. Enter name, click **"Save"**
-
-Output: `photos/processed/{name}/`
+- **AI Background Removal** — Apple Vision Neural Engine (macOS, 0.2s) or ONNX models (cross-platform)
+- **Country Presets** — 13 countries with ICAO-compliant face guides
+- **Crop & Scale** — drag to position, scroll wheel to zoom
+- **Face Guides** — head/chin/eye lines + face oval overlay
+- **Rotation** — 90° CW/CCW, saves to file
+- **Adjustments** — brightness, contrast, shadow lift with live preview
+- **Auto Enhance** — one-click histogram analysis (web)
+- **Export** — JPEG (with size limit) or PNG (lossless/transparent)
+- **Print Layout** — A4 sheet at 300 DPI (PNG + PDF)
+- **HEIC Import** — auto-converts via `sips` (macOS)
+- **Model Manager** — download/select ONNX models from Settings tab
+- **Config Editor** — edit presets.toml and models.toml from the app
 
 ## Background Removal
 
@@ -71,23 +78,14 @@ Output: `photos/processed/{name}/`
 | Apple Vision | built-in | 0.2s | Best | macOS 13+ |
 | Silueta | 43 MB | <1s | OK | all |
 | U2Net Human | 176 MB | 2-4s | Good | all |
-
-Select engine in **Settings** tab. ONNX models download on demand from the app.
-
-## Presets
-
-Edit `presets.toml` to add countries (or use the built-in editor):
-
-| Preset | Digital | Print | Face height |
-|--------|---------|-------|-------------|
-| Turkey (ikamet) | 600x720 | 50x60mm | 56.7% |
-| USA (Green Card) | 600x600 | 51x51mm | 50-69% |
-| Schengen | 413x531 | 35x45mm | 71-80% |
-| Custom | any | any | configurable |
+| ISNet General | 176 MB | 3-5s | Good | all |
 
 ## Tech Stack
 
-Rust + [Dioxus](https://dioxuslabs.com) desktop (webview) + [image](https://crates.io/crates/image) + [ort](https://crates.io/crates/ort) (ONNX Runtime) + Apple Vision framework
+- **Desktop**: Rust + [Dioxus](https://dioxuslabs.com) + [ort](https://crates.io/crates/ort) + Apple Vision
+- **Web**: [Astro](https://astro.build) + [Preact](https://preactjs.com) + [Tailwind](https://tailwindcss.com) + [onnxruntime-web](https://www.npmjs.com/package/onnxruntime-web)
+- **Hosting**: [Cloudflare Pages](https://pages.cloudflare.com) (free)
+- **Models**: [Cloudflare R2](https://developers.cloudflare.com/r2/) CDN
 
 ## License
 
