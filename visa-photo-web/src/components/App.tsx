@@ -331,15 +331,43 @@ export default function App() {
               </div>
             </div>
           ) : (
-            <div class="flex flex-col items-center justify-center h-96 text-gray-600">
-              <div class="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-4">
-                <svg class="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
+            <label class="cursor-pointer block">
+              <input type="file" accept="image/*" multiple class="hidden"
+                onChange={(e) => handleFiles((e.target as HTMLInputElement).files)} />
+              <div class="relative rounded-xl overflow-hidden border-2 border-dashed border-white/10 hover:border-rose-500/40 transition-all group"
+                style={{ width: contW, height: contH }}>
+                {/* Empty template with face guides */}
+                <div class="absolute inset-0 bg-gradient-to-b from-gray-100 to-gray-200" />
+                {guides && (
+                  <>
+                    <div class="absolute border-2 border-dashed border-rose-400/30 pointer-events-none"
+                      style={{ left: guides.left, top: guides.top, width: guides.width, height: guides.height }} />
+                    <div class="absolute border-t border-dashed border-amber-400/30 pointer-events-none"
+                      style={{ left: guides.left, top: guides.top + guides.headTopY, width: guides.width }} />
+                    <div class="absolute border-t border-dashed border-amber-400/30 pointer-events-none"
+                      style={{ left: guides.left, top: guides.top + guides.chinY, width: guides.width }} />
+                    <div class="absolute border-t border-dashed border-emerald-400/30 pointer-events-none"
+                      style={{ left: guides.left, top: guides.top + guides.eyeY, width: guides.width }} />
+                    {(() => {
+                      const oh = guides.faceHeight, ow = oh * 0.65;
+                      return <div class="absolute border border-dashed border-sky-400/20 rounded-full pointer-events-none"
+                        style={{ left: guides.left + (guides.width - ow) / 2, top: guides.top + guides.headTopY, width: ow, height: oh }} />;
+                    })()}
+                  </>
+                )}
+                {/* Upload prompt overlay */}
+                <div class="absolute inset-0 flex flex-col items-center justify-center bg-black/40 group-hover:bg-black/30 transition-all">
+                  <div class="w-16 h-16 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-rose-500/20 group-hover:border-rose-500/40 transition-all">
+                    <svg class="w-8 h-8 text-white/60 group-hover:text-rose-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4" />
+                    </svg>
+                  </div>
+                  <p class="text-sm text-white/70 font-medium group-hover:text-white transition-colors">Click to add photo</p>
+                  <p class="text-[11px] text-white/40 mt-1">or drag & drop</p>
+                  <p class="text-[10px] text-white/30 mt-3">{pr.digital_width}x{pr.digital_height}px | {pr.name}</p>
+                </div>
               </div>
-              <p class="text-sm">Add photos to get started</p>
-              <p class="text-[11px] text-gray-700 mt-1">Your photos never leave your device</p>
-            </div>
+            </label>
           )}
         </div>
       </div>
