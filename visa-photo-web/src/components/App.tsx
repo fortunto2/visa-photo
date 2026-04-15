@@ -13,6 +13,8 @@ interface Photo {
 
 export default function App() {
   const [preset, setPreset] = useState("turkey");
+  const [customW, setCustomW] = useState("600");
+  const [customH, setCustomH] = useState("600");
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [selected, setSelected] = useState<number | null>(null);
   const [cropCx, setCropCx] = useState(0.5);
@@ -30,7 +32,11 @@ export default function App() {
   const imgRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const pr = PRESETS[preset];
+  const pr = { ...PRESETS[preset] };
+  if (preset === "custom") {
+    const w = parseInt(customW); if (w > 0) pr.digital_width = w;
+    const h = parseInt(customH); if (h > 0) pr.digital_height = h;
+  }
   const currentPhoto = selected !== null ? photos[selected] : null;
   const img = imgRef.current;
   const [contW, contH] = img ? containerForImage(img.naturalWidth, img.naturalHeight) : [500, 620];
@@ -154,6 +160,23 @@ export default function App() {
                   <div class="text-[10px] text-gray-500">{pr.print_width_mm}x{pr.print_height_mm}mm | {pr.photo_count} pcs</div>
                   <div class="text-[10px] text-gray-600 italic mt-0.5">{pr.notes}</div>
                 </div>
+                {preset === "custom" && (
+                  <div class="flex gap-2 mt-1">
+                    <div class="flex items-center gap-1">
+                      <span class="text-[10px] text-gray-500">W:</span>
+                      <input type="number" value={customW}
+                        onInput={(e) => setCustomW((e.target as HTMLInputElement).value)}
+                        class="w-14 px-2 py-1 bg-white/5 border border-white/10 rounded text-[11px] text-gray-200 outline-none focus:border-rose-500/50" />
+                    </div>
+                    <div class="flex items-center gap-1">
+                      <span class="text-[10px] text-gray-500">H:</span>
+                      <input type="number" value={customH}
+                        onInput={(e) => setCustomH((e.target as HTMLInputElement).value)}
+                        class="w-14 px-2 py-1 bg-white/5 border border-white/10 rounded text-[11px] text-gray-200 outline-none focus:border-rose-500/50" />
+                    </div>
+                    <span class="text-[9px] text-gray-600 self-center">px</span>
+                  </div>
+                )}
 
                 <div>
                   <h3 class="text-[9px] uppercase text-gray-600 mb-1.5 tracking-[0.15em] font-semibold">Photos</h3>
