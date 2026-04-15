@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback } from "preact/hooks";
 import { PRESETS, PRESET_KEYS } from "../lib/presets";
 import { containerForImage, calcGuides } from "../lib/crop";
-import { cropAndExport, generatePrintLayout } from "../lib/process";
+import { cropAndExport, generatePrintLayout, generatePrintPdf, autoEnhance } from "../lib/process";
 import { removeBackground, MODELS, type BgModel } from "../lib/background";
 
 interface Photo {
@@ -92,10 +92,13 @@ export default function App() {
       const stem = personName.trim() || currentPhoto.name.replace(/\.[^.]+$/, "");
       download(blob, `${stem}_${preset}.${ext}`);
 
-      const printBlob = await generatePrintLayout(imgRef.current, pr, blob);
+      const printBlob = await generatePrintLayout(pr, blob);
       download(printBlob, `${stem}_${preset}_A4.png`);
 
-      setStatus(`Saved! ${(blob.size / 1024).toFixed(0)}KB`);
+      const pdfBlob = await generatePrintPdf(pr, blob);
+      download(pdfBlob, `${stem}_${preset}_A4.pdf`);
+
+      setStatus(`Saved! Photo ${(blob.size / 1024).toFixed(0)}KB + A4 PNG + PDF`);
     } catch (e: any) {
       setStatus(`Error: ${e.message}`);
     }
@@ -269,6 +272,13 @@ export default function App() {
                 ))}
                 <button onClick={() => { setBrightness(0); setContrast(0); setShadows(0); }}
                   class="px-2 py-0.5 border border-gray-600 rounded text-gray-500 text-[10px] hover:border-[#e94560]">Reset</button>
+                <button onClick={() => {
+                    if (!imgRef.current) return;
+                    const { brightness: b, contrast: c, shadows: s } = autoEnhance(imgRef.current);
+                    setBrightness(b); setContrast(c); setShadows(s);
+                    setStatus(`Auto: brightness ${b}, contrast ${c}, shadows ${s}`);
+                  }}
+                  class="px-2 py-0.5 bg-[#533483] rounded text-white text-[10px] hover:bg-[#6a42a0]">Auto</button>
               </div>
 
               {/* Save */}
