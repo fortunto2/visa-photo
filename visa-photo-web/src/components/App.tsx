@@ -340,17 +340,17 @@ export default function App() {
                 <div class="absolute inset-0 bg-gradient-to-b from-gray-100 to-gray-200" />
                 {guides && (
                   <>
-                    <div class="absolute border-2 border-dashed border-rose-400/30 pointer-events-none"
+                    <div class="absolute border-2 border-dashed border-rose-500/60 pointer-events-none"
                       style={{ left: guides.left, top: guides.top, width: guides.width, height: guides.height }} />
-                    <div class="absolute border-t border-dashed border-amber-400/30 pointer-events-none"
+                    <div class="absolute border-t-2 border-dashed border-amber-500/60 pointer-events-none"
                       style={{ left: guides.left, top: guides.top + guides.headTopY, width: guides.width }} />
-                    <div class="absolute border-t border-dashed border-amber-400/30 pointer-events-none"
+                    <div class="absolute border-t-2 border-dashed border-amber-500/60 pointer-events-none"
                       style={{ left: guides.left, top: guides.top + guides.chinY, width: guides.width }} />
-                    <div class="absolute border-t border-dashed border-emerald-400/30 pointer-events-none"
+                    <div class="absolute border-t-2 border-dashed border-emerald-500/60 pointer-events-none"
                       style={{ left: guides.left, top: guides.top + guides.eyeY, width: guides.width }} />
                     {(() => {
                       const oh = guides.faceHeight, ow = oh * 0.65;
-                      return <div class="absolute border border-dashed border-sky-400/20 rounded-full pointer-events-none"
+                      return <div class="absolute border-2 border-dashed border-sky-500/50 rounded-full pointer-events-none"
                         style={{ left: guides.left + (guides.width - ow) / 2, top: guides.top + guides.headTopY, width: ow, height: oh }} />;
                     })()}
                   </>
