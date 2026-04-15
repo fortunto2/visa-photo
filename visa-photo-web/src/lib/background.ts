@@ -84,6 +84,7 @@ let loadedModelId: string | null = null;
 export async function removeBackground(
   img: HTMLImageElement,
   model: BgModel,
+  transparent: boolean = false,
   onProgress?: (msg: string) => void,
 ): Promise<Blob> {
   const ort = await import("onnxruntime-web");
@@ -160,8 +161,6 @@ export async function removeBackground(
   outCanvas.width = origW;
   outCanvas.height = origH;
   const outCtx = outCanvas.getContext("2d")!;
-  outCtx.fillStyle = "white";
-  outCtx.fillRect(0, 0, origW, origH);
 
   const tempCanvas = document.createElement("canvas");
   tempCanvas.width = origW;
@@ -175,14 +174,23 @@ export async function removeBackground(
 
   const origData = tempCanvas.getContext("2d")!.getImageData(0, 0, origW, origH);
   const maskPixels = maskScaled.getContext("2d")!.getImageData(0, 0, origW, origH).data;
-  const outData = outCtx.getImageData(0, 0, origW, origH);
+  const outData = outCtx.createImageData(origW, origH);
 
   for (let i = 0; i < origData.data.length; i += 4) {
     const a = maskPixels[i] / 255;
-    outData.data[i] = Math.round(origData.data[i] * a + 255 * (1 - a));
-    outData.data[i + 1] = Math.round(origData.data[i + 1] * a + 255 * (1 - a));
-    outData.data[i + 2] = Math.round(origData.data[i + 2] * a + 255 * (1 - a));
-    outData.data[i + 3] = 255;
+    if (transparent) {
+      // PNG with alpha channel
+      outData.data[i] = origData.data[i];
+      outData.data[i + 1] = origData.data[i + 1];
+      outData.data[i + 2] = origData.data[i + 2];
+      outData.data[i + 3] = Math.round(a * 255);
+    } else {
+      // White background
+      outData.data[i] = Math.round(origData.data[i] * a + 255 * (1 - a));
+      outData.data[i + 1] = Math.round(origData.data[i + 1] * a + 255 * (1 - a));
+      outData.data[i + 2] = Math.round(origData.data[i + 2] * a + 255 * (1 - a));
+      outData.data[i + 3] = 255;
+    }
   }
   outCtx.putImageData(outData, 0, 0);
 

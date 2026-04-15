@@ -104,23 +104,26 @@ export default function App() {
     }
   };
 
-  const handleRemoveBg = async () => {
+  const doRemoveBg = async (transparent: boolean) => {
     if (!currentPhoto || !imgRef.current) return;
     try {
-      const blob = await removeBackground(imgRef.current, activeModel, setStatus);
+      const blob = await removeBackground(imgRef.current, activeModel, transparent, setStatus);
       const url = URL.createObjectURL(blob);
+      const suffix = transparent ? "_alpha.png" : "_nobg.png";
       const newPhoto: Photo = {
-        file: new File([blob], currentPhoto.name.replace(/\.[^.]+$/, "_nobg.png")),
-        url, name: currentPhoto.name.replace(/\.[^.]+$/, "_nobg.png"), rotation: 0,
+        file: new File([blob], currentPhoto.name.replace(/\.[^.]+$/, suffix)),
+        url, name: currentPhoto.name.replace(/\.[^.]+$/, suffix), rotation: 0,
       };
       const newPhotos = [...photos, newPhoto];
       setPhotos(newPhotos);
       setSelected(newPhotos.length - 1);
-      setStatus("BG removed!");
+      setStatus(transparent ? "BG removed (transparent)!" : "BG removed (white)!");
     } catch (e: any) {
       setStatus(`Error: ${e.message}`);
     }
   };
+  const handleRemoveBg = () => doRemoveBg(false);
+  const handleRemoveBgAlpha = () => doRemoveBg(true);
 
   return (
     <div class="flex flex-col h-screen bg-[#1a1a2e] text-gray-200">
@@ -254,6 +257,7 @@ export default function App() {
 
                 <span class="text-gray-700 mx-1">|</span>
                 <button onClick={handleRemoveBg} class="px-3 py-1 bg-[#2d6a4f] text-white rounded text-xs hover:bg-[#40916c]">Remove BG</button>
+                <button onClick={handleRemoveBgAlpha} class="px-3 py-1 bg-[#1a1a3e] text-gray-400 border border-gray-600 rounded text-xs hover:border-[#2d6a4f]">BG → Alpha</button>
               </div>
 
               {/* Adjustments */}
