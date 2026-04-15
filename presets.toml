@@ -2,7 +2,9 @@
 # face_height_percent = head height (crown to chin) as % of photo height
 # face_top_margin_percent = gap from top edge to crown as %
 # eye_line_from_bottom_percent = eye line from bottom edge as %
+# Sources: ICAO 9303, snap2pass (MIT), government specs
 
+# ── Turkey ──
 [turkey]
 name = "Turkey (ikamet)"
 digital_width = 600
@@ -18,8 +20,24 @@ photo_count = 4
 format = "jpeg"
 notes = "White bg, no headwear, max 120 days old"
 
-[usa_greencard]
-name = "USA (Green Card)"
+# ── USA ──
+[us_passport]
+name = "USA Passport"
+digital_width = 600
+digital_height = 600
+max_file_size_kb = 240
+print_width_mm = 51
+print_height_mm = 51
+face_height_percent = 56.0
+face_top_margin_percent = 15.0
+eye_line_from_bottom_percent = 62.5
+background = "white"
+photo_count = 2
+format = "jpeg"
+notes = "White bg, 2x2 inch, head 1-1.375 inch"
+
+[us_visa]
+name = "USA Visa / Green Card"
 digital_width = 600
 digital_height = 600
 max_file_size_kb = 240
@@ -33,6 +51,7 @@ photo_count = 2
 format = "jpeg"
 notes = "White bg, 2x2 inch, head 50-69%"
 
+# ── Europe ──
 [eu_schengen]
 name = "Schengen (EU)"
 digital_width = 413
@@ -48,6 +67,131 @@ photo_count = 2
 format = "jpeg"
 notes = "White bg, 35x45mm, face 32-36mm"
 
+[uk_passport]
+name = "UK Passport"
+digital_width = 413
+digital_height = 531
+max_file_size_kb = 500
+print_width_mm = 35
+print_height_mm = 45
+face_height_percent = 66.7
+face_top_margin_percent = 6.7
+eye_line_from_bottom_percent = 62.0
+background = "white"
+photo_count = 2
+format = "jpeg"
+notes = "Light grey or cream bg, 35x45mm, head 29-34mm"
+
+# ── Canada ──
+[ca_passport]
+name = "Canada Passport"
+digital_width = 420
+digital_height = 540
+max_file_size_kb = 500
+print_width_mm = 50
+print_height_mm = 70
+face_height_percent = 46.0
+face_top_margin_percent = 14.3
+eye_line_from_bottom_percent = 58.0
+background = "white"
+photo_count = 2
+format = "jpeg"
+notes = "White bg, 50x70mm, face 31-36mm"
+
+# ── Asia ──
+[cn_passport]
+name = "China Passport"
+digital_width = 390
+digital_height = 567
+max_file_size_kb = 500
+print_width_mm = 33
+print_height_mm = 48
+face_height_percent = 58.3
+face_top_margin_percent = 6.3
+eye_line_from_bottom_percent = 60.0
+background = "white"
+photo_count = 4
+format = "jpeg"
+notes = "White bg, 33x48mm, face 28-33mm"
+
+[in_passport]
+name = "India Passport"
+digital_width = 413
+digital_height = 531
+max_file_size_kb = 300
+print_width_mm = 35
+print_height_mm = 45
+face_height_percent = 60.0
+face_top_margin_percent = 11.0
+eye_line_from_bottom_percent = 60.0
+background = "white"
+photo_count = 4
+format = "jpeg"
+notes = "White bg, 35x45mm or 51x51mm"
+
+[jp_passport]
+name = "Japan Passport"
+digital_width = 413
+digital_height = 531
+max_file_size_kb = 500
+print_width_mm = 35
+print_height_mm = 45
+face_height_percent = 75.6
+face_top_margin_percent = 5.5
+eye_line_from_bottom_percent = 62.0
+background = "white"
+photo_count = 2
+format = "jpeg"
+notes = "White bg, 35x45mm, face 34mm+/-2mm"
+
+[kr_passport]
+name = "South Korea Passport"
+digital_width = 413
+digital_height = 531
+max_file_size_kb = 500
+print_width_mm = 35
+print_height_mm = 45
+face_height_percent = 75.6
+face_top_margin_percent = 5.5
+eye_line_from_bottom_percent = 62.0
+background = "white"
+photo_count = 2
+format = "jpeg"
+notes = "White bg, 35x45mm"
+
+# ── Australia ──
+[au_passport]
+name = "Australia Passport"
+digital_width = 413
+digital_height = 531
+max_file_size_kb = 500
+print_width_mm = 35
+print_height_mm = 45
+face_height_percent = 71.0
+face_top_margin_percent = 6.7
+eye_line_from_bottom_percent = 62.0
+background = "white"
+photo_count = 2
+format = "jpeg"
+notes = "White bg, 35x45mm, head 32-36mm"
+
+# ── Russia / CIS ──
+[ru_passport]
+name = "Russia Passport"
+digital_width = 413
+digital_height = 531
+max_file_size_kb = 500
+print_width_mm = 35
+print_height_mm = 45
+face_height_percent = 75.6
+face_top_margin_percent = 5.5
+eye_line_from_bottom_percent = 62.0
+background = "white"
+photo_count = 4
+format = "jpeg"
+notes = "White bg, 35x45mm"
+
+# ── Custom ──
 [custom]
 name = "Custom"
 digital_width = 600
