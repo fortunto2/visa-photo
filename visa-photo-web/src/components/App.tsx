@@ -337,7 +337,7 @@ export default function App() {
               <div class="relative rounded-xl overflow-hidden border-2 border-dashed border-white/10 hover:border-rose-500/40 transition-all group"
                 style={{ width: contW, height: contH }}>
                 {/* Empty template with face guides */}
-                <div class="absolute inset-0 bg-gradient-to-b from-gray-100 to-gray-200" />
+                <div class="absolute inset-0 bg-[#1a1a2e]" />
                 {guides && (
                   <>
                     <div class="absolute border-2 border-dashed border-rose-500/60 pointer-events-none"
