@@ -11,9 +11,26 @@ export async function cropAndExport(
   contrast: number,
   shadows: number,
   asPng: boolean,
+  rotation: number = 0,
 ): Promise<Blob> {
-  const srcW = img.naturalWidth;
-  const srcH = img.naturalHeight;
+  // Apply rotation first
+  let srcW = img.naturalWidth;
+  let srcH = img.naturalHeight;
+  let sourceCanvas: HTMLCanvasElement | HTMLImageElement = img;
+
+  if (rotation !== 0) {
+    const rotCanvas = document.createElement("canvas");
+    const swapped = rotation === 90 || rotation === 270;
+    rotCanvas.width = swapped ? srcH : srcW;
+    rotCanvas.height = swapped ? srcW : srcH;
+    const rCtx = rotCanvas.getContext("2d")!;
+    rCtx.translate(rotCanvas.width / 2, rotCanvas.height / 2);
+    rCtx.rotate((rotation * Math.PI) / 180);
+    rCtx.drawImage(img, -srcW / 2, -srcH / 2);
+    srcW = rotCanvas.width;
+    srcH = rotCanvas.height;
+    sourceCanvas = rotCanvas;
+  }
   const targetRatio = preset.digital_width / preset.digital_height;
   const srcRatio = srcW / srcH;
 
@@ -40,7 +57,7 @@ export async function cropAndExport(
   const shVal = shadows / 100 * 0.3;
   ctx.filter = `brightness(${(brVal + shVal).toFixed(2)}) contrast(${ctVal.toFixed(2)})`;
 
-  ctx.drawImage(img, x, y, cropW, cropH, 0, 0, preset.digital_width, preset.digital_height);
+  ctx.drawImage(sourceCanvas, x, y, cropW, cropH, 0, 0, preset.digital_width, preset.digital_height);
 
   if (asPng) {
     return new Promise((resolve) => {
