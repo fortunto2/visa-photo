@@ -10,22 +10,34 @@ export interface BgModel {
 
 export const MODELS: BgModel[] = [
   {
+    id: "u2netp", name: "U2Net-P", sizeMb: 5,
+    inputSize: 320, inputName: "input.1",
+    url: "https://assets.superduperai.co/models/u2netp.onnx",
+    quality: 1,
+  },
+  {
     id: "silueta", name: "Silueta", sizeMb: 43,
     inputSize: 320, inputName: "input.1",
     url: "https://assets.superduperai.co/models/silueta.onnx",
     quality: 2,
   },
   {
-    id: "u2netp", name: "U2Net-P", sizeMb: 5,
+    id: "u2net", name: "U2Net Full", sizeMb: 176,
     inputSize: 320, inputName: "input.1",
-    url: "https://github.com/nicjac/silueta-onnx/releases/download/v0.1/u2netp.onnx",
-    quality: 1,
+    url: "https://assets.superduperai.co/models/u2net.onnx",
+    quality: 3,
   },
   {
     id: "u2net_human_seg", name: "U2Net Human", sizeMb: 176,
     inputSize: 320, inputName: "input.1",
     url: "https://assets.superduperai.co/models/u2net_human_seg.onnx",
     quality: 4,
+  },
+  {
+    id: "isnet", name: "ISNet General", sizeMb: 176,
+    inputSize: 1024, inputName: "input_image",
+    url: "https://assets.superduperai.co/models/isnet-general-use.onnx",
+    quality: 3,
   },
 ];
 
