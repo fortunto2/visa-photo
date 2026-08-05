@@ -20,6 +20,17 @@ export interface Preset {
    */
   background: "white" | "light-grey";
   format: "jpeg" | "png";
+
+  /**
+   * Optional, because requirements are not all the same shape.
+   *
+   * A lower weight bound exists: New Zealand rejects anything under 250 KB, and our exports
+   * were landing at 70-135 KB — technically correct pixels in a file too small to submit.
+   * Ranges appear where an authority states one instead of a single size.
+   */
+  min_file_size_kb?: number;
+  digital_max_width?: number;
+  digital_max_height?: number;
 }
 
 export const PRESETS: Record<string, Preset> = toml.parse(presetsRaw);

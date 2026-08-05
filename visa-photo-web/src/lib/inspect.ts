@@ -84,12 +84,19 @@ export function inspectPhoto({ img, fileSizeKb, mimeType, preset }: InspectInput
   const w = img.naturalWidth;
   const h = img.naturalHeight;
 
-  // Exact match required: forms reject a photo that is a pixel off.
+  // Exact where the authority states one size, a range where it states a range.
+  const maxW = preset.digital_max_width;
+  const maxH = preset.digital_max_height;
+  const sizeOk = maxW && maxH
+    ? w >= preset.digital_width && w <= maxW && h >= preset.digital_height && h <= maxH
+    : w === preset.digital_width && h === preset.digital_height;
   add(
     "dimensions",
-    w === preset.digital_width && h === preset.digital_height ? "pass" : "fail",
+    sizeOk ? "pass" : "fail",
     `${w} × ${h} px`,
-    `${preset.digital_width} × ${preset.digital_height} px`,
+    maxW && maxH
+      ? `${preset.digital_width}–${maxW} × ${preset.digital_height}–${maxH} px`
+      : `${preset.digital_width} × ${preset.digital_height} px`,
   );
 
   // Aspect ratio is reported separately: a photo of the wrong size but right shape can be
@@ -103,11 +110,15 @@ export function inspectPhoto({ img, fileSizeKb, mimeType, preset }: InspectInput
     wanted.toFixed(3),
   );
 
+  // A minimum matters as much as a maximum where an authority sets one.
+  const tooSmall = preset.min_file_size_kb ? fileSizeKb < preset.min_file_size_kb : false;
   add(
     "filesize",
-    fileSizeKb <= preset.max_file_size_kb ? "pass" : "fail",
+    !tooSmall && fileSizeKb <= preset.max_file_size_kb ? "pass" : "fail",
     `${Math.round(fileSizeKb)} KB`,
-    `≤ ${preset.max_file_size_kb} KB`,
+    preset.min_file_size_kb
+      ? `${preset.min_file_size_kb}–${preset.max_file_size_kb} KB`
+      : `≤ ${preset.max_file_size_kb} KB`,
   );
 
   const format = mimeType.replace("image/", "").replace("jpg", "jpeg");

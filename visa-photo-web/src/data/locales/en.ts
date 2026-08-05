@@ -305,6 +305,8 @@ const en: Dict = {
   },
 
   country: {
+    ie_passport: "Ireland",
+    nz_passport: "New Zealand",
     in_visa: "India",
     us_dv: "United States",
     turkey: "Turkey",
@@ -322,6 +324,8 @@ const en: Dict = {
   },
 
   docTitle: {
+    ie_passport: "Irish passport photo",
+    nz_passport: "New Zealand passport photo",
     in_visa: "India e-Visa photo",
     us_dv: "US DV Lottery photo (Green Card lottery)",
     turkey: "Turkish residence permit (ikamet) photo",
@@ -339,6 +343,8 @@ const en: Dict = {
   },
 
   docNotes: {
+    ie_passport: "At least 715 × 951 px, JPEG, not a scan of a printed photo, taken in the last six months.",
+    nz_passport: "3:4 portrait, at least 900 × 1200 px, file between 250 KB and 5 MB. Selfies are rejected.",
     in_visa: "White background, square 2×2 inches, head 50–69 % of the height. Rejected automatically if the dimensions are even slightly off.",
     us_dv: "White background, 2×2 inches. A non-compliant photo disqualifies the entry, and there is no second chance until next year.",
     turkey: "White background, no headwear. The photo must be under 120 days old.",
@@ -356,6 +362,8 @@ const en: Dict = {
   },
 
   docShort: {
+    ie_passport: "Passport",
+    nz_passport: "Passport",
     in_visa: "e-Visa",
     us_dv: "DV Lottery",
     turkey: "Residence permit",
@@ -453,6 +461,8 @@ const en: Dict = {
   },
 
   pageTitle: {
+    ie_passport: "Irish Passport Photo Size — 715x951 px minimum, free tool",
+    nz_passport: "New Zealand Passport Photo — 3:4, 900x1200 px minimum, free tool",
     in_visa: "India Visa Photo Size — 2x2 inch (51x51 mm), free tool",
     us_dv: "US DV Lottery Photo Tool — 2x2 inch, 600x600 px, free checker",
     turkey: "Turkey Residence Permit Photo (ikamet) — 50x60 mm, free tool",

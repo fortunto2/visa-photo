@@ -101,9 +101,24 @@ export async function cropAndExport(
     });
   }
 
-  const blob = await new Promise<Blob>((resolve) => {
-    canvas.toBlob((b) => resolve(b!), "image/jpeg", 0.95);
-  });
+  const encode = (quality: number) =>
+    new Promise<Blob>((resolve) => canvas.toBlob((b) => resolve(b!), "image/jpeg", quality));
+
+  let blob = await encode(0.95);
+
+  /**
+   * Aim for the corridor, not just under the ceiling.
+   *
+   * Some authorities set a minimum file size as well as a maximum — a heavily compressed photo
+   * is evidence of a heavily processed one. Quality is raised until the file is big enough,
+   * which costs nothing in fidelity because it only ever adds detail back.
+   */
+  if (preset.min_file_size_kb) {
+    for (const quality of [1, 0.99, 0.98]) {
+      if (blob.size >= preset.min_file_size_kb * 1024) break;
+      blob = await encode(quality);
+    }
+  }
 
   // The pixel count was always right; the metadata said 72 dpi, which some forms read as
   // "8 inches wide". Stamped from the preset's own print size.

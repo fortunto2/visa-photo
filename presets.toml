@@ -1,4 +1,13 @@
 # Visa Photo Presets
+#
+# Optional per-country fields, because requirements are not all shaped the same way:
+#   min_file_size_kb   some authorities reject a file that is too small, not only too large
+#                      (New Zealand wants 250 KB minimum, and our exports were under that)
+#   digital_max_width  when the authority states a range rather than one exact size
+#   digital_max_height
+#
+# Anything absent simply does not apply. Rust ignores unknown keys, so adding a field here
+# cannot break the desktop app.
 # face_height_percent = head height (crown to chin) as % of photo height
 # face_top_margin_percent = gap from top edge to crown as %
 # eye_line_from_bottom_percent = eye line from bottom edge as %
@@ -222,6 +231,43 @@ background = "white"
 photo_count = 2
 format = "jpeg"
 notes = "White bg, 600x600 px minimum, entry is disqualified for a non-compliant photo"
+
+# ── New Zealand ──
+# States ranges, not one size: 900-4500 wide, 1200-6000 high, and a file between 250 KB and
+# 5 MB. The lower weight bound is the unusual part and the reason min_file_size_kb exists.
+[nz_passport]
+name = "New Zealand Passport"
+digital_width = 900
+digital_height = 1200
+digital_max_width = 4500
+digital_max_height = 6000
+max_file_size_kb = 5000
+min_file_size_kb = 250
+print_width_mm = 35
+print_height_mm = 45
+face_height_percent = 71.0
+face_top_margin_percent = 6.7
+eye_line_from_bottom_percent = 62.0
+background = "white"
+photo_count = 2
+format = "jpeg"
+notes = "3:4 portrait, 900-4500 px wide, file 250 KB to 5 MB, no selfies"
+
+# ── Ireland ──
+[ie_passport]
+name = "Ireland Passport"
+digital_width = 715
+digital_height = 951
+max_file_size_kb = 9000
+print_width_mm = 35
+print_height_mm = 45
+face_height_percent = 71.0
+face_top_margin_percent = 6.7
+eye_line_from_bottom_percent = 62.0
+background = "white"
+photo_count = 4
+format = "jpeg"
+notes = "At least 715x951 px, not a scan of a print, taken in the last six months"
 
 # ── Custom ──
 [custom]
