@@ -158,6 +158,9 @@ export interface Dict {
     faceOval: string;
     fileName: string;
     fileNamePlaceholder: string;
+    backdropLabel: string;
+    backdropNames: Record<string, string>;
+    backdropRequired: string;
   };
 
   trust: { inBrowser: string; noServer: string; noWatermark: string; noSignup: string };

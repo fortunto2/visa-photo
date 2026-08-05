@@ -13,6 +13,7 @@ import { removeBackground, cachedModelIds, getPreferredModel, MODELS, type BgMod
 import { findFace, isFaceModelCached, prefetchFaceModel } from "../lib/face";
 import { placeCrop } from "../lib/autocrop";
 import { handOff } from "../lib/handoff";
+import { BACKDROPS, backdropFor, type Backdrop } from "../lib/backdrop";
 
 export interface ToolStrings {
   dropTitle: string;
@@ -66,6 +67,11 @@ export interface ToolStrings {
   faceOval: string;
   fileName: string;
   fileNamePlaceholder: string;
+  backdropLabel: string;
+  /** keyed by Backdrop.id */
+  backdropNames: Record<string, string>;
+  /** carries a {colour} token */
+  backdropRequired: string;
 }
 
 interface Props {
@@ -115,6 +121,11 @@ export default function PhotoTool({
   const [dragging, setDragging] = useState(false);
   const [advanced, setAdvanced] = useState(false);
   const [transparent, setTransparent] = useState(false);
+  /**
+   * The cut-out is kept with its alpha, and the colour goes on at export. Changing it is then
+   * a redraw instead of another few minutes of segmentation.
+   */
+  const [backdrop, setBackdrop] = useState<Backdrop>(backdropFor(preset));
   const [faceOval, setFaceOval] = useState(false);
   const [fileName, setFileName] = useState("");
   const [warned, setWarned] = useState(false);
@@ -237,7 +248,8 @@ export default function PhotoTool({
     setShowModels(false);
     try {
       // Progress text comes from the model loader: it names the download and its size.
-      const blob = await removeBackground(imgRef.current, model, transparent, setBusy);
+      // Always cut out with alpha, whatever the export will be: the colour is a later decision.
+      const blob = await removeBackground(imgRef.current, model, true, setBusy);
       const url = keepUrl(URL.createObjectURL(blob));
       // The previous result is unreachable now; only the original is still needed for undo.
       if (src && src !== original) URL.revokeObjectURL(src);
@@ -275,6 +287,8 @@ export default function PhotoTool({
       const blob = await cropAndExport(
         imgRef.current, preset, cx, cy, scale,
         levels.brightness, levels.contrast, levels.shadows, usePng, rotation,
+        // A transparent PNG is the one export that wants nothing painted underneath.
+        usePng && transparent ? null : backdrop.css,
       );
       download(blob, `${stem()}.${usePng ? "png" : "jpg"}`);
       trackPhotoDownloaded(ctx, usePng ? "png" : "jpeg", bgDone);
@@ -290,7 +304,7 @@ export default function PhotoTool({
     try {
       const blob = await cropAndExport(
         imgRef.current, preset, cx, cy, scale,
-        levels.brightness, levels.contrast, levels.shadows, false, rotation,
+        levels.brightness, levels.contrast, levels.shadows, false, rotation, backdrop.css,
       );
       handOff(blob, `${stem()}.jpg`);
     } finally {
@@ -304,7 +318,7 @@ export default function PhotoTool({
     try {
       const photo = await cropAndExport(
         imgRef.current, preset, cx, cy, scale,
-        levels.brightness, levels.contrast, levels.shadows, false, rotation,
+        levels.brightness, levels.contrast, levels.shadows, false, rotation, backdrop.css,
       );
       download(await generatePrintLayout(preset, photo), `${stem()}_A4.png`);
       download(await generatePrintPdf(preset, photo), `${stem()}_A4.pdf`);
@@ -378,7 +392,12 @@ export default function PhotoTool({
           alt=""
           onLoad={() => setReady(true)}
           draggable={false}
-          style={{ filter, transform: rotation ? `rotate(${rotation}deg)` : undefined }}
+          style={{
+            filter,
+            transform: rotation ? `rotate(${rotation}deg)` : undefined,
+            // The cut-out carries alpha, so what shows through here is what gets exported.
+            backgroundColor: bgDone ? backdrop.css : undefined,
+          }}
         />
 
         {guides && (
@@ -503,6 +522,30 @@ export default function PhotoTool({
             {/* Spelled out rather than hidden behind a question: the first attempt is the
                 light model, and someone whose background did not turn white has no way to
                 guess that a different model is what fixes it. */}
+            <div class="backdrops" data-testid="backdrops">
+              <p class="retry-q">{strings.backdropLabel}</p>
+              <div class="swatches">
+                {BACKDROPS.map((b) => (
+                  <button
+                    key={b.id}
+                    class={`swatch${b.id === backdrop.id ? " is-on" : ""}`}
+                    type="button"
+                    style={{ background: b.css }}
+                    aria-pressed={b.id === backdrop.id}
+                    title={strings.backdropNames[b.id] ?? b.id}
+                    data-testid={`backdrop-${b.id}`}
+                    onClick={() => setBackdrop(b)}
+                  />
+                ))}
+              </div>
+              <p class="hint">
+                {strings.backdropRequired.replace(
+                  "{colour}",
+                  strings.backdropNames[backdropFor(preset).id] ?? backdropFor(preset).id,
+                )}
+              </p>
+            </div>
+
             <div class="retry">
               <p class="retry-q">{strings.changeModelWhen}</p>
               <div class="bg-row">

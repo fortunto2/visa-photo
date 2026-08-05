@@ -81,6 +81,15 @@ const ru: Dict = {
     faceOval: "Показать овал лица",
     fileName: "Имя файла",
     fileNamePlaceholder: "например, фамилия",
+    backdropLabel: "Цвет фона",
+    backdropNames: {
+      white: "Белый",
+      "off-white": "Тёплый белый",
+      "light-grey": "Светло-серый",
+      "mid-grey": "Средне-серый",
+      "pale-blue": "Бледно-голубой",
+    },
+    backdropRequired: "Для этого документа требуется {colour}. Остальные — на случай, когда правило говорит «однотонный светлый»: на сером светлые волосы не сливаются с белым.",
   },
 
   trust: {

@@ -54,6 +54,12 @@ export async function cropAndExport(
   shadows: number,
   asPng: boolean,
   rotation: number = 0,
+  /**
+   * Painted under the photo when the subject has been cut out, so switching colour costs a
+   * redraw rather than another run of the segmentation model. Null leaves the canvas clear,
+   * which is what a transparent PNG export wants.
+   */
+  backdrop: string | null = null,
 ): Promise<Blob> {
   let srcW = img.naturalWidth;
   let srcH = img.naturalHeight;
@@ -90,6 +96,12 @@ export async function cropAndExport(
   canvas.width = preset.digital_width;
   canvas.height = preset.digital_height;
   const ctx = canvas.getContext("2d")!;
+
+  // Fill before the filter is set, or the backdrop gets brightened along with the face.
+  if (backdrop) {
+    ctx.fillStyle = backdrop;
+    ctx.fillRect(0, 0, preset.digital_width, preset.digital_height);
+  }
 
   ctx.filter = levelsFilter({ brightness, contrast, shadows });
 

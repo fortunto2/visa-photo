@@ -81,6 +81,15 @@ const en: Dict = {
     faceOval: "Show face oval",
     fileName: "File name",
     fileNamePlaceholder: "e.g. your surname",
+    backdropLabel: "Background colour",
+    backdropNames: {
+      white: "White",
+      "off-white": "Off-white",
+      "light-grey": "Light grey",
+      "mid-grey": "Mid grey",
+      "pale-blue": "Pale blue",
+    },
+    backdropRequired: "This document asks for {colour}. The others are here because some rules say \"plain light-coloured\", and a grey keeps light hair from disappearing into white.",
   },
 
   trust: {

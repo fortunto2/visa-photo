@@ -21,13 +21,19 @@ digital_height = 720
 max_file_size_kb = 300
 print_width_mm = 50
 print_height_mm = 60
+# Their own ICAO sheet contradicts itself: "32 mm to 36 mm, and 70 % to 80 % of the photo".
+# In a 60mm frame 32-36mm is 53-60 %, and 70-80 % would need 42-48mm — the percentage was
+# carried over from the 35x45 format, where 32-36mm really is 71-80 %. The millimetres are the
+# measurement that matches the frame they ask for, so 34mm of 60mm it is. NVI warns separately
+# not to trim a biometric photo down to 35x45, which is the same confusion seen from the
+# other side.
 face_height_percent = 56.7
 face_top_margin_percent = 16.7
 eye_line_from_bottom_percent = 60.0
 background = "white"
 photo_count = 4
 format = "jpeg"
-notes = "White bg, no headwear, max 120 days old"
+notes = "50x60mm, taken within the last 6 months, no headwear. White background for dark hair; mid-grey is preferred for light hair."
 
 # ── USA ──
 [us_passport]
