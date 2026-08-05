@@ -17,6 +17,14 @@ import { FACE_MODEL, assetBytes, cachedModelIds, ensureModel } from "./backgroun
  * rather than hiding: a photo can be rejected for either, depending on who is measuring.
  */
 
+/**
+ * The State Department's tool refuses a source narrower than 3.5 interpupillary distances,
+ * and it is right to: a photo taken at arm's length has no room left to crop to a document's
+ * framing, so any crop from it will fail on head size no matter where it is placed. Saying so
+ * up front beats producing a file that gets rejected later.
+ */
+export const MIN_WIDTH_IN_EYE_DISTANCES = 3.5;
+
 export interface FacePlacement {
   /** normalised 0–1 within the source image */
   chinY: number;
@@ -27,6 +35,8 @@ export interface FacePlacement {
   hairAllowance: number;
   /** roll in degrees, positive is head tilted clockwise */
   tiltDeg: number;
+  /** the source is framed too tightly for any valid crop */
+  tooTight: boolean;
 }
 
 let landmarker: unknown = null;
@@ -123,7 +133,10 @@ export async function findFace(img: HTMLImageElement): Promise<FacePlacement | n
   const dy = right.y - left.y;
   const tiltDeg = (Math.atan2(dy, dx) * 180) / Math.PI;
 
+  const eyeDistance = Math.hypot(right.x - left.x, right.y - left.y);
+
   return {
+    tooTight: eyeDistance > 0 && 1 / eyeDistance < MIN_WIDTH_IN_EYE_DISTANCES,
     chinY: chin.y,
     skullTopY,
     eyeY,

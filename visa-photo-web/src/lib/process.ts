@@ -1,4 +1,4 @@
-import type { Preset } from "./presets";
+import { dpiOf, type Preset } from "./presets";
 
 /**
  * jspdf and browser-image-compression are loaded on demand.
@@ -10,6 +10,8 @@ import type { Preset } from "./presets";
  */
 const loadPdf = () => import("jspdf").then((m) => m.jsPDF);
 const loadCompressor = () => import("browser-image-compression").then((m) => m.default);
+
+import { withJpegDpi } from "./jpegDpi";
 
 export interface Levels {
   brightness: number;
@@ -103,15 +105,20 @@ export async function cropAndExport(
     canvas.toBlob((b) => resolve(b!), "image/jpeg", 0.95);
   });
 
-  if (blob.size <= preset.max_file_size_kb * 1024) return blob;
+  // The pixel count was always right; the metadata said 72 dpi, which some forms read as
+  // "8 inches wide". Stamped from the preset's own print size.
+  const dpi = dpiOf(preset);
+
+  if (blob.size <= preset.max_file_size_kb * 1024) return withJpegDpi(blob, dpi);
 
   const file = new File([blob], "photo.jpg", { type: "image/jpeg" });
   const imageCompression = await loadCompressor();
-  return imageCompression(file, {
+  const compressed = await imageCompression(file, {
     maxSizeMB: preset.max_file_size_kb / 1024,
     maxWidthOrHeight: Math.max(preset.digital_width, preset.digital_height),
     useWebWorker: true,
   });
+  return withJpegDpi(compressed, dpi);
 }
 
 /** Generate A4 print layout as PNG */

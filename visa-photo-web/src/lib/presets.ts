@@ -24,3 +24,18 @@ export interface Preset {
 
 export const PRESETS: Record<string, Preset> = toml.parse(presetsRaw);
 export const PRESET_KEYS = Object.keys(PRESETS);
+
+/**
+ * The DPI a preset implies.
+ *
+ * Snapped to the nearest standard value when within 2 %: presets store whole millimetres, so a
+ * US 2x2 photo is filed as 51 mm rather than 50.8, and dividing by that yields 299 for a file
+ * that is plainly 300. Stamping a made-up number into the metadata is worse than stamping none.
+ */
+export function dpiOf(preset: Preset): number {
+  const exact = (preset.digital_width / preset.print_width_mm) * 25.4;
+  for (const standard of [72, 150, 300, 600]) {
+    if (Math.abs(exact - standard) / standard < 0.02) return standard;
+  }
+  return Math.round(exact);
+}

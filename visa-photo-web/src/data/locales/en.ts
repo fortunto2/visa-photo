@@ -56,6 +56,7 @@ const en: Dict = {
     aligning: "Finding the face…",
     alignHint: "Positions the head and eye line where this document requires. Downloads a 15 MB model once.",
     alignFailed: "No face found — position the crop by hand",
+    tooTight: "Taken too close: there is not enough room around the head to crop to this document. Step back and retake it.",
     aligned: "Aligned to the face",
     rotateLeft: "Rotate left",
     rotateRight: "Rotate right",

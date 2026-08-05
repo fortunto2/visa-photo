@@ -1,4 +1,6 @@
-import { PRESETS, type Preset } from "../lib/presets";
+import { PRESETS, dpiOf, type Preset } from "../lib/presets";
+
+export { dpiOf };
 
 /**
  * The catalog turns presets.toml into pages: which country, which document,
@@ -328,18 +330,3 @@ export function sizeLabels(
       };
 }
 
-/**
- * The DPI a preset implies.
- *
- * Snapped to the nearest standard value when it is within 2 %, because presets store whole
- * millimetres: a US 2×2 photo is 50.8 mm, rounded to 51 in presets.toml, and dividing by that
- * yields "299 dpi" for a file that is plainly 300. Printing at a made-up number is worse than
- * printing at the real one.
- */
-export function dpiOf(preset: Preset): number {
-  const exact = (preset.digital_width / preset.print_width_mm) * 25.4;
-  for (const standard of [72, 150, 300, 600]) {
-    if (Math.abs(exact - standard) / standard < 0.02) return standard;
-  }
-  return Math.round(exact);
-}

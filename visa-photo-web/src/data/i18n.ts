@@ -125,6 +125,7 @@ export interface Dict {
     aligning: string;
     alignHint: string;
     alignFailed: string;
+    tooTight: string;
     aligned: string;
     rotateLeft: string;
     rotateRight: string;

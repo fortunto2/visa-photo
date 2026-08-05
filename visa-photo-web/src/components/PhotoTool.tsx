@@ -41,6 +41,7 @@ export interface ToolStrings {
   aligning: string;
   alignHint: string;
   alignFailed: string;
+  tooTight: string;
   aligned: string;
   rotateLeft: string;
   rotateRight: string;
@@ -149,6 +150,11 @@ export default function PhotoTool({
     try {
       const face = await findFace(imgRef.current);
       if (!face) {
+        setAlignState("failed");
+        return;
+      }
+      if (face.tooTight) {
+        setAlignError(strings.tooTight);
         setAlignState("failed");
         return;
       }
@@ -445,7 +451,7 @@ export default function PhotoTool({
       </div>
 
       <p class="tip" data-testid="align-state" data-align={alignState} data-error={alignError ?? ""}>
-        {alignState === "failed" ? (alignError ? `${strings.alignFailed} (${alignError})` : strings.alignFailed)
+        {alignState === "failed" ? (alignError ?? strings.alignFailed)
           : alignState === "done" ? strings.aligned
           : aligning ? strings.alignHint
           : strings.tip}
