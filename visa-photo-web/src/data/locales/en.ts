@@ -141,6 +141,23 @@ const en: Dict = {
       "on wifi, means it is ready when you need it instead of arriving mid-job.",
   },
 
+  warn: {
+    noEditing:
+      "This authority does not accept photos altered with editing software, filters or AI tools. " +
+      "Use the tool here to check the framing, then submit an unedited photo.",
+    noEditingAtAction:
+      "Removing the background edits the photo, and this authority rejects edited photos. " +
+      "Use it to see whether your framing works, not for the file you submit.",
+    noHomePrint: "Photos printed at home are not accepted — use a professional print service.",
+    proceedAnyway: "Remove it anyway",
+  },
+
+  submission: {
+    upload: "Submitted as a file",
+    print: "Handed over printed",
+    captured: "Taken for you at the appointment",
+  },
+
   countryPage: {
     faqDocs: (country) => `Which documents does ${country} need a photo for?`,
     faqDocsA: ({ country, list }) => `${country}: ${list}. Each page states the exact size and has a tool that crops to it.`,
@@ -162,6 +179,25 @@ const en: Dict = {
     openSkills: "Agent skills",
     disclaimer:
       "Reference information, not immigration advice. An application is filled in and signed by the applicant.",
+  },
+
+  customPage: {
+    title: "Any photo size — set millimetres yourself, free tool",
+    h1: "Any size, set by hand",
+    lead: "For a size the pages above do not cover: type the millimetres from your form and crop to them. Everything runs in the browser, as everywhere else here.",
+    width: "Width",
+    height: "Height",
+    unitMm: "mm",
+    unitPx: "px",
+    dpi: "Resolution",
+    presetHint: "Your size",
+    common: "Sizes people ask for most:",
+    whenToUse: "When you need this",
+    whenToUseBody:
+      "A consulate that asks for something unusual, an internal pass, a form that states its own " +
+      "millimetres. If your document is in the catalogue, use its page instead — it carries the " +
+      "official source, the head-height rule and the file-size limit, none of which a bare " +
+      "measurement can tell you.",
   },
 
   skills: {
@@ -217,6 +253,8 @@ const en: Dict = {
   },
 
   country: {
+    in_visa: "India",
+    us_dv: "United States",
     turkey: "Turkey",
     eu_schengen: "Schengen area",
     us_visa: "United States",
@@ -232,6 +270,8 @@ const en: Dict = {
   },
 
   docTitle: {
+    in_visa: "India e-Visa photo",
+    us_dv: "US DV Lottery photo (Green Card lottery)",
     turkey: "Turkish residence permit (ikamet) photo",
     eu_schengen: "Schengen visa photo",
     us_visa: "US visa and Green Card photo",
@@ -247,6 +287,8 @@ const en: Dict = {
   },
 
   docNotes: {
+    in_visa: "White background, square 2×2 inches, head 50–69 % of the height. Rejected automatically if the dimensions are even slightly off.",
+    us_dv: "White background, 2×2 inches. A non-compliant photo disqualifies the entry, and there is no second chance until next year.",
     turkey: "White background, no headwear. The photo must be under 120 days old.",
     eu_schengen: "White background, face 32–36 mm from chin to crown.",
     us_visa: "White background, 2×2 inches, head between 50 % and 69 % of the height.",
@@ -262,6 +304,8 @@ const en: Dict = {
   },
 
   docShort: {
+    in_visa: "e-Visa",
+    us_dv: "DV Lottery",
     turkey: "Residence permit",
     eu_schengen: "Schengen visa",
     us_visa: "Visa / Green Card",
@@ -357,6 +401,8 @@ const en: Dict = {
   },
 
   pageTitle: {
+    in_visa: "India Visa Photo Size — 2x2 inch (51x51 mm), free tool",
+    us_dv: "US DV Lottery Photo Tool — 2x2 inch, 600x600 px, free checker",
     turkey: "Turkey Residence Permit Photo (ikamet) — 50x60 mm, free tool",
     eu_schengen: "Schengen Visa Photo Size — 35x45 mm, requirements & free tool",
     us_visa: "US Visa Photo Tool — 2x2 inch, 600x600 px, DS-160 ready, free",

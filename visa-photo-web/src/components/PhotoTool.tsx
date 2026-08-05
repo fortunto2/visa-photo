@@ -42,6 +42,8 @@ export interface ToolStrings {
   changeModelWhen: string;
   modelsPageLink: string;
   modelDefault: string;
+  noEditingAtAction: string;
+  proceedAnyway: string;
   mbUnit: string;
   advanced: string;
   advancedHint: string;
@@ -64,6 +66,8 @@ interface Props {
   modelsHref: string;
   /** which document page this is, for the counter */
   ctx: DocContext;
+  /** true when the authority rejects edited photos, so the warning appears at the click */
+  editingForbidden?: boolean;
 }
 
 /** Lightest model, and the fallback when nothing has been chosen: 5 MB, not 176. */
@@ -79,7 +83,9 @@ const NO_LEVELS = { brightness: 0, contrast: 0, shadows: 0 };
  * Here the light model just runs. A heavier one is offered afterwards, and only if the visitor
  * says the edges came out wrong — a retry they can judge, not a choice they cannot.
  */
-export default function PhotoTool({ preset, presetKey, strings, modelsHref, ctx }: Props) {
+export default function PhotoTool({
+  preset, presetKey, strings, modelsHref, ctx, editingForbidden = false,
+}: Props) {
   const [src, setSrc] = useState<string | null>(null);
   const [original, setOriginal] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
@@ -101,6 +107,7 @@ export default function PhotoTool({ preset, presetKey, strings, modelsHref, ctx 
   const [transparent, setTransparent] = useState(false);
   const [faceOval, setFaceOval] = useState(false);
   const [fileName, setFileName] = useState("");
+  const [warned, setWarned] = useState(false);
   /**
    * The markup is server-rendered, so the file input exists before its handler does. An
    * automation that drops a file in between gets silence. This flag is the "you may start now"
@@ -379,12 +386,24 @@ export default function PhotoTool({ preset, presetKey, strings, modelsHref, ctx 
       <div class="bg-block">
         {!bgDone ? (
           <>
-            <button class="btn-dl wide" type="button" disabled={!!busy}
-              data-testid="remove-background"
-              onClick={() => runBgRemoval(defaultModel)}>
-              <svg width="19" height="19"><use href="#ic-drop" /></svg>
-              {strings.removeBg}
-            </button>
+            {editingForbidden && !warned ? (
+              <div class="warn-inline" data-testid="editing-warning">
+                <p>
+                  <svg width="19" height="19"><use href="#ic-warn" /></svg>
+                  {strings.noEditingAtAction}
+                </p>
+                <button class="btn-reset" type="button" onClick={() => setWarned(true)}>
+                  {strings.proceedAnyway}
+                </button>
+              </div>
+            ) : (
+              <button class="btn-dl wide" type="button" disabled={!!busy}
+                data-testid="remove-background"
+                onClick={() => runBgRemoval(defaultModel)}>
+                <svg width="19" height="19"><use href="#ic-drop" /></svg>
+                {strings.removeBg}
+              </button>
+            )}
             <p class="hint">
               {cachedIds.has(defaultModel.id)
                 ? strings.cached

@@ -54,8 +54,8 @@ notes = "White bg, 2x2 inch, head 50-69%"
 # ── Europe ──
 [eu_schengen]
 name = "Schengen (EU)"
-digital_width = 413
-digital_height = 531
+digital_width = 600
+digital_height = 750
 max_file_size_kb = 500
 print_width_mm = 35
 print_height_mm = 45
@@ -69,8 +69,8 @@ notes = "White bg, 35x45mm, face 32-36mm"
 
 [uk_passport]
 name = "UK Passport"
-digital_width = 413
-digital_height = 531
+digital_width = 600
+digital_height = 750
 max_file_size_kb = 500
 print_width_mm = 35
 print_height_mm = 45
@@ -116,8 +116,8 @@ notes = "White bg, 33x48mm, face 28-33mm"
 
 [in_passport]
 name = "India Passport"
-digital_width = 413
-digital_height = 531
+digital_width = 600
+digital_height = 750
 max_file_size_kb = 300
 print_width_mm = 35
 print_height_mm = 45
@@ -131,8 +131,8 @@ notes = "White bg, 35x45mm or 51x51mm"
 
 [jp_passport]
 name = "Japan Passport"
-digital_width = 413
-digital_height = 531
+digital_width = 600
+digital_height = 750
 max_file_size_kb = 500
 print_width_mm = 35
 print_height_mm = 45
@@ -146,8 +146,8 @@ notes = "White bg, 35x45mm, face 34mm+/-2mm"
 
 [kr_passport]
 name = "South Korea Passport"
-digital_width = 413
-digital_height = 531
+digital_width = 600
+digital_height = 750
 max_file_size_kb = 500
 print_width_mm = 35
 print_height_mm = 45
@@ -162,8 +162,8 @@ notes = "White bg, 35x45mm"
 # ── Australia ──
 [au_passport]
 name = "Australia Passport"
-digital_width = 413
-digital_height = 531
+digital_width = 600
+digital_height = 750
 max_file_size_kb = 500
 print_width_mm = 35
 print_height_mm = 45
@@ -178,8 +178,8 @@ notes = "White bg, 35x45mm, head 32-36mm"
 # ── Russia / CIS ──
 [ru_passport]
 name = "Russia Passport"
-digital_width = 413
-digital_height = 531
+digital_width = 600
+digital_height = 750
 max_file_size_kb = 500
 print_width_mm = 35
 print_height_mm = 45
@@ -190,6 +190,38 @@ background = "white"
 photo_count = 4
 format = "jpeg"
 notes = "White bg, 35x45mm"
+
+# ── India visa (differs from the Indian passport: square, not 35x45) ──
+[in_visa]
+name = "India Visa (e-Visa)"
+digital_width = 600
+digital_height = 600
+max_file_size_kb = 1000
+print_width_mm = 51
+print_height_mm = 51
+face_height_percent = 60.0
+face_top_margin_percent = 12.0
+eye_line_from_bottom_percent = 60.0
+background = "white"
+photo_count = 2
+format = "jpeg"
+notes = "White bg, 2x2 inch square, head 50-69% of height"
+
+# ── US Diversity Visa lottery ──
+[us_dv]
+name = "US DV Lottery (Green Card)"
+digital_width = 600
+digital_height = 600
+max_file_size_kb = 240
+print_width_mm = 51
+print_height_mm = 51
+face_height_percent = 56.0
+face_top_margin_percent = 15.0
+eye_line_from_bottom_percent = 62.5
+background = "white"
+photo_count = 2
+format = "jpeg"
+notes = "White bg, 600x600 px minimum, entry is disqualified for a non-compliant photo"
 
 # ── Custom ──
 [custom]

@@ -124,6 +124,17 @@ const schema = [
 
   <p class="answer">{answer}</p>
 
+  {entry.warnings && entry.warnings.length > 0 && (
+    <div class="warn-banner">
+      {entry.warnings.includes("no-editing") && (
+        <p><svg width="19" height="19"><use href="#ic-warn" /></svg>{t.warn.noEditing}</p>
+      )}
+      {entry.warnings.includes("no-home-print") && (
+        <p><svg width="19" height="19"><use href="#ic-warn" /></svg>{t.warn.noHomePrint}</p>
+      )}
+    </div>
+  )}
+
   <p class="verified">
     <svg width="16" height="16"><use href="#ic-check" /></svg>
     <a href={entry.source.url} rel="nofollow noopener">
@@ -131,9 +142,15 @@ const schema = [
     </a>
   </p>
 
+  <p class="submission-note">
+    <svg width="16" height="16"><use href={entry.submission === "upload" ? "#ic-upload" : entry.submission === "print" ? "#ic-print" : "#ic-camera"} /></svg>
+    {t.submission[entry.submission]}
+  </p>
+
   <div class="tool">
     <PhotoTool client:idle preset={p} presetKey={key} modelsHref={path(lang, "models")}
-      ctx={{ preset: key, country: entry.country, doc: entry.doc }} strings={{
+      ctx={{ preset: key, country: entry.country, doc: entry.doc }}
+      editingForbidden={entry.warnings?.includes("no-editing")} strings={{
       dropTitle: t.tool.dropTitle,
       dropSub: t.tool.dropSub(t.docShort[key]),
       choose: t.tool.choose,
@@ -164,6 +181,8 @@ const schema = [
       changeModelWhen: t.tool.changeModelWhen,
       modelsPageLink: t.tool.modelsPageLink,
       modelDefault: t.tool.modelDefault,
+      noEditingAtAction: t.warn.noEditingAtAction,
+      proceedAnyway: t.warn.proceedAnyway,
       mbUnit: t.unit.mb,
       advanced: t.tool.advanced,
       advancedHint: t.tool.advancedHint,

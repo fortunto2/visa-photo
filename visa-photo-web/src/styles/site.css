@@ -129,6 +129,34 @@ h1 {
 }
 .verified a { color: inherit; }
 
+.warn-banner {
+  border: 1px solid var(--amber); background: var(--amber-soft);
+  border-radius: var(--r-md); padding: 14px 18px; margin: 0 0 18px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.warn-banner p {
+  margin: 0; display: flex; gap: 10px; align-items: flex-start;
+  font-size: 16px; line-height: 1.5; color: var(--ink);
+}
+.warn-banner svg { color: var(--amber); flex: none; margin-top: 2px; }
+.warn-inline {
+  border: 1px solid var(--amber); background: var(--amber-soft);
+  border-radius: var(--r-md); padding: 14px 16px;
+  display: flex; flex-direction: column; gap: 8px; align-items: flex-start;
+}
+.warn-inline p {
+  margin: 0; display: flex; gap: 10px; align-items: flex-start;
+  font-size: 15px; line-height: 1.5; color: var(--ink);
+}
+.warn-inline svg { color: var(--amber); flex: none; margin-top: 2px; }
+.submission-note {
+  display: inline-flex; align-items: center; gap: 8px; margin: 0 0 22px;
+  font-size: 15px; font-weight: 600; color: var(--ink-soft);
+  background: var(--surface-2); border: 1px solid var(--line);
+  border-radius: var(--r-pill); padding: 7px 16px 7px 12px;
+}
+.submission-note svg { color: var(--teal); }
+
 /* ── tool ───────────────────────────────────────────────── */
 
 .tool { display: grid; grid-template-columns: 1fr 310px; gap: 22px; align-items: start; }
@@ -288,6 +316,20 @@ h1 {
   background: var(--teal-soft); color: var(--teal);
   border-radius: var(--r-pill); padding: 3px 9px;
 }
+
+.custom-fields {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 14px 20px;
+  border: 1px solid var(--line); border-radius: var(--r-md);
+  background: var(--surface); padding: 16px 18px; margin-bottom: 12px;
+}
+.custom-fields .field { flex: 0 0 auto; gap: 8px; }
+.custom-fields .field input { width: 86px; flex: none; }
+.custom-fields .field select {
+  border: 1px solid var(--line); border-radius: var(--r-sm); padding: 9px 12px;
+  font-family: var(--ui); font-size: 15px; background: var(--surface-2); color: var(--ink);
+}
+.custom-fields .field b { font-family: var(--data); font-size: 14px; color: var(--ink-faint); }
+.custom-fields .hint { margin-inline-start: auto; font-family: var(--data); }
 
 /* advanced panel — the desktop app's controls, folded away */
 .advanced { align-self: stretch; }

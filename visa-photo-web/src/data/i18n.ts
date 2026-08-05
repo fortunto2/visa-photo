@@ -167,6 +167,26 @@ export interface Dict {
     related: string;
   };
 
+  /**
+   * Rules that contradict what this tool does. Shown on the page, and again at the moment
+   * someone reaches for the feature the rule forbids — a banner at the top is read once and
+   * forgotten by the time the button is clicked.
+   */
+  warn: {
+    noEditing: string;
+    noEditingAtAction: string;
+    noHomePrint: string;
+    proceedAnyway: string;
+  };
+
+  /** How the photo reaches the application — stated before the spec, because it decides
+   *  whether a file is needed at all. */
+  submission: {
+    upload: string;
+    print: string;
+    captured: string;
+  };
+
   /** country page: one country, all of its documents */
   countryPage: {
     h1: (country: string) => string;
@@ -220,6 +240,22 @@ export interface Dict {
     copied: string;
     openSkills: string;
     disclaimer: string;
+  };
+
+  /** the any-size page: what the catalogue does not cover */
+  customPage: {
+    title: string;
+    h1: string;
+    lead: string;
+    width: string;
+    height: string;
+    unitMm: string;
+    unitPx: string;
+    dpi: string;
+    presetHint: string;
+    common: string;
+    whenToUse: string;
+    whenToUseBody: string;
   };
 
   /** the skills section */

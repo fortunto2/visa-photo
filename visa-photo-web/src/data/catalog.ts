@@ -37,6 +37,20 @@ export interface CatalogEntry {
    * does not exist and published it as FAQ structured data.
    */
   form?: { name: string; online: boolean };
+
+  /**
+   * How the photo reaches the application. Worth stating before anything else: for a UK visa
+   * the photo is taken at the visa centre during biometrics and never uploaded at all, so
+   * someone can spend an evening preparing a file nobody will ask for.
+   *
+   *   upload    — a file is submitted through a form
+   *   print     — a printed photo is handed over or posted
+   *   captured  — taken for you at an appointment; no file needed
+   */
+  submission: "upload" | "print" | "captured";
+
+  /** Rules that contradict what this tool does, stated on the page rather than buried. */
+  warnings?: ("no-editing" | "no-home-print")[];
 }
 
 /** Which sprite symbol stands for a document kind. Was copy-pasted into four page templates. */
@@ -49,6 +63,7 @@ export const KIND_ICON: Record<DocKind, string> = {
 export const CATALOG: CatalogEntry[] = [
   {
     preset: "turkey",
+    submission: "upload",
     country: "turkey",
     doc: "residence-permit",
     kind: "permit",
@@ -59,6 +74,7 @@ export const CATALOG: CatalogEntry[] = [
   },
   {
     preset: "eu_schengen",
+    submission: "print",
     country: "schengen",
     doc: "visa",
     kind: "visa",
@@ -68,6 +84,7 @@ export const CATALOG: CatalogEntry[] = [
   },
   {
     preset: "us_visa",
+    submission: "upload",
     country: "united-states",
     doc: "visa",
     kind: "visa",
@@ -79,6 +96,7 @@ export const CATALOG: CatalogEntry[] = [
   },
   {
     preset: "us_passport",
+    submission: "print",
     country: "united-states",
     doc: "passport",
     kind: "passport",
@@ -90,6 +108,7 @@ export const CATALOG: CatalogEntry[] = [
   },
   {
     preset: "uk_passport",
+    submission: "upload",
     country: "united-kingdom",
     doc: "passport",
     kind: "passport",
@@ -99,6 +118,8 @@ export const CATALOG: CatalogEntry[] = [
   },
   {
     preset: "ca_passport",
+    submission: "print",
+    warnings: ["no-editing", "no-home-print"],
     country: "canada",
     doc: "passport",
     kind: "passport",
@@ -108,6 +129,7 @@ export const CATALOG: CatalogEntry[] = [
   },
   {
     preset: "cn_passport",
+    submission: "print",
     country: "china",
     doc: "passport",
     kind: "passport",
@@ -116,7 +138,32 @@ export const CATALOG: CatalogEntry[] = [
     checked: "2026-08-05",
   },
   {
+    preset: "us_dv",
+    submission: "upload",
+    country: "united-states",
+    doc: "dv-lottery",
+    kind: "visa",
+    flag: "us",
+    native: { w: 2, h: 2, unit: "in" },
+    form: { name: "DV Entry Form", online: true },
+    source: { label: "U.S. Department of State — DV programme", url: "https://travel.state.gov/content/travel/en/us-visas/immigrate/diversity-visa-program-entry.html" },
+    checked: "2026-08-05",
+  },
+  {
+    preset: "in_visa",
+    submission: "upload",
+    country: "india",
+    doc: "visa",
+    kind: "visa",
+    flag: "in",
+    native: { w: 2, h: 2, unit: "in" },
+    form: { name: "indianvisaonline.gov.in", online: true },
+    source: { label: "Indian Visa Online", url: "https://indianvisaonline.gov.in/" },
+    checked: "2026-08-05",
+  },
+  {
     preset: "in_passport",
+    submission: "upload",
     country: "india",
     doc: "passport",
     kind: "passport",
@@ -126,6 +173,7 @@ export const CATALOG: CatalogEntry[] = [
   },
   {
     preset: "jp_passport",
+    submission: "print",
     country: "japan",
     doc: "passport",
     kind: "passport",
@@ -135,6 +183,7 @@ export const CATALOG: CatalogEntry[] = [
   },
   {
     preset: "kr_passport",
+    submission: "print",
     country: "south-korea",
     doc: "passport",
     kind: "passport",
@@ -144,6 +193,7 @@ export const CATALOG: CatalogEntry[] = [
   },
   {
     preset: "au_passport",
+    submission: "print",
     country: "australia",
     doc: "passport",
     kind: "passport",
@@ -153,6 +203,7 @@ export const CATALOG: CatalogEntry[] = [
   },
   {
     preset: "ru_passport",
+    submission: "print",
     country: "russia",
     doc: "passport",
     kind: "passport",

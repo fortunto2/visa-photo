@@ -13,6 +13,7 @@ export const GET: APIRoute = () => {
     [], // hub: /{lang}/
     ["models"],
     ["skills"],
+    ["custom"],
     ...countryGroups().map((g) => [g.slug]), // /{lang}/{country}/
     ...CATALOG.map((e) => [e.country, e.doc]),
   ];

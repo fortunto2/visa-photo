@@ -1,0 +1,96 @@
+---
+import Page from "../../layouts/Page.astro";
+import CustomTool from "../../components/CustomTool.tsx";
+import { PRESETS } from "../../lib/presets";
+import { CATALOG } from "../../data/catalog";
+import { LANGS, dict, type ActiveLang } from "../../data/locales";
+import { absolute, path } from "../../lib/site";
+
+export function getStaticPaths() {
+  return LANGS.map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: ActiveLang };
+const t = dict(lang);
+const c = t.customPage;
+
+/** Everything the editor needs beyond width and height; dimensions come from the form. */
+const base = PRESETS.custom;
+
+const schema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: c.h1,
+    description: c.lead,
+    url: absolute(path(lang, "custom")),
+  },
+];
+---
+
+<Page lang={lang} t={t} title={c.title} description={c.lead} segments={["custom"]} schema={schema}>
+  <p class="crumb"><a href={path(lang)}>{t.nav.countries}</a></p>
+
+  <h1>{c.h1}</h1>
+  <p class="answer">{c.lead}</p>
+
+  <CustomTool
+    client:load
+    base={base}
+    modelsHref={path(lang, "models")}
+    ctx={{ preset: "custom", country: "custom", doc: "custom" }}
+    custom={{
+      width: c.width,
+      height: c.height,
+      unitMm: c.unitMm,
+      unitPx: c.unitPx,
+      dpi: c.dpi,
+      presetHint: c.presetHint,
+      common: c.common,
+    }}
+    strings={{
+      ...t.tool,
+      dropSub: t.tool.dropSub(c.h1),
+      framedTo: t.tool.framedTo(c.presetHint),
+      downloadSheet: t.tool.downloadSheet(base.photo_count),
+      guideEyes: t.tool.guideEyes(String(base.eye_line_from_bottom_percent)),
+      removeBgHint: t.tool.removeBgHint,
+      modelDefault: t.tool.modelDefault,
+      noEditingAtAction: t.warn.noEditingAtAction,
+      proceedAnyway: t.warn.proceedAnyway,
+      mbUnit: t.unit.mb,
+      modelsPageLink: t.tool.modelsPageLink,
+    }}
+  />
+
+  <ul class="trust">
+    <li><svg width="17" height="17"><use href="#ic-shield" /></svg>{t.trust.inBrowser}</li>
+    <li><svg width="17" height="17"><use href="#ic-check" /></svg>{t.trust.noServer}</li>
+    <li><svg width="17" height="17"><use href="#ic-check" /></svg>{t.trust.noWatermark}</li>
+    <li><svg width="17" height="17"><use href="#ic-check" /></svg>{t.trust.noSignup}</li>
+  </ul>
+
+  <div class="seo" style="margin-top:44px">
+    <section>
+      <h2>
+        <span class="ico"><svg width="22" height="22"><use href="#ic-question" /></svg></span>
+        {c.whenToUse}
+      </h2>
+      <p>{c.whenToUseBody}</p>
+      <ul class="related" style="margin-top:12px">
+        {CATALOG.slice(0, 6).map((entry) => (
+          <li>
+            <a href={path(lang, entry.country, entry.doc)}>
+              <svg width="24" height="17" viewBox="0 0 32 22"><use href={`#fl-${entry.flag}`} /></svg>
+              {t.docTitle[entry.preset]}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section>
+      <p class="disclaimer">{t.seo.disclaimer}</p>
+    </section>
+  </div>
+</Page>
