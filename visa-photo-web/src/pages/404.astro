@@ -28,7 +28,7 @@ const t = dict(DEFAULT_LANG);
     <header class="wrap">
       <nav class="site-nav">
         <a class="brand" href={path(DEFAULT_LANG)}>
-          <span class="mark"><svg width="20" height="20"><use href="#ic-visa" /></svg></span>
+          <span class="mark"><svg width="20" height="20" aria-hidden="true"><use href="#ic-visa" /></svg></span>
           <span class="wordmark">
             <span class="wm-name">{SITE.brand.head}<em>{SITE.brand.tail}</em></span>
             <small>{SITE.tagline}</small>
@@ -52,8 +52,8 @@ const t = dict(DEFAULT_LANG);
             <li>
               <a class="hub-card" href={path(DEFAULT_LANG, entry.country, entry.doc)}>
                 <span class="hub-top">
-                  <svg class="flag" viewBox="0 0 32 22"><use href={`#fl-${entry.flag}`} /></svg>
-                  <svg class="doc-ico" width="21" height="21"><use href={`#${kindIcon}`} /></svg>
+                  <svg class="flag" viewBox="0 0 32 22" aria-hidden="true"><use href={`#fl-${entry.flag}`} /></svg>
+                  <svg class="doc-ico" width="21" height="21" aria-hidden="true"><use href={`#${kindIcon}`} /></svg>
                 </span>
                 <span class="nm">{t.docTitle[entry.preset]}</span>
                 <span class="sz">{sizeLabels(p, entry, t.unit).headline}</span>

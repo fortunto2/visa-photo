@@ -95,7 +95,7 @@ export default function CustomTool({ strings, custom, modelsHref, ctx, base }: P
           modelsHref={modelsHref} ctx={ctx} />
         <div class="spec">
           <p class="spec-head">
-            <svg width="19" height="19"><use href="#ic-ruler" /></svg>
+            <svg width="19" height="19" aria-hidden="true"><use href="#ic-ruler" /></svg>
             {custom.presetHint}
           </p>
           <dl>

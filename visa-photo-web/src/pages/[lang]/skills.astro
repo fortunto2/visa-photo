@@ -43,7 +43,7 @@ const schema = [
   <div class="agent-actions" style="margin-bottom:26px">
     <CopyButton client:load payload={file} label={s.copyFile} done={t.agent.copied} />
     <a class="chip" href="/skills/visa-photo.md">
-      <svg width="18" height="18"><use href="#ic-file" /></svg>
+      <svg width="18" height="18" aria-hidden="true"><use href="#ic-file" /></svg>
       SKILL.md
     </a>
   </div>
@@ -51,7 +51,7 @@ const schema = [
   <div class="seo">
     <section>
       <h2>
-        <span class="ico"><svg width="22" height="22"><use href="#ic-download" /></svg></span>
+        <span class="ico"><svg width="22" height="22" aria-hidden="true"><use href="#ic-download" /></svg></span>
         {s.install}
       </h2>
       <p>{s.installBody}</p>
@@ -61,7 +61,7 @@ const schema = [
 
     <section>
       <h2>
-        <span class="ico"><svg width="22" height="22"><use href="#ic-ruler" /></svg></span>
+        <span class="ico"><svg width="22" height="22" aria-hidden="true"><use href="#ic-ruler" /></svg></span>
         {s.whatItDoes}
       </h2>
       <ul>
@@ -75,7 +75,7 @@ const schema = [
 
     <section>
       <h2>
-        <span class="ico"><svg width="22" height="22"><use href="#ic-link" /></svg></span>
+        <span class="ico"><svg width="22" height="22" aria-hidden="true"><use href="#ic-link" /></svg></span>
         {s.endpoints}
       </h2>
       <p>{s.endpointsBody}</p>
@@ -83,7 +83,7 @@ const schema = [
         {endpoints.map((e) => (
           <li>
             <a href={e.href}>
-              <svg width="18" height="18"><use href="#ic-file" /></svg>
+              <svg width="18" height="18" aria-hidden="true"><use href="#ic-file" /></svg>
               {e.href} <span class="alt-unit">{e.note}</span>
             </a>
           </li>
@@ -93,7 +93,7 @@ const schema = [
 
     <section>
       <h2>
-        <span class="ico"><svg width="22" height="22"><use href="#ic-warn" /></svg></span>
+        <span class="ico"><svg width="22" height="22" aria-hidden="true"><use href="#ic-warn" /></svg></span>
         {s.limits}
       </h2>
       <p>{s.limitsBody}</p>

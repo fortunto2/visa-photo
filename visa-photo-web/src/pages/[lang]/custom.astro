@@ -64,16 +64,16 @@ const schema = [
   />
 
   <ul class="trust">
-    <li><svg width="17" height="17"><use href="#ic-shield" /></svg>{t.trust.inBrowser}</li>
-    <li><svg width="17" height="17"><use href="#ic-check" /></svg>{t.trust.noServer}</li>
-    <li><svg width="17" height="17"><use href="#ic-check" /></svg>{t.trust.noWatermark}</li>
-    <li><svg width="17" height="17"><use href="#ic-check" /></svg>{t.trust.noSignup}</li>
+    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-shield" /></svg>{t.trust.inBrowser}</li>
+    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-check" /></svg>{t.trust.noServer}</li>
+    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-check" /></svg>{t.trust.noWatermark}</li>
+    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-check" /></svg>{t.trust.noSignup}</li>
   </ul>
 
   <div class="seo" style="margin-top:44px">
     <section>
       <h2>
-        <span class="ico"><svg width="22" height="22"><use href="#ic-question" /></svg></span>
+        <span class="ico"><svg width="22" height="22" aria-hidden="true"><use href="#ic-question" /></svg></span>
         {c.whenToUse}
       </h2>
       <p>{c.whenToUseBody}</p>
@@ -81,7 +81,7 @@ const schema = [
         {CATALOG.slice(0, 6).map((entry) => (
           <li>
             <a href={path(lang, entry.country, entry.doc)}>
-              <svg width="24" height="17" viewBox="0 0 32 22"><use href={`#fl-${entry.flag}`} /></svg>
+              <svg width="24" height="17" viewBox="0 0 32 22" aria-hidden="true"><use href={`#fl-${entry.flag}`} /></svg>
               {t.docTitle[entry.preset]}
             </a>
           </li>

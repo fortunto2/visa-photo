@@ -94,7 +94,7 @@ const schema = [
   <p class="crumb">
     <a href={path(lang)}>{t.nav.countries}</a>
     <span class="doc-pill">
-      <svg width="17" height="12" viewBox="0 0 32 22"><use href={`#fl-${group.flag}`} /></svg>
+      <svg width="17" height="12" viewBox="0 0 32 22" aria-hidden="true"><use href={`#fl-${group.flag}`} /></svg>
       {countryName}
     </span>
   </p>
@@ -110,8 +110,8 @@ const schema = [
         <li>
           <a class="hub-card" href={path(lang, entry.country, entry.doc)}>
             <span class="hub-top">
-              <svg class="flag" viewBox="0 0 32 22"><use href={`#fl-${entry.flag}`} /></svg>
-              <svg class="doc-ico" width="21" height="21"><use href={`#${kindIcon}`} /></svg>
+              <svg class="flag" viewBox="0 0 32 22" aria-hidden="true"><use href={`#fl-${entry.flag}`} /></svg>
+              <svg class="doc-ico" width="21" height="21" aria-hidden="true"><use href={`#${kindIcon}`} /></svg>
             </span>
             <span class="nm">{t.docShort[entry.preset]}</span>
             <span class="sz">{sizeLabels(p, entry, t.unit).headline}</span>
@@ -123,16 +123,16 @@ const schema = [
   </ul>
 
   <ul class="trust">
-    <li><svg width="17" height="17"><use href="#ic-shield" /></svg>{t.trust.inBrowser}</li>
-    <li><svg width="17" height="17"><use href="#ic-check" /></svg>{t.trust.noServer}</li>
-    <li><svg width="17" height="17"><use href="#ic-check" /></svg>{t.trust.noWatermark}</li>
-    <li><svg width="17" height="17"><use href="#ic-check" /></svg>{t.trust.noSignup}</li>
+    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-shield" /></svg>{t.trust.inBrowser}</li>
+    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-check" /></svg>{t.trust.noServer}</li>
+    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-check" /></svg>{t.trust.noWatermark}</li>
+    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-check" /></svg>{t.trust.noSignup}</li>
   </ul>
 
   <div class="seo" style="margin-top:44px">
     <section>
       <h2>
-        <span class="ico"><svg width="22" height="22"><use href="#ic-question" /></svg></span>
+        <span class="ico"><svg width="22" height="22" aria-hidden="true"><use href="#ic-question" /></svg></span>
         {t.seo.faq}
       </h2>
       {faq.map((item) => (
@@ -145,7 +145,7 @@ const schema = [
 
     <section>
       <h2>
-        <span class="ico"><svg width="22" height="22"><use href="#ic-shield" /></svg></span>
+        <span class="ico"><svg width="22" height="22" aria-hidden="true"><use href="#ic-shield" /></svg></span>
         {t.seo.sources}
       </h2>
       <ul>

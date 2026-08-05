@@ -325,21 +325,21 @@ export default function PhotoTool({
         onDragLeave={() => setDragging(false)}
         onDrop={(e) => { e.preventDefault(); setDragging(false); accept(e.dataTransfer?.files ?? null); }}
       >
-        <span class="drop-icon"><svg width="32" height="32"><use href="#ic-upload" /></svg></span>
+        <span class="drop-icon"><svg width="32" height="32" aria-hidden="true"><use href="#ic-upload" /></svg></span>
         <span class="drop-title">{strings.dropTitle}</span>
         <span class="drop-sub">{strings.dropSub}</span>
 
         {/* The dialog is open for seconds while someone hunts for a file; start the 4 MB
             download now so alignment is instant once they pick one. */}
         <label class="cta" onClick={() => void prefetchFaceModel()}>
-          <svg width="21" height="21"><use href="#ic-upload" /></svg>
+          <svg width="21" height="21" aria-hidden="true"><use href="#ic-upload" /></svg>
           {strings.choose}
           <input type="file" accept="image/*" hidden data-testid="file-input"
             onChange={(e) => accept((e.target as HTMLInputElement).files)} />
         </label>
 
         <label class="cta-alt">
-          <svg width="19" height="19"><use href="#ic-camera" /></svg>
+          <svg width="19" height="19" aria-hidden="true"><use href="#ic-camera" /></svg>
           {strings.camera}
           <input type="file" accept="image/*" capture="user" hidden data-testid="camera-input"
             onChange={(e) => accept((e.target as HTMLInputElement).files, "camera")} />
@@ -360,7 +360,7 @@ export default function PhotoTool({
   return (
     <div class="result" data-testid="editor" data-state={state} data-hydrated="true">
       <span class={`verdict${busy ? " is-busy" : ""}`}>
-        <svg width="17" height="17"><use href={busy ? "#ic-spark" : "#ic-check"} /></svg>
+        <svg width="17" height="17" aria-hidden="true"><use href={busy ? "#ic-spark" : "#ic-check"} /></svg>
         {busy ?? (bgDone ? strings.bgDone : strings.framedTo)}
       </span>
 
@@ -429,17 +429,17 @@ export default function PhotoTool({
         </button>
         <button class="tool-btn" type="button" data-testid="align-face"
           disabled={aligning} onClick={alignToFace}>
-          <svg width="18" height="18"><use href="#ic-face" /></svg>
+          <svg width="18" height="18" aria-hidden="true"><use href="#ic-face" /></svg>
           <span>{aligning ? strings.aligning : strings.alignFace}</span>
         </button>
         <button class="tool-btn" type="button" onClick={applyAutoLevels}>
-          <svg width="18" height="18"><use href="#ic-sun" /></svg>
+          <svg width="18" height="18" aria-hidden="true"><use href="#ic-sun" /></svg>
           <span>{strings.autoLevels}</span>
         </button>
         {levelsTouched && (
           <button class="tool-btn" type="button" title={strings.undoLevels}
             onClick={() => setLevels(NO_LEVELS)}>
-            <svg width="18" height="18"><use href="#ic-undo" /></svg>
+            <svg width="18" height="18" aria-hidden="true"><use href="#ic-undo" /></svg>
             <span>{strings.undoLevels}</span>
           </button>
         )}
@@ -474,7 +474,7 @@ export default function PhotoTool({
             {editingForbidden && !warned ? (
               <div class="warn-inline" data-testid="editing-warning">
                 <p>
-                  <svg width="19" height="19"><use href="#ic-warn" /></svg>
+                  <svg width="19" height="19" aria-hidden="true"><use href="#ic-warn" /></svg>
                   {strings.noEditingAtAction}
                 </p>
                 <button class="btn-reset" type="button" data-testid="acknowledge-editing"
@@ -486,7 +486,7 @@ export default function PhotoTool({
               <button class="btn-dl wide" type="button" disabled={!!busy}
                 data-testid="remove-background"
                 onClick={() => runBgRemoval(defaultModel)}>
-                <svg width="19" height="19"><use href="#ic-drop" /></svg>
+                <svg width="19" height="19" aria-hidden="true"><use href="#ic-drop" /></svg>
                 {strings.removeBg}
               </button>
             )}
@@ -508,11 +508,11 @@ export default function PhotoTool({
               <div class="bg-row">
                 <button class="btn-dl" type="button" data-testid="change-model"
               onClick={() => setShowModels((v) => !v)}>
-                  <svg width="18" height="18"><use href="#ic-layers" /></svg>
+                  <svg width="18" height="18" aria-hidden="true"><use href="#ic-layers" /></svg>
                   {strings.changeModel}
                 </button>
                 <button class="btn-reset" type="button" onClick={undoBg}>
-                  <svg width="17" height="17"><use href="#ic-undo" /></svg>
+                  <svg width="17" height="17" aria-hidden="true"><use href="#ic-undo" /></svg>
                   {strings.bgUndo}
                 </button>
               </div>
@@ -594,19 +594,19 @@ export default function PhotoTool({
       <div class="downloads">
         <button class="btn-dl filled" type="button" disabled={!!busy} data-testid="download-jpeg"
           onClick={() => exportPhoto(false)}>
-          <svg width="20" height="20"><use href="#ic-download" /></svg>{strings.downloadJpeg}
+          <svg width="20" height="20" aria-hidden="true"><use href="#ic-download" /></svg>{strings.downloadJpeg}
         </button>
         <button class="btn-dl" type="button" disabled={!!busy} data-testid="download-png"
           onClick={() => exportPhoto(true)}>
-          <svg width="19" height="19"><use href="#ic-file" /></svg>{strings.downloadPng}
+          <svg width="19" height="19" aria-hidden="true"><use href="#ic-file" /></svg>{strings.downloadPng}
         </button>
         <button class="btn-dl" type="button" disabled={!!busy} data-testid="download-sheet"
           onClick={exportSheet}>
-          <svg width="19" height="19"><use href="#ic-print" /></svg>{strings.downloadSheet}
+          <svg width="19" height="19" aria-hidden="true"><use href="#ic-print" /></svg>{strings.downloadSheet}
         </button>
         <button class="btn-dl" type="button" disabled={!!busy} data-testid="check-this"
           onClick={checkThis}>
-          <svg width="19" height="19"><use href="#ic-check" /></svg>
+          <svg width="19" height="19" aria-hidden="true"><use href="#ic-check" /></svg>
           {strings.checkResult}
         </button>
         <button class="btn-reset" type="button" data-testid="reset"

@@ -153,10 +153,10 @@ export default function PhotoChecker({ preset, strings, ctx }: Props) {
         onDrop={(e) => { e.preventDefault(); setDragging(false); accept(e.dataTransfer?.files ?? null); }}
         onClick={() => void prefetchFaceModel()}
       >
-        <span class="drop-icon"><svg width="32" height="32"><use href="#ic-check" /></svg></span>
+        <span class="drop-icon"><svg width="32" height="32" aria-hidden="true"><use href="#ic-check" /></svg></span>
         <span class="drop-title">{strings.drop}</span>
         <label class="cta">
-          <svg width="21" height="21"><use href="#ic-upload" /></svg>
+          <svg width="21" height="21" aria-hidden="true"><use href="#ic-upload" /></svg>
           {strings.choose}
           <input type="file" accept="image/*" hidden data-testid="checker-input"
             onChange={(e) => accept((e.target as HTMLInputElement).files)} />
@@ -175,7 +175,7 @@ export default function PhotoChecker({ preset, strings, ctx }: Props) {
   return (
     <div class="check-result" data-testid="check-result" data-outcome={report.failed ? "fail" : report.warned ? "warn" : "pass"}>
       <div class={`check-headline ${tone}`}>
-        <svg width="20" height="20"><use href={report.failed ? "#ic-warn" : "#ic-check"} /></svg>
+        <svg width="20" height="20" aria-hidden="true"><use href={report.failed ? "#ic-warn" : "#ic-check"} /></svg>
         {headline}
       </div>
 
@@ -226,7 +226,7 @@ export default function PhotoChecker({ preset, strings, ctx }: Props) {
         <div class="face-cta">
           <button class="btn-dl" type="button" disabled={faceBusy}
             data-testid="check-face" onClick={measureFace}>
-            <svg width="18" height="18"><use href="#ic-face" /></svg>
+            <svg width="18" height="18" aria-hidden="true"><use href="#ic-face" /></svg>
             {faceBusy ? strings.checkingFace : strings.checkFace}
           </button>
           <p class="hint">{faceMsg ?? strings.faceHint}</p>

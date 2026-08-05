@@ -107,16 +107,16 @@ const schema = [
   <p class="crumb">
     <a href={path(lang)}>{t.nav.countries}</a>
     <span class="doc-pill">
-      <svg width="17" height="12" viewBox="0 0 32 22"><use href={`#fl-${entry.flag}`} /></svg>
+      <svg width="17" height="12" viewBox="0 0 32 22" aria-hidden="true"><use href={`#fl-${entry.flag}`} /></svg>
       {countryName}
     </span>
     <span class="doc-pill">
-      <svg width="17" height="17"><use href={`#${kindIcon}`} /></svg>
+      <svg width="17" height="17" aria-hidden="true"><use href={`#${kindIcon}`} /></svg>
       {t.docShort[key]}
     </span>
     {entry.form && (
       <span class="doc-pill">
-        <svg width="16" height="16"><use href="#ic-file" /></svg>
+        <svg width="16" height="16" aria-hidden="true"><use href="#ic-file" /></svg>
         {entry.form.name}
       </span>
     )}
@@ -129,16 +129,16 @@ const schema = [
   {entry.warnings && entry.warnings.length > 0 && (
     <div class="warn-banner">
       {entry.warnings.includes("no-editing") && (
-        <p><svg width="19" height="19"><use href="#ic-warn" /></svg>{t.warn.noEditing}</p>
+        <p><svg width="19" height="19" aria-hidden="true"><use href="#ic-warn" /></svg>{t.warn.noEditing}</p>
       )}
       {entry.warnings.includes("no-home-print") && (
-        <p><svg width="19" height="19"><use href="#ic-warn" /></svg>{t.warn.noHomePrint}</p>
+        <p><svg width="19" height="19" aria-hidden="true"><use href="#ic-warn" /></svg>{t.warn.noHomePrint}</p>
       )}
     </div>
   )}
 
   <p class="verified">
-    <svg width="16" height="16"><use href="#ic-check" /></svg>
+    <svg width="16" height="16" aria-hidden="true"><use href="#ic-check" /></svg>
     <a href={entry.source.url} rel="nofollow noopener">
       {t.verified({ date: checkedOn, source: entry.source.label })}
     </a>
@@ -146,7 +146,7 @@ const schema = [
 
   {entry.checkerVerified && (
     <p class="verified" data-testid="checker-verified">
-      <svg width="16" height="16"><use href="#ic-shield" /></svg>
+      <svg width="16" height="16" aria-hidden="true"><use href="#ic-shield" /></svg>
       {t.checkerVerified({
         date: new Intl.DateTimeFormat(t.dateLocale, { day: "numeric", month: "long", year: "numeric" })
           .format(new Date(entry.checkerVerified)),
@@ -155,7 +155,7 @@ const schema = [
   )}
 
   <p class="submission-note">
-    <svg width="16" height="16"><use href={entry.submission === "upload" ? "#ic-upload" : entry.submission === "print" ? "#ic-print" : "#ic-camera"} /></svg>
+    <svg width="16" height="16" aria-hidden="true"><use href={entry.submission === "upload" ? "#ic-upload" : entry.submission === "print" ? "#ic-print" : "#ic-camera"} /></svg>
     {t.submission[entry.submission]}
   </p>
 
@@ -247,45 +247,45 @@ const schema = [
     <div>
       <div class="spec">
         <p class="spec-head">
-          <svg width="19" height="19"><use href="#ic-ruler" /></svg>
+          <svg width="19" height="19" aria-hidden="true"><use href="#ic-ruler" /></svg>
           {t.spec.heading}
         </p>
         <dl>
           <div class="spec-row">
-            <dt><svg width="17" height="17"><use href="#ic-ruler" /></svg>{t.spec.print}</dt>
+            <dt><svg width="17" height="17" aria-hidden="true"><use href="#ic-ruler" /></svg>{t.spec.print}</dt>
             <dd>
               {headlineSize}
               <br /><span class="alt-unit">{altUnits}</span>
             </dd>
           </div>
           <div class="spec-row">
-            <dt><svg width="17" height="17"><use href="#ic-pixel" /></svg>{t.spec.digital}</dt>
+            <dt><svg width="17" height="17" aria-hidden="true"><use href="#ic-pixel" /></svg>{t.spec.digital}</dt>
             <dd>{p.digital_width} × {p.digital_height} {t.unit.px}</dd>
           </div>
           <div class="spec-row">
-            <dt><svg width="17" height="17"><use href="#ic-drop" /></svg>{t.spec.background}</dt>
+            <dt><svg width="17" height="17" aria-hidden="true"><use href="#ic-drop" /></svg>{t.spec.background}</dt>
             <dd>{bgName}</dd>
           </div>
           <div class="spec-row">
-            <dt><svg width="17" height="17"><use href="#ic-face" /></svg>{t.spec.headHeight}</dt>
+            <dt><svg width="17" height="17" aria-hidden="true"><use href="#ic-face" /></svg>{t.spec.headHeight}</dt>
             <dd>{p.face_height_percent} %</dd>
           </div>
           <div class="spec-row">
-            <dt><svg width="17" height="17"><use href="#ic-eye" /></svg>{t.spec.eyeLine}</dt>
+            <dt><svg width="17" height="17" aria-hidden="true"><use href="#ic-eye" /></svg>{t.spec.eyeLine}</dt>
             <dd>{p.eye_line_from_bottom_percent} % {t.spec.fromBottom}</dd>
           </div>
           <div class="spec-row">
-            <dt><svg width="17" height="17"><use href="#ic-file" /></svg>{t.spec.file}</dt>
+            <dt><svg width="17" height="17" aria-hidden="true"><use href="#ic-file" /></svg>{t.spec.file}</dt>
             <dd>{format} ≤ {p.max_file_size_kb} {t.unit.kb}</dd>
           </div>
           <div class="spec-row">
-            <dt><svg width="17" height="17"><use href="#ic-copies" /></svg>{t.spec.perSheet}</dt>
+            <dt><svg width="17" height="17" aria-hidden="true"><use href="#ic-copies" /></svg>{t.spec.perSheet}</dt>
             <dd>{p.photo_count} {t.spec.pieces}</dd>
           </div>
         </dl>
         {notes && (
           <p class="spec-foot">
-            <svg width="19" height="19"><use href="#ic-warn" /></svg>
+            <svg width="19" height="19" aria-hidden="true"><use href="#ic-warn" /></svg>
             {notes}
           </p>
         )}
@@ -296,16 +296,16 @@ const schema = [
   </ModeTabs>
 
   <ul class="trust">
-    <li><svg width="17" height="17"><use href="#ic-shield" /></svg>{t.trust.inBrowser}</li>
-    <li><svg width="17" height="17"><use href="#ic-check" /></svg>{t.trust.noServer}</li>
-    <li><svg width="17" height="17"><use href="#ic-check" /></svg>{t.trust.noWatermark}</li>
-    <li><svg width="17" height="17"><use href="#ic-check" /></svg>{t.trust.noSignup}</li>
+    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-shield" /></svg>{t.trust.inBrowser}</li>
+    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-check" /></svg>{t.trust.noServer}</li>
+    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-check" /></svg>{t.trust.noWatermark}</li>
+    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-check" /></svg>{t.trust.noSignup}</li>
   </ul>
 
   <div class="seo">
     <section>
       <h2>
-        <span class="ico"><svg width="22" height="22"><use href="#ic-ruler" /></svg></span>
+        <span class="ico"><svg width="22" height="22" aria-hidden="true"><use href="#ic-ruler" /></svg></span>
         {t.seo.requirements}
       </h2>
       <p>{t.seo.requirementsIntro(t.docShort[key])}</p>
@@ -322,7 +322,7 @@ const schema = [
 
     <section>
       <h2>
-        <span class="ico"><svg width="22" height="22"><use href="#ic-sun" /></svg></span>
+        <span class="ico"><svg width="22" height="22" aria-hidden="true"><use href="#ic-sun" /></svg></span>
         {t.seo.howToShoot}
       </h2>
       <p>{t.seo.howToShootBody}</p>
@@ -330,7 +330,7 @@ const schema = [
 
     <section>
       <h2>
-        <span class="ico"><svg width="22" height="22"><use href="#ic-print" /></svg></span>
+        <span class="ico"><svg width="22" height="22" aria-hidden="true"><use href="#ic-print" /></svg></span>
         {t.seo.printing}
       </h2>
       <p>{t.seo.printingBody({ n: p.photo_count, w: p.print_width_mm, h: p.print_height_mm, dpi: dpiOf(p) })}</p>
@@ -339,14 +339,14 @@ const schema = [
     {related.length > 0 && (
       <section>
         <h2>
-          <span class="ico"><svg width="22" height="22"><use href="#ic-link" /></svg></span>
+          <span class="ico"><svg width="22" height="22" aria-hidden="true"><use href="#ic-link" /></svg></span>
           {t.seo.related}
         </h2>
         <ul class="related">
           {related.map((other) => (
             <li>
               <a href={path(lang, other.country, other.doc)}>
-                <svg width="24" height="17" viewBox="0 0 32 22"><use href={`#fl-${other.flag}`} /></svg>
+                <svg width="24" height="17" viewBox="0 0 32 22" aria-hidden="true"><use href={`#fl-${other.flag}`} /></svg>
                 {t.docTitle[other.preset]}
               </a>
             </li>
@@ -358,7 +358,7 @@ const schema = [
     {faq.length > 0 && (
       <section>
         <h2>
-          <span class="ico"><svg width="22" height="22"><use href="#ic-question" /></svg></span>
+          <span class="ico"><svg width="22" height="22" aria-hidden="true"><use href="#ic-question" /></svg></span>
           {t.seo.faq}
         </h2>
         {faq.map((item) => (
@@ -372,7 +372,7 @@ const schema = [
 
     <section class="agent-block">
       <h2>
-        <span class="ico"><svg width="22" height="22"><use href="#ic-layers" /></svg></span>
+        <span class="ico"><svg width="22" height="22" aria-hidden="true"><use href="#ic-layers" /></svg></span>
         {t.agent.heading}
       </h2>
       <p>{t.agent.lead}</p>
@@ -380,7 +380,7 @@ const schema = [
         <CopyButton client:load payload={prompt} label={t.agent.copyPrompt} done={t.agent.copied} />
         <CopyButton client:load payload={card} label={t.agent.copySpec} done={t.agent.copied} variant="quiet" />
         <a class="chip" href={path(lang, "skills")}>
-          <svg width="18" height="18"><use href="#ic-spark" /></svg>
+          <svg width="18" height="18" aria-hidden="true"><use href="#ic-spark" /></svg>
           {t.agent.openSkills}
         </a>
       </div>
@@ -389,7 +389,7 @@ const schema = [
 
     <section>
       <h2>
-        <span class="ico"><svg width="22" height="22"><use href="#ic-shield" /></svg></span>
+        <span class="ico"><svg width="22" height="22" aria-hidden="true"><use href="#ic-shield" /></svg></span>
         {t.seo.sources}
       </h2>
       <ul>

@@ -28,12 +28,12 @@ export default function ModeTabs({ makeLabel, checkLabel, check, children }: Pro
       <div class="mode-tabs" role="tablist" data-testid="mode-tabs">
         <button role="tab" type="button" aria-selected={mode === "make"}
           data-testid="tab-make" onClick={() => setMode("make")}>
-          <svg width="17" height="17"><use href="#ic-camera" /></svg>
+          <svg width="17" height="17" aria-hidden="true"><use href="#ic-camera" /></svg>
           {makeLabel}
         </button>
         <button role="tab" type="button" aria-selected={mode === "check"}
           data-testid="tab-check" onClick={() => setMode("check")}>
-          <svg width="17" height="17"><use href="#ic-check" /></svg>
+          <svg width="17" height="17" aria-hidden="true"><use href="#ic-check" /></svg>
           {checkLabel}
         </button>
       </div>

@@ -46,7 +46,7 @@ const schema = [
   <h1>{t.hub.h1}</h1>
   <p class="answer">{t.hub.lead}</p>
   <p class="verified">
-    <svg width="16" height="16"><use href="#ic-globe" /></svg>
+    <svg width="16" height="16" aria-hidden="true"><use href="#ic-globe" /></svg>
     {t.hub.stats({ docs: CATALOG.length, langs: LANGS.length })}
   </p>
 
@@ -55,7 +55,7 @@ const schema = [
     <section class="country-group">
       <h2 class="country-head">
         <a href={path(lang, group.slug)}>
-          <svg class="flag" viewBox="0 0 32 22"><use href={`#fl-${group.flag}`} /></svg>
+          <svg class="flag" viewBox="0 0 32 22" aria-hidden="true"><use href={`#fl-${group.flag}`} /></svg>
           {t.country[group.nameKey]}
         </a>
       </h2>
@@ -67,7 +67,7 @@ const schema = [
             <li>
               <a class="hub-card" href={path(lang, entry.country, entry.doc)}>
                 <span class="hub-top">
-                  <svg class="doc-ico" width="21" height="21" style="margin-inline-start:0"><use href={`#${kindIcon}`} /></svg>
+                  <svg class="doc-ico" width="21" height="21" style="margin-inline-start:0" aria-hidden="true"><use href={`#${kindIcon}`} /></svg>
                 </span>
                 <span class="nm">{t.docShort[entry.preset]}</span>
                 <span class="sz">{sizeLabels(p, entry, t.unit).headline}</span>
@@ -82,16 +82,16 @@ const schema = [
   </div>
 
   <ul class="trust">
-    <li><svg width="17" height="17"><use href="#ic-shield" /></svg>{t.trust.inBrowser}</li>
-    <li><svg width="17" height="17"><use href="#ic-check" /></svg>{t.trust.noServer}</li>
-    <li><svg width="17" height="17"><use href="#ic-check" /></svg>{t.trust.noWatermark}</li>
-    <li><svg width="17" height="17"><use href="#ic-check" /></svg>{t.trust.noSignup}</li>
+    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-shield" /></svg>{t.trust.inBrowser}</li>
+    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-check" /></svg>{t.trust.noServer}</li>
+    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-check" /></svg>{t.trust.noWatermark}</li>
+    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-check" /></svg>{t.trust.noSignup}</li>
   </ul>
 
   <div class="seo" style="margin-top:44px">
     <section>
       <h2>
-        <span class="ico"><svg width="22" height="22"><use href="#ic-sun" /></svg></span>
+        <span class="ico"><svg width="22" height="22" aria-hidden="true"><use href="#ic-sun" /></svg></span>
         {t.seo.howToShoot}
       </h2>
       <p>{t.seo.howToShootBody}</p>
@@ -99,7 +99,7 @@ const schema = [
 
     <section>
       <h2>
-        <span class="ico"><svg width="22" height="22"><use href="#ic-question" /></svg></span>
+        <span class="ico"><svg width="22" height="22" aria-hidden="true"><use href="#ic-question" /></svg></span>
         {t.seo.faq}
       </h2>
       {t.hub.faq.map((item) => (

@@ -135,7 +135,7 @@ export default function ModelTable({ strings, bestFor, kinds }: Props) {
                 <td class="row-actions">
                   {!row?.cached && !busy && (
                     <button class="mini" type="button" onClick={() => fetchModel(model)}>
-                      <svg width="15" height="15"><use href="#ic-download" /></svg>
+                      <svg width="15" height="15" aria-hidden="true"><use href="#ic-download" /></svg>
                       {strings.download}
                     </button>
                   )}
