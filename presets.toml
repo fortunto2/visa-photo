@@ -154,20 +154,26 @@ photo_count = 4
 format = "jpeg"
 notes = "White bg, 33x48mm, face 28-33mm"
 
+# NOT verified against an official source, unlike the rest: the Passport Seva specification is
+# shown at the upload step, behind a login. Four independent checkers agree on 630x810 exactly,
+# 250 KB, and a face filling 80-85 % since the September 2025 change (it was 70-80 %). What we
+# had — 60 % — was below even the old floor, so leaving it was not the safe option. 81 % sits
+# just inside the new range. Worth re-checking against the portal itself.
 [in_passport]
 name = "India Passport"
-digital_width = 600
-digital_height = 750
-max_file_size_kb = 300
+digital_width = 630
+digital_height = 810
+min_file_size_kb = 10
+max_file_size_kb = 250
 print_width_mm = 35
 print_height_mm = 45
-face_height_percent = 60.0
-face_top_margin_percent = 11.0
-eye_line_from_bottom_percent = 60.0
+face_height_percent = 81.0
+face_top_margin_percent = 5.0
+eye_line_from_bottom_percent = 58.5
 background = "white"
 photo_count = 4
 format = "jpeg"
-notes = "White bg, 35x45mm or 51x51mm"
+notes = "Pure white bg, 35x45mm. Portal wants exactly 630x810 px under 250 KB, face 80-85% of the height."
 
 [jp_passport]
 name = "Japan Passport"
