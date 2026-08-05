@@ -284,6 +284,13 @@ const en: Dict = {
           "The source code is public so this can be checked rather than taken on trust.",
       },
       {
+        q: "Does the photo still carry my location and phone model?",
+        a: "No. A phone photo holds EXIF metadata — GPS coordinates of where it was taken, the " +
+          "camera model, the date, sometimes an owner name — and consulates receive all of it " +
+          "when you send the original. The file this tool produces is encoded from scratch, so " +
+          "none of that survives: only the pixel data, a colour profile and the print resolution.",
+      },
+      {
         q: "Can I print these at home?",
         a: "Yes. Every document page exports an A4 sheet as PNG and PDF with the right number of " +
           "copies at the correct size. Print at 100 % scale — “fit to page” silently resizes them.",
