@@ -68,6 +68,21 @@ export const onRequest = async ({ request, next }: PagesContext): Promise<Respon
   if (request.method !== "GET" && request.method !== "HEAD") return next();
 
   const url = new URL(request.url);
+
+  // A direct hit on the twin. Same facts as the page, at a second address — exactly the shape of
+  // a duplicate, so keep it out of the index and let the page it mirrors do the ranking. The
+  // header is the only way to say this: a `.md` file has nowhere to put a robots meta tag.
+  //
+  // Deliberately NOT applied to the negotiated response further down. That one is served at the
+  // page's own canonical URL, and marking it noindex would deindex the page for anyone whose
+  // crawler happened to ask for markdown.
+  if (url.pathname.endsWith(".md")) {
+    const direct = await next();
+    const marked = new Response(direct.body, direct);
+    marked.headers.set("x-robots-tag", "noindex");
+    return marked;
+  }
+
   const twin = markdownPath(url.pathname);
   // Assets — wasm, js, css, images — can never have a twin, so they pass through untouched and
   // keep one cache entry each. Marking them `Vary: Accept` would split the 24 MB model file into
