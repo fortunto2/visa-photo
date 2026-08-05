@@ -1,3 +1,5 @@
+import { FACE_MODEL, assetBytes, cachedModelIds, ensureModel } from "./background";
+
 /**
  * Where the face sits in a photo, in the terms a document specification uses.
  *
@@ -48,8 +50,12 @@ async function loadLandmarker() {
   const { FaceLandmarker, FilesetResolver } = await import("@mediapipe/tasks-vision");
   const fileset = await FilesetResolver.forVisionTasks("/mediapipe");
 
+  // Loaded from the same IndexedDB store as the background models rather than by URL, so the
+  // models page can show it, pre-download it and delete it like everything else.
+  const buffer = await assetBytes(FACE_MODEL);
+
   landmarker = await FaceLandmarker.createFromOptions(fileset, {
-    baseOptions: { modelAssetPath: "/models/face_landmarker.task", delegate: "CPU" },
+    baseOptions: { modelAssetBuffer: new Uint8Array(buffer), delegate: "CPU" },
     runningMode: "IMAGE",
     numFaces: 1,
     outputFaceBlendshapes: false,
@@ -57,16 +63,10 @@ async function loadLandmarker() {
   return landmarker;
 }
 
-/** True once the model is in the HTTP cache, so the UI can act without a wait. */
+/** Whether this browser already holds the model, so alignment can run without a wait. */
 export async function isFaceModelCached(): Promise<boolean> {
   if (landmarker) return true;
-  if (typeof caches === "undefined") return false;
-  try {
-    const hit = await caches.match("/models/face_landmarker.task");
-    return Boolean(hit);
-  } catch {
-    return false;
-  }
+  return (await cachedModelIds()).has(FACE_MODEL.id);
 }
 
 /**
@@ -86,6 +86,18 @@ function fitForDetection(img: HTMLImageElement): HTMLCanvasElement {
   canvas.height = Math.round(img.naturalHeight * ratio);
   canvas.getContext("2d")!.drawImage(img, 0, 0, canvas.width, canvas.height);
   return canvas;
+}
+
+/**
+ * Starts the download without waiting for it.
+ *
+ * Called when the file picker opens: a person spends seconds choosing a photo, and that is
+ * time the model can spend arriving instead of making them wait afterwards.
+ */
+export function prefetchFaceModel(): void {
+  void ensureModel(FACE_MODEL).catch(() => {
+    /* a failed prefetch just means the real request pays the cost */
+  });
 }
 
 export async function findFace(img: HTMLImageElement): Promise<FacePlacement | null> {

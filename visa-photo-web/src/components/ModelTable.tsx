@@ -1,12 +1,13 @@
 import { useEffect, useState } from "preact/hooks";
 import {
+  ALL_ASSETS,
   MODELS,
   ensureModel,
   cachedModelIds,
   removeModel,
   getPreferredModel,
   setPreferredModel,
-  type BgModel,
+  type CachedAsset,
 } from "../lib/background";
 import { trackModelDownloaded } from "../lib/analytics";
 
@@ -29,6 +30,8 @@ interface Props {
   strings: TableStrings;
   /** id → prose, written per locale */
   bestFor: Record<string, string>;
+  /** label for the kind column, e.g. background vs face */
+  kinds: Record<string, string>;
 }
 
 type Row = { cached: boolean; progress: number | null };
@@ -40,7 +43,7 @@ type Row = { cached: boolean; progress: number | null };
  * a settings page that settles nothing. Each row can now fetch its model ahead of time, drop
  * it again, and be made the one the background button starts with.
  */
-export default function ModelTable({ strings, bestFor }: Props) {
+export default function ModelTable({ strings, bestFor, kinds }: Props) {
   const [rows, setRows] = useState<Record<string, Row>>({});
   const [preferred, setPreferred] = useState<string>(MODELS[0].id);
 
@@ -50,7 +53,7 @@ export default function ModelTable({ strings, bestFor }: Props) {
     // One key read for all five, rather than five full-buffer reads.
     cachedModelIds().then((ids) => {
       if (!alive) return;
-      setRows(Object.fromEntries(MODELS.map((m) => [m.id, { cached: ids.has(m.id), progress: null }])));
+      setRows(Object.fromEntries(ALL_ASSETS.map((m) => [m.id, { cached: ids.has(m.id), progress: null }])));
     });
     return () => {
       alive = false;
@@ -60,7 +63,7 @@ export default function ModelTable({ strings, bestFor }: Props) {
   const patch = (id: string, next: Partial<Row>) =>
     setRows((prev) => ({ ...prev, [id]: { ...(prev[id] ?? { cached: false, progress: null }), ...next } }));
 
-  const fetchModel = async (model: BgModel) => {
+  const fetchModel = async (model: CachedAsset) => {
     patch(model.id, { progress: 0 });
     try {
       await ensureModel(model, (loaded, total) =>
@@ -73,12 +76,12 @@ export default function ModelTable({ strings, bestFor }: Props) {
     }
   };
 
-  const drop = async (model: BgModel) => {
+  const drop = async (model: CachedAsset) => {
     await removeModel(model.id);
     patch(model.id, { cached: false, progress: null });
   };
 
-  const choose = (model: BgModel) => {
+  const choose = (model: CachedAsset) => {
     setPreferredModel(model.id);
     setPreferred(model.id);
   };
@@ -96,10 +99,13 @@ export default function ModelTable({ strings, bestFor }: Props) {
           </tr>
         </thead>
         <tbody>
-          {MODELS.map((model) => {
+          {ALL_ASSETS.map((model) => {
             const row = rows[model.id];
             const busy = row?.progress !== null && row?.progress !== undefined;
-            const isDefault = preferred === model.id;
+            // Only background models compete for "default"; the face landmarker is the only
+            // one of its kind, so offering a choice there would be meaningless.
+            const selectable = model.kind === "background";
+            const isDefault = selectable && preferred === model.id;
 
             return (
               <tr key={model.id} class={isDefault ? "is-default" : undefined}>
@@ -108,7 +114,12 @@ export default function ModelTable({ strings, bestFor }: Props) {
                   {isDefault && <em class="badge">{strings.isDefault}</em>}
                 </td>
                 <td class="num">{model.sizeMb} {strings.mb}</td>
-                <td>{bestFor[model.id] ?? ""}</td>
+                <td>
+                  {bestFor[model.id] ?? ""}
+                  {model.kind !== "background" && (
+                    <em class="kind-tag">{kinds[model.kind] ?? model.kind}</em>
+                  )}
+                </td>
                 <td>
                   {busy ? (
                     <span class="status is-busy">{strings.downloading} {row!.progress}%</span>
@@ -128,7 +139,7 @@ export default function ModelTable({ strings, bestFor }: Props) {
                       {strings.download}
                     </button>
                   )}
-                  {row?.cached && !isDefault && (
+                  {row?.cached && selectable && !isDefault && (
                     <button class="mini primary" type="button" onClick={() => choose(model)}>
                       {strings.makeDefault}
                     </button>

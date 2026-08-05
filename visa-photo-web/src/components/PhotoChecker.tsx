@@ -1,6 +1,9 @@
-import { useRef, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import type { Preset } from "../lib/presets";
-import { inspectPhoto, type Report } from "../lib/inspect";
+import { inspectPhoto, type Report, type Finding } from "../lib/inspect";
+import { findFace, isFaceModelCached, prefetchFaceModel } from "../lib/face";
+import { measureAgainst } from "../lib/autocrop";
+import { onHandOff, takePending } from "../lib/handoff";
 import { track } from "../lib/analytics";
 import type { DocContext } from "../lib/analytics";
 
@@ -17,6 +20,10 @@ export interface CheckStrings {
   fixIt: string;
   labels: Record<string, string>;
   again: string;
+  checkFace: string;
+  checkingFace: string;
+  faceHint: string;
+  noFace: string;
 }
 
 interface Props {
@@ -36,11 +43,14 @@ export default function PhotoChecker({ preset, strings, ctx }: Props) {
   const [report, setReport] = useState<Report | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
+  const [faceRows, setFaceRows] = useState<Finding[] | null>(null);
+  const [facePass, setFacePass] = useState(false);
+  const [faceBusy, setFaceBusy] = useState(false);
+  const [faceMsg, setFaceMsg] = useState<string | null>(null);
   const urlRef = useRef<string | null>(null);
+  const imgRef = useRef<HTMLImageElement | null>(null);
 
-  const accept = (files: FileList | null) => {
-    const file = files?.[0];
-    if (!file || !file.type.startsWith("image/")) return;
+  const inspect = (file: File | Blob, name: string) => {
 
     if (urlRef.current) URL.revokeObjectURL(urlRef.current);
     const url = URL.createObjectURL(file);
@@ -48,6 +58,7 @@ export default function PhotoChecker({ preset, strings, ctx }: Props) {
     setPreview(url);
 
     const img = new Image();
+    imgRef.current = img;
     img.onload = () => {
       const result = inspectPhoto({
         img,
@@ -59,9 +70,76 @@ export default function PhotoChecker({ preset, strings, ctx }: Props) {
       track("photo_checked", {
         ...ctx,
         outcome: result.failed ? "fail" : result.warned ? "warn" : "pass",
+        source: name,
       }, { failed: result.failed });
+      // The picker was open a moment ago; the model may already be on its way.
+      isFaceModelCached().then((ready) => ready && void measureFace());
     };
     img.src = url;
+  };
+
+  const accept = (files: FileList | null) => {
+    const file = files?.[0];
+    if (!file || !file.type.startsWith("image/")) return;
+    inspect(file, "upload");
+  };
+
+  // A photo made by the editor on this page arrives without a second upload.
+  useEffect(() => {
+    // On mount as well as on the event: this island hydrates when its tab becomes visible,
+    // which happens after the editor has already published its photo.
+    const pick = () => {
+      const handed = takePending();
+      if (handed) inspect(handed.blob, "from-editor");
+    };
+    pick();
+    return onHandOff(pick);
+  }, []);
+
+  /**
+   * The second, heavier pass. Kept separate because it costs a 4 MB download and most people
+   * are stopped by a wrong size or a busy background long before the face matters.
+   */
+  const measureFace = async () => {
+    const img = imgRef.current;
+    if (!img) return;
+    setFaceBusy(true);
+    setFaceMsg(null);
+    try {
+      const face = await findFace(img);
+      if (!face) {
+        setFaceMsg(strings.noFace);
+        return;
+      }
+      const m = measureAgainst(face, preset);
+      const within = (a: number, b: number, tol: number) => Math.abs(a - b) <= tol;
+      const rows: Finding[] = [
+        {
+          id: "head-height",
+          verdict: within(m.headPct, m.headTarget, 3) ? "pass" : "fail",
+          value: `${m.headPct.toFixed(1)} %`,
+          expected: `${m.headTarget} % ±3`,
+        },
+        {
+          id: "eye-line",
+          verdict: within(m.eyePct, m.eyeTarget, 3) ? "pass" : "fail",
+          value: `${m.eyePct.toFixed(1)} %`,
+          expected: `${m.eyeTarget} % ±3`,
+        },
+        {
+          id: "tilt",
+          verdict: Math.abs(m.tiltDeg) <= 5 ? "pass" : "warn",
+          value: `${m.tiltDeg.toFixed(1)}°`,
+          expected: "≤ 5°",
+        },
+      ];
+      setFaceRows(rows);
+      setFacePass(rows.every((r) => r.verdict === "pass"));
+    } catch (e) {
+      setFaceMsg(e instanceof Error ? e.message : String(e));
+    } finally {
+      setFaceBusy(false);
+    }
   };
 
   if (!report) {
@@ -73,6 +151,7 @@ export default function PhotoChecker({ preset, strings, ctx }: Props) {
         onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
         onDragLeave={() => setDragging(false)}
         onDrop={(e) => { e.preventDefault(); setDragging(false); accept(e.dataTransfer?.files ?? null); }}
+        onClick={() => void prefetchFaceModel()}
       >
         <span class="drop-icon"><svg width="32" height="32"><use href="#ic-check" /></svg></span>
         <span class="drop-title">{strings.drop}</span>
@@ -125,6 +204,34 @@ export default function PhotoChecker({ preset, strings, ctx }: Props) {
           ))}
         </tbody>
       </table>
+
+      {faceRows ? (
+        <table class="check-table" data-testid="face-table">
+          <tbody>
+            {faceRows.map((f) => (
+              <tr key={f.id} class={`row-${f.verdict}`}>
+                <td>
+                  <svg width="15" height="15" aria-hidden="true">
+                    <use href={f.verdict === "pass" ? "#ic-check" : "#ic-warn"} />
+                  </svg>
+                  {strings.labels[f.id] ?? f.id}
+                </td>
+                <td class="num">{f.value}</td>
+                <td class="num muted">{f.expected}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <div class="face-cta">
+          <button class="btn-dl" type="button" disabled={faceBusy}
+            data-testid="check-face" onClick={measureFace}>
+            <svg width="18" height="18"><use href="#ic-face" /></svg>
+            {faceBusy ? strings.checkingFace : strings.checkFace}
+          </button>
+          <p class="hint">{faceMsg ?? strings.faceHint}</p>
+        </div>
+      )}
 
       <div class="check-actions">
         <button class="btn-reset" type="button" data-testid="check-again"

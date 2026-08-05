@@ -98,6 +98,8 @@ export interface Dict {
     guideChin: string;
     reset: string;
     tip: string;
+    /** closes the loop: check what this tool just produced */
+    checkResult: string;
 
     /** background removal */
     removeBg: string;
@@ -221,6 +223,8 @@ export interface Dict {
     limitsBody: string;
     downloaded: string;
     notDownloaded: string;
+    /** what a non-background model is for */
+    kinds: Record<string, string>;
     /** actions available per row */
     download: string;
     downloading: string;
@@ -269,6 +273,11 @@ export interface Dict {
     notChecked: string;
     notCheckedBody: string;
     fixIt: string;
+    /** the optional, heavier pass that measures the face itself */
+    checkFace: string;
+    checkingFace: string;
+    faceHint: string;
+    noFace: string;
     labels: Record<string, string>;
   };
 

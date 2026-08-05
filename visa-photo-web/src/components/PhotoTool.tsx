@@ -10,8 +10,9 @@ import {
   track, type DocContext,
 } from "../lib/analytics";
 import { removeBackground, cachedModelIds, getPreferredModel, MODELS, type BgModel } from "../lib/background";
-import { findFace, isFaceModelCached } from "../lib/face";
+import { findFace, isFaceModelCached, prefetchFaceModel } from "../lib/face";
 import { placeCrop } from "../lib/autocrop";
+import { handOff } from "../lib/handoff";
 
 export interface ToolStrings {
   dropTitle: string;
@@ -28,6 +29,7 @@ export interface ToolStrings {
   guideChin: string;
   reset: string;
   tip: string;
+  checkResult: string;
   removeBg: string;
   removeBgHint: string;
   bgDone: string;
@@ -275,6 +277,21 @@ export default function PhotoTool({
     }
   };
 
+  /** Sends the current crop to the checker on this page, rather than making them re-upload. */
+  const checkThis = async () => {
+    if (!imgRef.current) return;
+    setBusy(strings.working);
+    try {
+      const blob = await cropAndExport(
+        imgRef.current, preset, cx, cy, scale,
+        levels.brightness, levels.contrast, levels.shadows, false, rotation,
+      );
+      handOff(blob, `${stem()}.jpg`);
+    } finally {
+      setBusy(null);
+    }
+  };
+
   const exportSheet = async () => {
     if (!imgRef.current) return;
     setBusy(strings.working);
@@ -306,7 +323,9 @@ export default function PhotoTool({
         <span class="drop-title">{strings.dropTitle}</span>
         <span class="drop-sub">{strings.dropSub}</span>
 
-        <label class="cta">
+        {/* The dialog is open for seconds while someone hunts for a file; start the 4 MB
+            download now so alignment is instant once they pick one. */}
+        <label class="cta" onClick={() => void prefetchFaceModel()}>
           <svg width="21" height="21"><use href="#ic-upload" /></svg>
           {strings.choose}
           <input type="file" accept="image/*" hidden data-testid="file-input"
@@ -577,6 +596,11 @@ export default function PhotoTool({
         <button class="btn-dl" type="button" disabled={!!busy} data-testid="download-sheet"
           onClick={exportSheet}>
           <svg width="19" height="19"><use href="#ic-print" /></svg>{strings.downloadSheet}
+        </button>
+        <button class="btn-dl" type="button" disabled={!!busy} data-testid="check-this"
+          onClick={checkThis}>
+          <svg width="19" height="19"><use href="#ic-check" /></svg>
+          {strings.checkResult}
         </button>
         <button class="btn-reset" type="button" data-testid="reset"
           onClick={() => { setSrc(null); setOriginal(null); setReady(false); }}>

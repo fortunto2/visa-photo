@@ -169,6 +169,10 @@ const schema = [
           fixIt: t.check.fixIt,
           labels: t.check.labels,
           again: t.tool.reset,
+          checkFace: t.check.checkFace,
+          checkingFace: t.check.checkingFace,
+          faceHint: t.check.faceHint,
+          noFace: t.check.noFace,
         }}
       />
     </div>
@@ -190,6 +194,7 @@ const schema = [
       guideEyes: t.tool.guideEyes(String(p.eye_line_from_bottom_percent)),
       guideChin: t.tool.guideChin,
       reset: t.tool.reset,
+      checkResult: t.tool.checkResult,
       tip: t.tool.tip,
       removeBg: t.tool.removeBg,
       removeBgHint: t.tool.removeBgHint,

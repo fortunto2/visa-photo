@@ -1,4 +1,5 @@
-import { useState } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
+import { onHandOff } from "../lib/handoff";
 import type { ComponentChildren } from "preact";
 
 interface Props {
@@ -18,6 +19,9 @@ interface Props {
  */
 export default function ModeTabs({ makeLabel, checkLabel, check, children }: Props) {
   const [mode, setMode] = useState<"make" | "check">("make");
+
+  // The editor finished something and wants it judged; move the visitor there.
+  useEffect(() => onHandOff(() => setMode("check")), []);
 
   return (
     <>

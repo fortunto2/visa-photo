@@ -34,8 +34,12 @@ interface BackgroundStats {
 }
 
 /**
- * Samples the border only. The top strip and the left/right columns of the upper half are
- * where a plain wall should be; the centre and bottom hold the subject and their shoulders.
+ * Samples the two upper corners only.
+ *
+ * A wider border sounds better and is not: on a correctly framed photo the head nearly touches
+ * the top edge and the shoulders reach the sides, so a border strip measures hair and clothing
+ * and reports a "patterned background" on a photo whose background is plain white. The corners
+ * are the only region that is background at every legal crop.
  */
 function sampleBackground(img: HTMLImageElement): BackgroundStats {
   const w = 160;
@@ -53,12 +57,11 @@ function sampleBackground(img: HTMLImageElement): BackgroundStats {
     lum.push(0.2126 * data[i] + 0.7152 * data[i + 1] + 0.0722 * data[i + 2]);
   };
 
-  const topBand = Math.max(2, Math.round(h * 0.12));
-  const sideBand = Math.max(2, Math.round(w * 0.08));
-  for (let y = 0; y < topBand; y++) for (let x = 0; x < w; x++) push(x, y);
-  for (let y = topBand; y < Math.round(h * 0.55); y++) {
-    for (let x = 0; x < sideBand; x++) push(x, y);
-    for (let x = w - sideBand; x < w; x++) push(x, y);
+  const cornerW = Math.max(3, Math.round(w * 0.18));
+  const cornerH = Math.max(3, Math.round(h * 0.14));
+  for (let y = 0; y < cornerH; y++) {
+    for (let x = 0; x < cornerW; x++) push(x, y);
+    for (let x = w - cornerW; x < w; x++) push(x, y);
   }
 
   const mean = lum.reduce((a, b) => a + b, 0) / lum.length;

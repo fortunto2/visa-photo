@@ -39,6 +39,7 @@ const en: Dict = {
     guideEyes: (pct) => `eyes ${pct} %`,
     guideChin: "chin",
     reset: "Start over",
+    checkResult: "Check this result",
     tip: "Drag to reposition · scroll to zoom",
 
     removeBg: "Make the background white",
@@ -125,6 +126,7 @@ const en: Dict = {
       u2net: "Busy backgrounds where the light model bleeds.",
       u2net_human_seg: "Trained on people: the best one for hair and glasses.",
       isnet: "Fine detail, at 1024 px input instead of 320.",
+      face_landmarker: "Finds the face so the crop lands where the document wants it, and measures head height for the checker.",
     },
     storage: "Where the model is kept",
     storageBody:
@@ -134,6 +136,7 @@ const en: Dict = {
     limitsBody:
       "A patterned wall, a shadow behind your head, or clothing the colour of the wall will defeat every model here. " +
       "Standing a metre away from a plain wall beats any amount of megabytes.",
+    kinds: { face: "face detection" },
     downloaded: "Downloaded",
     notDownloaded: "Not yet",
     download: "Download",
@@ -205,6 +208,10 @@ const en: Dict = {
       "right shape and weight on a plain enough background — not that an application will be " +
       "accepted.",
     fixIt: "Fix it here",
+    checkFace: "Also check the face",
+    checkingFace: "Measuring the face…",
+    faceHint: "Head height, eye line and tilt. Downloads a 4 MB model once.",
+    noFace: "No face found in this photo",
     labels: {
       dimensions: "Pixel size",
       ratio: "Aspect ratio",
@@ -212,6 +219,9 @@ const en: Dict = {
       format: "Format",
       "bg-brightness": "Background brightness",
       "bg-even": "Background evenness",
+      "head-height": "Head height",
+      "eye-line": "Eye line from bottom",
+      tilt: "Head tilt",
     },
   },
 

@@ -311,6 +311,12 @@ h1 {
 }
 .retry-q { margin: 0; font-size: 15.5px; font-weight: 650; color: var(--ink); }
 .model-name { display: flex; align-items: center; gap: 9px; }
+.kind-tag {
+  display: inline-block; margin-inline-start: 8px; font-style: normal;
+  font-size: 11.5px; font-weight: 700; letter-spacing: .03em;
+  background: var(--amber-soft); color: var(--amber);
+  border-radius: var(--r-pill); padding: 3px 9px;
+}
 .badge {
   font-style: normal; font-size: 11.5px; font-weight: 700; letter-spacing: .03em;
   background: var(--teal-soft); color: var(--teal);
@@ -400,6 +406,8 @@ h1 {
 .check-table .row-warn td:first-child svg { color: var(--amber); }
 .check-table .row-fail td:first-child { color: var(--amber); }
 .check-table .row-fail td:first-child svg { color: var(--amber); }
+.face-cta { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+.face-cta .hint { text-align: start; }
 .check-actions { display: flex; gap: 14px; }
 
 /* ── spec card ──────────────────────────────────────────── */

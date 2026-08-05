@@ -8,6 +8,33 @@ export interface BgModel {
   quality: number;
 }
 
+/**
+ * Anything downloadable that lives in the same cache.
+ *
+ * The face landmarker is not a background model — different runtime, different job — but it is
+ * the same thing from the visitor's side: a large file their browser keeps. It belongs in the
+ * same list, with the same download, default and delete controls, or it is a hidden 15 MB
+ * nobody can see or remove.
+ */
+export interface CachedAsset {
+  id: string;
+  name: string;
+  sizeMb: number;
+  url: string;
+  kind: "background" | "face";
+}
+
+export const FACE_MODEL: CachedAsset = {
+  id: "face_landmarker",
+  name: "Face Landmarker",
+  sizeMb: 4,
+  url: "/models/face_landmarker.task",
+  kind: "face",
+};
+
+/** Everything the browser may end up holding, in the order the page lists it. */
+export const ALL_ASSETS: CachedAsset[] = [];
+
 export const MODELS: BgModel[] = [
   {
     id: "u2netp", name: "U2Net-P", sizeMb: 5,
@@ -40,6 +67,17 @@ export const MODELS: BgModel[] = [
     quality: 3,
   },
 ];
+
+ALL_ASSETS.push(
+  ...MODELS.map((m) => ({
+    id: m.id,
+    name: m.name,
+    sizeMb: m.sizeMb,
+    url: m.url,
+    kind: "background" as const,
+  })),
+  FACE_MODEL,
+);
 
 // IndexedDB cache for downloaded models
 const DB_NAME = "visa-photo-models";
@@ -116,7 +154,7 @@ async function deleteCachedModel(id: string): Promise<void> {
  * Pulled apart so the models page can fetch one ahead of time, over wifi, before it is needed.
  */
 export async function ensureModel(
-  model: BgModel,
+  model: { id: string; url: string; sizeMb: number },
   onProgress?: (loaded: number, total: number) => void,
 ): Promise<void> {
   if (await isModelCached(model.id)) return;
@@ -189,6 +227,16 @@ const DEFAULT_MODEL_KEY = "visaspec:default-model";
  * Which model the tool reaches for first. Stored per browser, because the answer depends on
  * the device's connection and on what the person has already downloaded — not on the site.
  */
+/** Bytes for any cached asset, downloading first if needed. Used by the face landmarker. */
+export async function assetBytes(asset: CachedAsset): Promise<ArrayBuffer> {
+  const cached = await getCachedModel(asset.id);
+  if (cached) return cached instanceof Blob ? cached.arrayBuffer() : cached;
+  await ensureModel(asset);
+  const stored = await getCachedModel(asset.id);
+  if (!stored) throw new Error(`${asset.id} vanished after download`);
+  return stored instanceof Blob ? stored.arrayBuffer() : stored;
+}
+
 export function getPreferredModel(): BgModel {
   if (typeof localStorage !== "undefined") {
     const id = localStorage.getItem(DEFAULT_MODEL_KEY);
