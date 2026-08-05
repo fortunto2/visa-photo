@@ -351,13 +351,22 @@ fn app() -> Element {
                                     let originals_dir = project_dir().join("photos/originals");
                                     let _ = std::fs::create_dir_all(&originals_dir);
                                     let mut current = photos.read().clone();
+                                    // Normalize every import to sRGB. iPhone HEIC/JPEG are usually
+                                    // Display P3; the `image` crate ignores ICC profiles, so P3 pixel
+                                    // values get read as sRGB and look washed-out/dull. `sips --matchTo`
+                                    // does a real gamut conversion. macOS only; elsewhere use file as-is.
+                                    const SRGB_ICC: &str = "/System/Library/ColorSync/Profiles/sRGB Profile.icc";
                                     for p in paths {
-                                        let ext = p.extension().and_then(|e| e.to_str()).unwrap_or("");
-                                        let final_path = if ext.eq_ignore_ascii_case("heic") {
-                                            let out = originals_dir.join(p.file_stem().unwrap()).with_extension("png");
-                                            let _ = std::process::Command::new("sips")
-                                                .args(["-s", "format", "png"]).arg(&p).arg("--out").arg(&out).output();
-                                            out
+                                        let ext = p.extension().and_then(|e| e.to_str()).unwrap_or("").to_lowercase();
+                                        let final_path = if cfg!(target_os = "macos") {
+                                            let out_ext = if ext == "heic" || ext.is_empty() { "png" } else { ext.as_str() };
+                                            let fmt = if out_ext == "png" { "png" } else { "jpeg" };
+                                            let out = originals_dir.join(p.file_stem().unwrap()).with_extension(out_ext);
+                                            let ok = std::process::Command::new("sips")
+                                                .args(["-s", "format", fmt, "-s", "formatOptions", "95", "--matchTo", SRGB_ICC])
+                                                .arg(&p).arg("--out").arg(&out).output()
+                                                .map(|o| o.status.success()).unwrap_or(false);
+                                            if ok { out } else { p }
                                         } else { p };
                                         current.push(final_path);
                                     }
@@ -681,8 +690,14 @@ fn app() -> Element {
                                         let photo_path = match photos.read().get(idx).cloned() { Some(p) => p, None => return };
                                         let rotation = rotations.read().get(&photo_path).copied().unwrap_or(0);
                                         let engine = active_bg_engine.read().clone();
-                                        let stem = photo_path.file_stem().unwrap().to_string_lossy().to_string();
-                                        let out = photo_path.parent().unwrap().join(format!("{stem}_nobg.png"));
+                                        let stem = photo_path.file_stem()
+                                            .map(|s| s.to_string_lossy().to_string())
+                                            .unwrap_or_else(|| "photo".into());
+                                        let parent = match photo_path.parent() {
+                                            Some(p) => p.to_path_buf(),
+                                            None => { status.set("Bad photo path".into()); return; }
+                                        };
+                                        let out = parent.join(format!("{stem}_nobg.png"));
 
                                         if engine == "apple_vision" {
                                             status.set("Removing bg (Vision)...".into());

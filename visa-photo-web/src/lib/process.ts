@@ -159,6 +159,102 @@ export function generatePrintPdf(
   });
 }
 
+/** Generate A4 print layout with multiple different photos */
+export function generateMultiPhotoPrintLayout(
+  preset: Preset,
+  processedBlobs: Blob[],
+): Promise<Blob> {
+  return new Promise((resolve) => {
+    const dpi = 300;
+    const a4W = Math.round(210 / 25.4 * dpi);
+    const a4H = Math.round(297 / 25.4 * dpi);
+    const photoW = Math.round(preset.print_width_mm / 25.4 * dpi);
+    const photoH = Math.round(preset.print_height_mm / 25.4 * dpi);
+    const gap = 20;
+
+    const cols = Math.floor((a4W - 40) / (photoW + gap));
+    const rows = Math.floor((a4H - 40) / (photoH + gap));
+    const maxSlots = cols * rows;
+    const marginX = Math.floor((a4W - cols * photoW - (cols - 1) * gap) / 2);
+    const marginY = Math.floor((a4H - rows * photoH - (rows - 1) * gap) / 2);
+
+    const canvas = document.createElement("canvas");
+    canvas.width = a4W;
+    canvas.height = a4H;
+    const ctx = canvas.getContext("2d")!;
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, a4W, a4H);
+
+    // Load all images, then draw
+    let loaded = 0;
+    const images: HTMLImageElement[] = [];
+    processedBlobs.forEach((blob, i) => {
+      const img = new Image();
+      img.onload = () => {
+        images[i] = img;
+        loaded++;
+        if (loaded === processedBlobs.length) {
+          // Fill slots cycling through available photos
+          let placed = 0;
+          for (let row = 0; row < rows && placed < maxSlots; row++) {
+            for (let col = 0; col < cols && placed < maxSlots; col++) {
+              const srcImg = images[placed % images.length];
+              ctx.drawImage(srcImg, marginX + col * (photoW + gap), marginY + row * (photoH + gap), photoW, photoH);
+              placed++;
+            }
+          }
+          canvas.toBlob((b) => resolve(b!), "image/png");
+        }
+      };
+      img.src = URL.createObjectURL(blob);
+    });
+  });
+}
+
+/** Generate A4 multi-photo PDF */
+export function generateMultiPhotoPdf(
+  preset: Preset,
+  processedBlobs: Blob[],
+): Promise<Blob> {
+  return new Promise((resolve) => {
+    let loaded = 0;
+    const dataUrls: string[] = [];
+    processedBlobs.forEach((blob, i) => {
+      const img = new Image();
+      img.onload = () => {
+        const c = document.createElement("canvas");
+        c.width = preset.digital_width;
+        c.height = preset.digital_height;
+        c.getContext("2d")!.drawImage(img, 0, 0, preset.digital_width, preset.digital_height);
+        dataUrls[i] = c.toDataURL("image/jpeg", 0.95);
+        loaded++;
+        if (loaded === processedBlobs.length) {
+          const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+          const pageW = 210, pageH = 297;
+          const pw = preset.print_width_mm, ph = preset.print_height_mm;
+          const gap = 5;
+          const cols = Math.floor((pageW - 10) / (pw + gap));
+          const rows = Math.floor((pageH - 10) / (ph + gap));
+          const maxSlots = cols * rows;
+          const mx = (pageW - cols * pw - (cols - 1) * gap) / 2;
+          const my = (pageH - rows * ph - (rows - 1) * gap) / 2;
+
+          let placed = 0;
+          for (let row = 0; row < rows && placed < maxSlots; row++) {
+            for (let col = 0; col < cols && placed < maxSlots; col++) {
+              const du = dataUrls[placed % dataUrls.length];
+              pdf.addImage(du, "JPEG", mx + col * (pw + gap), my + row * (ph + gap), pw, ph);
+              placed++;
+            }
+          }
+          resolve(pdf.output("blob"));
+        }
+      };
+      img.src = URL.createObjectURL(blob);
+    });
+  });
+}
+
 /** Auto-enhance: analyze image and return suggested adjustments */
 export function autoEnhance(img: HTMLImageElement): { brightness: number; contrast: number; shadows: number } {
   const canvas = document.createElement("canvas");

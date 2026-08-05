@@ -5,3 +5,6 @@ photos/processed/
 models/*.onnx
 models/photos/
 tools/rembg-vision
+
+# Astro generated types (root-level, the nested one covers visa-photo-web/)
+.astro/

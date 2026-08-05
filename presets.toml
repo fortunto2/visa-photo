@@ -84,7 +84,7 @@ notes = "Light grey or cream bg, 35x45mm, head 29-34mm"
 
 # ── Canada ──
 [ca_passport]
-name = "Canada Passport"
+name = "Canada Passport / Visa / PR"
 digital_width = 420
 digital_height = 540
 max_file_size_kb = 500

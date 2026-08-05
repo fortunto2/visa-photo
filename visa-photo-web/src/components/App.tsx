@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback } from "preact/hooks";
 import { PRESETS, PRESET_KEYS } from "../lib/presets";
 import { containerForImage, calcGuides } from "../lib/crop";
-import { cropAndExport, generatePrintLayout, generatePrintPdf, autoEnhance } from "../lib/process";
+import { cropAndExport, generatePrintLayout, generatePrintPdf, generateMultiPhotoPrintLayout, generateMultiPhotoPdf, autoEnhance } from "../lib/process";
 import { removeBackground, MODELS, type BgModel } from "../lib/background";
 
 interface Photo {
@@ -29,6 +29,7 @@ export default function App() {
   const [dragging, setDragging] = useState(false);
   const [tab, setTab] = useState<"photos" | "settings">("photos");
   const [activeModel, setActiveModel] = useState<BgModel>(MODELS[0]);
+  const [printSelection, setPrintSelection] = useState<Set<number>>(new Set());
   const imgRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -70,6 +71,35 @@ export default function App() {
     setCropCx(Math.max(0, Math.min(1, (e.clientX - rect.left) / contW)));
     setCropCy(Math.max(0, Math.min(1, (e.clientY - rect.top) / contH)));
   }, [contW, contH]);
+
+  const togglePrintSelect = (idx: number) => {
+    setPrintSelection((prev) => {
+      const next = new Set(prev);
+      if (next.has(idx)) next.delete(idx); else next.add(idx);
+      return next;
+    });
+  };
+
+  const handlePrintA4 = async () => {
+    if (printSelection.size === 0) { setStatus("Select photos for A4 layout"); return; }
+    setStatus(`Processing ${printSelection.size} photos for A4...`);
+    try {
+      const blobs: Blob[] = [];
+      for (const idx of printSelection) {
+        const photo = photos[idx];
+        const tempImg = new Image();
+        await new Promise<void>((resolve) => { tempImg.onload = () => resolve(); tempImg.src = photo.url; });
+        const blob = await cropAndExport(tempImg, pr, 0.5, 0.4, 1.0, brightness, contrast, shadows, usePng, photo.rotation);
+        blobs.push(blob);
+      }
+      const stem = personName.trim() || "photos";
+      const pngBlob = await generateMultiPhotoPrintLayout(pr, blobs);
+      download(pngBlob, `${stem}_${preset}_A4.png`);
+      const pdfBlob = await generateMultiPhotoPdf(pr, blobs);
+      download(pdfBlob, `${stem}_${preset}_A4.pdf`);
+      setStatus(`A4 layout saved! ${printSelection.size} photos`);
+    } catch (e: any) { setStatus(`Error: ${e.message}`); }
+  };
 
   const handleSave = async () => {
     if (!currentPhoto || !imgRef.current) return;
@@ -115,6 +145,10 @@ export default function App() {
           <p class="text-[11px] text-gray-500">Free AI biometric photo tool</p>
         </div>
         <div class="flex gap-4 items-center">
+          <a href="/print"
+            class="px-3 py-1.5 text-[11px] rounded-lg bg-white/5 border border-white/10 text-gray-300 hover:bg-rose-500/10 hover:border-rose-500/30 hover:text-rose-400 transition-all">
+            Print Layout
+          </a>
           <a href="https://github.com/fortunto2/visa-photo/releases/latest" target="_blank"
             class="text-[11px] text-gray-400 hover:text-rose-400 transition-colors">
             Download Desktop
@@ -189,15 +223,26 @@ export default function App() {
                     {photos.filter((p) => !p.name.includes("_nobg") && !p.name.includes("_alpha")).map((p) => {
                       const idx = photos.indexOf(p);
                       return (
-                        <button key={p.url} onClick={() => { setSelected(idx); setCropCx(0.5); setCropCy(0.4); }}
-                          class={`block w-full text-left px-3 py-1.5 rounded-lg text-[11px] truncate transition-all ${selected === idx
-                            ? "bg-white/10 text-white border border-rose-500/50"
-                            : "text-gray-500 hover:bg-white/5 hover:text-gray-300 border border-transparent"}`}>
-                          {p.name}
-                        </button>
+                        <div key={p.url} class="flex items-center gap-1.5">
+                          <input type="checkbox" checked={printSelection.has(idx)}
+                            onChange={() => togglePrintSelect(idx)}
+                            class="w-3 h-3 accent-rose-500 flex-shrink-0 cursor-pointer" />
+                          <button onClick={() => { setSelected(idx); setCropCx(0.5); setCropCy(0.4); }}
+                            class={`flex-1 text-left px-2 py-1.5 rounded-lg text-[11px] truncate transition-all ${selected === idx
+                              ? "bg-white/10 text-white border border-rose-500/50"
+                              : "text-gray-500 hover:bg-white/5 hover:text-gray-300 border border-transparent"}`}>
+                            {p.name}
+                          </button>
+                        </div>
                       );
                     })}
                   </div>
+                  {printSelection.size > 0 && (
+                    <button onClick={handlePrintA4}
+                      class={btnAmber + " w-full mt-2"}>
+                      Print A4 ({printSelection.size} photos)
+                    </button>
+                  )}
                 </div>
               </>
             ) : (

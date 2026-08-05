@@ -74,7 +74,7 @@ impl BgRemover {
             .map_err(|e| format!("Tensor: {e}"))?;
 
         let t0 = std::time::Instant::now();
-        let mut session = self.session.lock().unwrap();
+        let mut session = self.session.lock().unwrap_or_else(|e| e.into_inner());
         let outputs = session
             .run(ort::inputs![self.input_name.as_str() => tensor])
             .map_err(|e| format!("Inference: {e}"))?;
@@ -84,7 +84,10 @@ impl BgRemover {
         let mask_array = mask_output.try_extract_array::<f32>()
             .map_err(|e| format!("Extract mask: {e}"))?;
 
-        let mask_slice = mask_array.as_slice().unwrap();
+        // CoreML/ORT can return a non-standard memory layout, so as_slice()
+        // may be None. Collect in logical row-major order (matches idx = y*sz + x)
+        // instead of unwrapping — an unwrap here aborts the whole process.
+        let mask_slice: Vec<f32> = mask_array.iter().copied().collect();
         let min_val = mask_slice.iter().cloned().fold(f32::INFINITY, f32::min);
         let max_val = mask_slice.iter().cloned().fold(f32::NEG_INFINITY, f32::max);
         let range = (max_val - min_val).max(1e-6);
