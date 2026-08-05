@@ -57,6 +57,8 @@ export interface Dict {
   /** country page */
   answer: (v: { w: number; h: number; kb: number; format: string; bg: string }) => string;
   verified: (v: { date: string; source: string }) => string;
+  /** stronger claim, available only where the authority runs its own checker */
+  checkerVerified: (v: { date: string }) => string;
   /**
    * Two forms, because Russian needs them: the answer sentence says "на белом фоне"
    * (prepositional) while the spec table says "белый" (nominative). One string produced

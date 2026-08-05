@@ -144,6 +144,16 @@ const schema = [
     </a>
   </p>
 
+  {entry.checkerVerified && (
+    <p class="verified" data-testid="checker-verified">
+      <svg width="16" height="16"><use href="#ic-shield" /></svg>
+      {t.checkerVerified({
+        date: new Intl.DateTimeFormat(t.dateLocale, { day: "numeric", month: "long", year: "numeric" })
+          .format(new Date(entry.checkerVerified)),
+      })}
+    </p>
+  )}
+
   <p class="submission-note">
     <svg width="16" height="16"><use href={entry.submission === "upload" ? "#ic-upload" : entry.submission === "print" ? "#ic-print" : "#ic-camera"} /></svg>
     {t.submission[entry.submission]}

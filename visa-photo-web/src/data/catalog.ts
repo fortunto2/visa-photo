@@ -53,6 +53,12 @@ export interface CatalogEntry {
 
   /** Rules that contradict what this tool does, stated on the page rather than buried. */
   warnings?: ("no-editing" | "no-home-print")[];
+
+  /**
+   * Date this preset's output was accepted by the authority's own online checker.
+   * Only a handful of countries publish one; where they do, it beats reading the spec.
+   */
+  checkerVerified?: string;
 }
 
 /** Which sprite symbol stands for a document kind. Was copy-pasted into four page templates. */
@@ -196,6 +202,7 @@ export const CATALOG: CatalogEntry[] = [
   {
     preset: "nz_passport",
     submission: "upload",
+    checkerVerified: "2026-08-06",
     country: "new-zealand",
     doc: "passport",
     kind: "passport",

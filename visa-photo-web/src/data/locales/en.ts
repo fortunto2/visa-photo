@@ -9,6 +9,7 @@ const en: Dict = {
     `You need a ${w} × ${h} pixel photo on a ${bg} background, ${format} under ${kb} KB. ` +
     `Make it right here. Your photo is processed in the browser and never uploaded.`,
   verified: ({ date, source }) => `Checked ${date} · ${source}`,
+  checkerVerified: ({ date }) => `A photo from this page passed the official government photo checker on ${date}`,
   backgroundIn: { white: "white", "light-grey": "light grey" },
   backgroundName: { white: "White", "light-grey": "Light grey" },
 
