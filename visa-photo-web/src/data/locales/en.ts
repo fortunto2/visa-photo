@@ -181,6 +181,35 @@ const en: Dict = {
       "Reference information, not immigration advice. An application is filled in and signed by the applicant.",
   },
 
+  check: {
+    tab: "Check a photo",
+    makeTab: "Make a photo",
+    title: "Check an existing photo",
+    lead: "Already have a file? Drop it here and see which requirements it meets. Nothing is uploaded — the checks run in your browser.",
+    drop: "Drop the photo you want checked",
+    choose: "Choose a file",
+    allPass: "Everything measurable matches",
+    someFail: "{n} of the checks did not pass",
+    someWarn: "Everything matches, with one thing to look at",
+    measured: "Measured",
+    expected: "Required",
+    notChecked: "What this cannot tell you",
+    notCheckedBody:
+      "Head size and position, expression, whether the eyes are open, glasses, headwear, " +
+      "shadows behind the head, and how recent the photo is. A pass here means the file is the " +
+      "right shape and weight on a plain enough background — not that an application will be " +
+      "accepted.",
+    fixIt: "Fix it here",
+    labels: {
+      dimensions: "Pixel size",
+      ratio: "Aspect ratio",
+      filesize: "File size",
+      format: "Format",
+      "bg-brightness": "Background brightness",
+      "bg-even": "Background evenness",
+    },
+  },
+
   customPage: {
     title: "Any photo size — set millimetres yourself, free tool",
     h1: "Any size, set by hand",

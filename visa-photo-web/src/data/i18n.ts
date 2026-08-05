@@ -242,6 +242,30 @@ export interface Dict {
     disclaimer: string;
   };
 
+  /**
+   * Checking a photo that already exists. Named for what it measures, not for what an
+   * official decides — the list of what it cannot see is part of the result, not a footnote.
+   */
+  check: {
+    tab: string;
+    makeTab: string;
+    title: string;
+    lead: string;
+    drop: string;
+    choose: string;
+    allPass: string;
+    /** template with an {n} token: the count is only known in the browser, and a
+     *  function cannot cross into an island. */
+    someFail: string;
+    someWarn: string;
+    measured: string;
+    expected: string;
+    notChecked: string;
+    notCheckedBody: string;
+    fixIt: string;
+    labels: Record<string, string>;
+  };
+
   /** the any-size page: what the catalogue does not cover */
   customPage: {
     title: string;

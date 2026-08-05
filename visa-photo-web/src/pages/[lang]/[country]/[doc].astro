@@ -7,6 +7,8 @@ import {
 import { docView } from "../../../data/docView";
 import { agentCard, agentPrompt } from "../../../data/agentCard";
 import CopyButton from "../../../components/CopyButton.tsx";
+import PhotoChecker from "../../../components/PhotoChecker.tsx";
+import ModeTabs from "../../../components/ModeTabs.tsx";
 import { LANGS, dict, type ActiveLang } from "../../../data/locales";
 import { absolute, path } from "../../../lib/site";
 import { LANG_TAG } from "../../../data/i18n";
@@ -147,6 +149,30 @@ const schema = [
     {t.submission[entry.submission]}
   </p>
 
+  <ModeTabs client:load makeLabel={t.check.makeTab} checkLabel={t.check.tab}>
+    <div slot="check">
+      <p class="answer" style="margin-bottom:16px">{t.check.lead}</p>
+      <PhotoChecker
+        client:visible
+        preset={p}
+        ctx={{ preset: key, country: entry.country, doc: entry.doc }}
+        strings={{
+          drop: t.check.drop,
+          choose: t.check.choose,
+          allPass: t.check.allPass,
+          someFail: t.check.someFail,
+          someWarn: t.check.someWarn,
+          measured: t.check.measured,
+          expected: t.check.expected,
+          notChecked: t.check.notChecked,
+          notCheckedBody: t.check.notCheckedBody,
+          fixIt: t.check.fixIt,
+          labels: t.check.labels,
+          again: t.tool.reset,
+        }}
+      />
+    </div>
+
   <div class="tool">
     <PhotoTool client:idle preset={p} presetKey={key} modelsHref={path(lang, "models")}
       ctx={{ preset: key, country: entry.country, doc: entry.doc }}
@@ -245,6 +271,8 @@ const schema = [
       </div>
     </div>
   </div>
+
+  </ModeTabs>
 
   <ul class="trust">
     <li><svg width="17" height="17"><use href="#ic-shield" /></svg>{t.trust.inBrowser}</li>
