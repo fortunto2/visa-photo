@@ -70,6 +70,14 @@ Cloudflare Pages на один файл, то есть деплой с ней п
 Второе: `dist/ort-wasm-simd-threaded.jsep.wasm` весит **23,9 МиБ** при потолке 25. Запаса
 почти нет — обновление onnxruntime может уронить деплой без единой правки в нашем коде.
 
+Третье, операционное: **ветка репозитория `master`, а боевая ветка Pages — `main`.** Поэтому
+`wrangler pages deploy dist --project-name visa-photo` без флага уходит в Preview и на живом
+домене не появляется, отчего выглядит как «задеплоил, но ничего не изменилось». Правильно:
+
+```sh
+npx wrangler pages deploy dist --project-name visa-photo --branch main
+```
+
 ## 4. Что показали цифры
 
 **Инструмент невидим полностью.** Search Console за 180 дней по `photo.superduperai.co`: одна
