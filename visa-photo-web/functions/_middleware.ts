@@ -54,23 +54,42 @@ function withVary(response: Response): Response {
   return out;
 }
 
-export const onRequest: PagesFunction = async ({ request, next }) => {
-  if (request.method !== "GET" && request.method !== "HEAD") return next();
+/**
+ * Declared here rather than pulled from `@cloudflare/workers-types`: this is the only Function
+ * in the project, and it uses two fields. A dependency for two fields is a dependency to keep
+ * updated forever.
+ */
+type PagesContext = {
+  request: Request;
+  next: (input?: Request) => Promise<Response>;
+};
 
-  const accept = request.headers.get("accept") ?? "";
-  const wantsMarkdown =
-    quality(accept, "text/markdown") > 0 &&
-    quality(accept, "text/markdown") >= quality(accept, "text/html");
-  if (!wantsMarkdown) return next();
+export const onRequest = async ({ request, next }: PagesContext): Promise<Response> => {
+  if (request.method !== "GET" && request.method !== "HEAD") return next();
 
   const url = new URL(request.url);
   const twin = markdownPath(url.pathname);
-  if (!twin) return withVary(await next());
+  // Assets — wasm, js, css, images — can never have a twin, so they pass through untouched and
+  // keep one cache entry each. Marking them `Vary: Accept` would split the 24 MB model file into
+  // a separate cached copy per distinct Accept string.
+  if (!twin) return next();
 
-  url.pathname = twin;
-  const markdown = await next(new Request(url.toString(), request));
-  // No twin for this path — index pages, the app, anything not a document. Falling back to HTML
-  // is the honest answer: a 404 would claim the page does not exist, which is not what happened.
-  if (markdown.status !== 200) return withVary(await next());
-  return withVary(markdown);
+  const accept = request.headers.get("accept") ?? "";
+  const markdownQ = quality(accept, "text/markdown");
+  const wantsMarkdown = markdownQ > 0 && markdownQ >= quality(accept, "text/html");
+
+  if (wantsMarkdown) {
+    const twinUrl = new URL(url);
+    twinUrl.pathname = twin;
+    const markdown = await next(new Request(twinUrl.toString(), request));
+    if (markdown.status === 200) return withVary(markdown);
+    // No twin for this path — index pages, the app, anything that is not a document. Falling
+    // back to HTML is the honest answer: a 404 would claim the page does not exist, which is
+    // not what happened.
+  }
+
+  // `Vary` goes on the HTML too, and this is the half that is easy to forget. Without it a
+  // shared cache stores this response under the bare URL and then hands it to the next client
+  // that asked for markdown — which is every agent, and the whole point of the file.
+  return withVary(await next());
 };
