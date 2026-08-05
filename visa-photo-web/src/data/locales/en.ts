@@ -1,0 +1,370 @@
+import type { Dict } from "../i18n";
+
+const en: Dict = {
+  nav: { countries: "All countries", models: "Background models" },
+  unit: { mm: "mm", cm: "cm", in: "in", px: "px", kb: "KB", mb: "MB" },
+  dateLocale: "en-GB",
+
+  answer: ({ w, h, kb, format, bg }) =>
+    `You need a ${w} × ${h} pixel photo on a ${bg} background, ${format} under ${kb} KB. ` +
+    `Make it right here. Your photo is processed in the browser and never uploaded.`,
+  verified: ({ date, source }) => `Checked ${date} · ${source}`,
+  backgroundIn: { white: "white", "light-grey": "light grey" },
+  backgroundName: { white: "White", "light-grey": "Light grey" },
+
+  spec: {
+    heading: "Specification",
+    print: "Print size",
+    digital: "Digital size",
+    background: "Background",
+    headHeight: "Head height",
+    eyeLine: "Eye line",
+    file: "File",
+    perSheet: "Per sheet",
+    fromBottom: "from bottom",
+    pieces: "photos",
+  },
+
+  tool: {
+    dropTitle: "Drop your photo here",
+    dropSub: (doc) => `We crop to the ${doc} spec, straighten the face and clear the background in one step`,
+    choose: "Choose a file",
+    camera: "or use your camera",
+    working: "Working…",
+    framedTo: (size) => `Framed to ${size}`,
+    downloadJpeg: "Download JPEG",
+    downloadPng: "PNG, no compression",
+    downloadSheet: (n) => `A4 sheet · ${n} photos`,
+    guideCrown: "crown",
+    guideEyes: (pct) => `eyes ${pct} %`,
+    guideChin: "chin",
+    reset: "Start over",
+    tip: "Drag to reposition · scroll to zoom",
+
+    removeBg: "Make the background white",
+    removeBgHint: "Downloads a {mb} MB model once, then works offline",
+    bgDone: "Background replaced",
+    bgUndo: "Bring the original back",
+    tryBetterHint: "Try a heavier model. Hair and glasses are where the light one gives up.",
+    modelCaveat:
+      "No single model handles every photo. If the outline is ragged, a larger one usually fixes it — " +
+      "and a plain wall behind you beats any model.",
+    cached: "Already downloaded",
+
+    rotateLeft: "Rotate left",
+    rotateRight: "Rotate right",
+    autoLevels: "Auto levels",
+    zoom: "Zoom",
+
+    undoLevels: "Undo adjustments",
+    changeModel: "Change model",
+    changeModelWhen: "Background still not white, or edges ragged?",
+    modelsPageLink: "How the models differ",
+    modelDefault: "Default",
+
+    advanced: "More controls",
+    advancedHint: "You will not need these for most photos.",
+    brightness: "Brightness",
+    contrast: "Contrast",
+    shadows: "Shadows",
+    resetLevels: "Reset",
+    transparentBg: "Transparent background (PNG)",
+    transparentHint: "For forms that composite the photo themselves. Most applications want white.",
+    faceOval: "Show face oval",
+    fileName: "File name",
+    fileNamePlaceholder: "e.g. your surname",
+  },
+
+  trust: {
+    inBrowser: "Processed in your browser",
+    noServer: "Never sent to a server",
+    noWatermark: "No watermark",
+    noSignup: "No sign-up",
+  },
+
+  seo: {
+    requirements: "Photo requirements",
+    requirementsIntro: (doc) => `Everything an accepted ${doc} photo has to satisfy.`,
+    howToShoot: "How to shoot it at home",
+    howToShootBody:
+      "Stand facing a window so the light falls evenly on your face, about two metres from a plain wall. " +
+      "Have someone hold the camera at eye level rather than shooting from below. Neutral expression, " +
+      "mouth closed, both ears and the jawline visible, no shadow behind your head.",
+    printing: "Printing: photos per sheet",
+    printingBody: ({ n, w, h, dpi }) =>
+      `${n} photos of ${w} × ${h} mm fit on one A4 sheet at ${dpi} dpi. ` +
+      `Print at 100 % scale. “Fit to page” quietly resizes everything, and the photo stops matching the spec.`,
+    faq: "Frequently asked",
+    sources: "Sources",
+    disclaimer:
+      "This is an independent site, not a government body. Requirements change, so check them against " +
+      "the official source before you apply. We promise a photo that matches the published " +
+      "specification. We never promise that an application will be approved.",
+    disclaimerShort: "Independent site, not a government body. Verify requirements at the official source.",
+    related: "Related pages",
+  },
+
+  modelsPage: {
+    title: "Background removal models — sizes, quality, storage",
+    h1: "Which model removes the background",
+    lead: "The tool cuts you out of the photo and puts white behind you. That is done by a neural network running inside your browser, and you choose which one.",
+    howItWorks: "Why there is a choice at all",
+    howItWorksBody:
+      "A bigger model traces hair, glasses and thin edges more carefully, and costs more to download. " +
+      "The light one runs first because 5 MB is a fair price for a result most photos are fine with. " +
+      "If your outline came out ragged, switching model is the fix, and the tool offers it right after the first attempt.",
+    table: { model: "Model", size: "Download", bestFor: "Best for", status: "On this device" },
+    bestFor: {
+      u2netp: "Plain backgrounds, short hair. The default.",
+      silueta: "Same idea, a little more careful at the edges.",
+      u2net: "Busy backgrounds where the light model bleeds.",
+      u2net_human_seg: "Trained on people: the best one for hair and glasses.",
+      isnet: "Fine detail, at 1024 px input instead of 320.",
+    },
+    storage: "Where the model is kept",
+    storageBody:
+      "It downloads once and stays in your browser's storage, so the second photo needs no network at all. " +
+      "Clearing site data removes it. The photo itself is never uploaded — only the model comes down.",
+    limits: "What no model fixes",
+    limitsBody:
+      "A patterned wall, a shadow behind your head, or clothing the colour of the wall will defeat every model here. " +
+      "Standing a metre away from a plain wall beats any amount of megabytes.",
+    downloaded: "Downloaded",
+    notDownloaded: "Not yet",
+    download: "Download",
+    downloading: "Downloading",
+    remove: "Remove",
+    makeDefault: "Use by default",
+    isDefault: "Default",
+    defaultNote:
+      "The default is what the background button reaches for first. Downloading a model here, " +
+      "on wifi, means it is ready when you need it instead of arriving mid-job.",
+  },
+
+  countryPage: {
+    h1: (country) => `${country}: photo requirements`,
+    lead: ({ country, n }) =>
+      `${n} document${n === 1 ? "" : "s"} for ${country}, each with its exact size and a tool that crops to it.`,
+    title: (country) => `${country} photo size and requirements — free maker`,
+  },
+
+  agent: {
+    heading: "Hand this to an agent",
+    lead: "Paste the prompt into any AI assistant and it has everything it needs: the exact numbers, the page they came from and the source they were checked against. The full spec is the longer reference version.",
+    copyPrompt: "Copy prompt for your agent",
+    copySpec: "Copy full spec",
+    copied: "Copied",
+    openSkills: "Agent skills",
+    disclaimer:
+      "Reference information, not immigration advice. An application is filled in and signed by the applicant.",
+  },
+
+  skills: {
+    title: "Agent skills — photo specs your assistant can use",
+    h1: "Skills for AI agents",
+    lead: "Give your assistant the photo specifications for 12 documents, so it can size a photo correctly and tell you what a country requires — with the official source attached.",
+    install: "How to install",
+    installBody:
+      "Save the file below into your assistant's skills directory. For Claude Code that is " +
+      "~/.claude/skills/visa-photo/SKILL.md; other tools take the same Markdown. Nothing is " +
+      "executed on install — the skill is text your agent reads.",
+    whatItDoes: "What it does",
+    limits: "What it deliberately does not do",
+    limitsBody:
+      "It does not fill in, submit or advise on applications. Filling an immigration form on " +
+      "someone else's behalf is regulated in the UK (OISC), the United States and Canada, and " +
+      "automating a government portal usually breaks its terms of use. The skill states " +
+      "requirements and cites where they came from; the applicant decides and signs.",
+    copyFile: "Copy the skill",
+    endpoints: "Endpoints your agent can call directly",
+    endpointsBody:
+      "No key, no sign-up, no rate limit worth mentioning. These are static files.",
+  },
+
+  hub: {
+    h1: "Visa and document photos, to each country's spec",
+    lead: "Pick a document. The dimensions fill themselves in, cropping and background take one step, and nothing leaves your browser.",
+    stats: ({ docs, langs }) => `${docs} documents · ${langs} languages · free, no watermark`,
+    faq: [
+      {
+        q: "Is it really free?",
+        a: "Yes, and there is no watermark and no sign-up. Competitors show a free preview and " +
+          "charge to download the clean file; here the download is the free part.",
+      },
+      {
+        q: "Is my photo uploaded anywhere?",
+        a: "No. Cropping and background removal run inside your browser using WebAssembly. The " +
+          "only thing downloaded is the background model, and the photo never leaves the device. " +
+          "The source code is public so this can be checked rather than taken on trust.",
+      },
+      {
+        q: "Can I print these at home?",
+        a: "Yes. Every document page exports an A4 sheet as PNG and PDF with the right number of " +
+          "copies at the correct size. Print at 100 % scale — “fit to page” silently resizes them.",
+      },
+      {
+        q: "Will my application be accepted?",
+        a: "We cannot promise that, and nobody honest can. What the tool guarantees is a file " +
+          "matching the published specification for the document you picked. Requirements change, " +
+          "so check the official source linked on each page before you apply.",
+      },
+    ],
+  },
+
+  country: {
+    turkey: "Turkey",
+    eu_schengen: "Schengen area",
+    us_visa: "United States",
+    us_passport: "United States",
+    uk_passport: "United Kingdom",
+    ca_passport: "Canada",
+    cn_passport: "China",
+    in_passport: "India",
+    jp_passport: "Japan",
+    kr_passport: "South Korea",
+    au_passport: "Australia",
+    ru_passport: "Russia",
+  },
+
+  docTitle: {
+    turkey: "Turkish residence permit (ikamet) photo",
+    eu_schengen: "Schengen visa photo",
+    us_visa: "US visa and Green Card photo",
+    us_passport: "US passport photo",
+    uk_passport: "UK passport photo",
+    ca_passport: "Canadian passport and PR photo",
+    cn_passport: "Chinese passport photo",
+    in_passport: "Indian passport photo",
+    jp_passport: "Japanese passport photo",
+    kr_passport: "South Korean passport photo",
+    au_passport: "Australian passport photo",
+    ru_passport: "Russian passport photo",
+  },
+
+  docNotes: {
+    turkey: "White background, no headwear. The photo must be under 120 days old.",
+    eu_schengen: "White background, face 32–36 mm from chin to crown.",
+    us_visa: "White background, 2×2 inches, head between 50 % and 69 % of the height.",
+    us_passport: "White background, 2×2 inches, head 1 to 1⅜ inches.",
+    uk_passport: "Light grey or cream background, head 29–34 mm.",
+    ca_passport: "White background, 50×70 mm, face 31–36 mm.",
+    cn_passport: "White background, 33×48 mm, face 28–33 mm.",
+    in_passport: "White background. Both 35×45 mm and 51×51 mm are accepted.",
+    jp_passport: "White background, face 34 mm ± 2 mm.",
+    kr_passport: "White background, 35×45 mm.",
+    au_passport: "White background, head 32–36 mm.",
+    ru_passport: "White background, 35×45 mm.",
+  },
+
+  docShort: {
+    turkey: "Residence permit",
+    eu_schengen: "Schengen visa",
+    us_visa: "Visa / Green Card",
+    us_passport: "Passport",
+    uk_passport: "Passport",
+    ca_passport: "Passport / PR",
+    cn_passport: "Passport",
+    in_passport: "Passport",
+    jp_passport: "Passport",
+    kr_passport: "Passport",
+    au_passport: "Passport",
+    ru_passport: "Passport",
+  },
+
+  autoFaq: {
+    size: ({ doc }) => `What size is a ${doc}, in cm and inches?`,
+    sizeA: ({ mm, cm, inch }) =>
+      `${mm} mm, which is ${cm} cm or ${inch} inches. Those are the same photo stated three ways; ` +
+      `use whichever unit the form in front of you asks for.`,
+    pixels: ({ doc }) => `What size is a ${doc} in pixels?`,
+    pixelsA: ({ px, dpi }) =>
+      `${px} pixels, which is ${dpi} dpi at the print size. Anything smaller will look soft when printed.`,
+    perSheet: ({ doc }) => `How many copies of a ${doc} fit on one sheet?`,
+    perSheetA: ({ n, size }) =>
+      `${n} photos of ${size} on an A4 sheet. Print at 100 % scale, never "fit to page".`,
+    background: ({ doc }) => `What background colour does a ${doc} need?`,
+    backgroundA: ({ bg }) =>
+      `${bg}, plain and evenly lit, with no shadow behind the head. The tool can replace the ` +
+      `background for you if the wall behind you is not right.`,
+    fileSize: ({ doc }) => `What file format and size does a ${doc} need?`,
+    fileSizeA: ({ format, kb }) =>
+      `${format}, no larger than ${kb} KB. The export here compresses to stay under that limit ` +
+      `without dropping below the required resolution.`,
+    uploadFails: ({ form }) => `Why does ${form} reject the photo?`,
+    uploadFailsA: ({ form, format, kb, px }) =>
+      `${form} refuses anything that is not ${format}, anything above ${kb} KB, and anything ` +
+      `smaller than ${px} pixels. Exporting here keeps all three inside the limits. If the file ` +
+      `is within spec and the site still errors, that is their service, not your photo.`,
+  },
+
+  faq: {
+    us_visa: [
+      {
+        q: "What size is a US visa photo?",
+        a: "2 × 2 inches, which is 51 × 51 mm or 5.08 × 5.08 cm. Digitally that is 600 × 600 pixels " +
+          "at minimum, square, with your head taking up 50 % to 69 % of the height.",
+      },
+      {
+        q: "How many photos do I need?",
+        a: "One digital photo for the DS-160 form. Consulates often also ask for a printed 2 × 2 " +
+          "photo at the interview, so check your appointment letter and bring one to be safe.",
+      },
+      {
+        q: "Why does DS-160 say the photo upload failed?",
+        a: "The form rejects anything over 240 KB, anything that is not JPEG, and anything smaller " +
+          "than 600 × 600 pixels or not perfectly square. Exporting here keeps all four inside the " +
+          "limits. If the file is within spec and the site still errors, that is their service, " +
+          "not your photo — try again later.",
+      },
+      {
+        q: "Can I wear glasses?",
+        a: "No. Glasses have not been allowed in US visa and passport photos since November 2016, " +
+          "except with a signed medical statement.",
+      },
+      {
+        q: "What should I wear?",
+        a: "Everyday clothes. No uniforms, nothing that looks like a uniform, and no white top — " +
+          "it blends into the white background. Head coverings only for religious reasons, with " +
+          "your full face visible.",
+      },
+      {
+        q: "What if my photo is rejected?",
+        a: "The usual causes are head size outside 50–69 %, shadow on the face or behind the head, " +
+          "a background that is not plain white, glasses, or a photo older than six months. " +
+          "Retake it against a plain wall and re-crop; the specification itself does not change.",
+      },
+      {
+        q: "How old can the photo be?",
+        a: "Taken within the last six months, and it must show your current appearance.",
+      },
+    ],
+    us_passport: [
+      {
+        q: "What size is a US passport photo?",
+        a: "2 × 2 inches (51 × 51 mm), 600 × 600 pixels or more, with the head between 1 inch and " +
+          "1⅜ inches from chin to crown.",
+      },
+      {
+        q: "Can I wear glasses?",
+        a: "No, not since November 2016, unless you provide a signed medical statement.",
+      },
+    ],
+  },
+
+  pageTitle: {
+    turkey: "Turkey Residence Permit Photo (ikamet) — 50x60 mm, free tool",
+    eu_schengen: "Schengen Visa Photo Size — 35x45 mm, requirements & free tool",
+    us_visa: "US Visa Photo Tool — 2x2 inch, 600x600 px, DS-160 ready, free",
+    us_passport: "US Passport Photo Tool — 2x2 inch, 600x600 px, free, no watermark",
+    uk_passport: "UK Passport Photo Size & Requirements — 35x45 mm, free tool",
+    ca_passport: "Canada Passport Photo Size — 50x70 mm, requirements & free tool",
+    cn_passport: "China Visa & Passport Photo Size — 33x48 mm, free tool",
+    in_passport: "Indian Passport Photo Size — 35x45 mm, in cm & pixels, free tool",
+    jp_passport: "Japan Passport Photo Size — 35x45 mm, in cm & inches, free tool",
+    kr_passport: "Korean Passport Photo Size — 35x45 mm, requirements & free tool",
+    au_passport: "Australian Passport Photo Requirements — 35x45 mm, free tool",
+    ru_passport: "Russian Passport Photo Size — 35x45 mm, free tool",
+  },
+};
+
+export default en;

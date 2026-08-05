@@ -1,0 +1,102 @@
+import type { Dict } from "./i18n";
+import { conversionsOf, dpiOf, presetOf, sizeLabels, type CatalogEntry } from "./catalog";
+
+/**
+ * Everything a document page states, derived once.
+ *
+ * This lived inline in the page template, which meant llms.txt and specs.json — the two files
+ * written for machines — could not publish the generated FAQ, the very content most likely to
+ * be quoted back by an assistant.
+ */
+export interface DocView {
+  title: string;
+  country: string;
+  short: string;
+  notes: string;
+  headlineSize: string;
+  altUnits: string;
+  conv: ReturnType<typeof conversionsOf>;
+  dpi: number;
+  background: string;
+  format: string;
+  maxKb: number;
+  perSheet: number;
+  faceHeightPercent: number;
+  eyeLinePercent: number;
+  answer: string;
+  faq: { q: string; a: string }[];
+}
+
+export function docView(entry: CatalogEntry, t: Dict): DocView {
+  const p = presetOf(entry);
+  const key = entry.preset;
+  const conv = conversionsOf(p, entry);
+  const { headline, alt } = sizeLabels(p, entry, t.unit);
+  const bg = p.background;
+  const format = p.format.toUpperCase();
+  const title = t.docTitle[key];
+
+  /**
+   * Written answers first, then the ones derived from the spec. The derived set exists because
+   * the same follow-ups repeat for every country in the search data: size in cm, size in
+   * inches, size in pixels, background, file size, how many per sheet.
+   */
+  const generated = [
+    { q: t.autoFaq.size({ doc: title }), a: t.autoFaq.sizeA(conv) },
+    { q: t.autoFaq.pixels({ doc: title }), a: t.autoFaq.pixelsA({ px: conv.px, dpi: dpiOf(p) }) },
+    {
+      q: t.autoFaq.background({ doc: title }),
+      a: t.autoFaq.backgroundA({ bg: t.backgroundName[bg] }),
+    },
+    {
+      q: t.autoFaq.fileSize({ doc: title }),
+      a: t.autoFaq.fileSizeA({ format, kb: p.max_file_size_kb }),
+    },
+    {
+      q: t.autoFaq.perSheet({ doc: title }),
+      a: t.autoFaq.perSheetA({ n: p.photo_count, size: `${conv.mm} ${t.unit.mm}` }),
+    },
+    // Only forms that actually accept an upload: DS-11 is filed on paper, and inventing an
+    // upload rule for it would be publishing a requirement that does not exist.
+    ...(entry.form?.online
+      ? [
+          {
+            q: t.autoFaq.uploadFails({ form: entry.form.name }),
+            a: t.autoFaq.uploadFailsA({
+              form: entry.form.name,
+              format,
+              kb: p.max_file_size_kb,
+              px: conv.px,
+            }),
+          },
+        ]
+      : []),
+  ];
+
+  const written = t.faq[key] ?? [];
+
+  return {
+    title,
+    country: t.country[key],
+    short: t.docShort[key],
+    notes: t.docNotes[key],
+    headlineSize: headline,
+    altUnits: alt,
+    conv,
+    dpi: dpiOf(p),
+    background: t.backgroundName[bg],
+    format,
+    maxKb: p.max_file_size_kb,
+    perSheet: p.photo_count,
+    faceHeightPercent: p.face_height_percent,
+    eyeLinePercent: p.eye_line_from_bottom_percent,
+    answer: t.answer({
+      w: p.digital_width,
+      h: p.digital_height,
+      kb: p.max_file_size_kb,
+      format,
+      bg: t.backgroundIn[bg],
+    }),
+    faq: [...written, ...generated.filter((g) => !written.some((w) => w.q === g.q))],
+  };
+}

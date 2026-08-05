@@ -1,0 +1,117 @@
+---
+import "../styles/site.css";
+import Sprite from "../components/Sprite.astro";
+import { SITE, absolute, alternates, path } from "../lib/site";
+import { LANG_LABEL, LANG_TAG, dirOf } from "../data/i18n";
+import type { Dict } from "../data/i18n";
+import { LANGS, type ActiveLang } from "../data/locales";
+
+interface Props {
+  lang: ActiveLang;
+  t: Dict;
+  title: string;
+  description: string;
+  /** URL segments after the locale, used to build canonical and hreflang */
+  segments?: string[];
+  /** extra JSON-LD blocks, already shaped */
+  schema?: unknown[];
+}
+
+const { lang, t, title, description, segments = [], schema = [] } = Astro.props;
+
+const canonical = absolute(path(lang, ...segments));
+const dir = dirOf(lang);
+
+const graph = [
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: SITE.name,
+    url: SITE.origin,
+    inLanguage: LANG_TAG[lang],
+  },
+  ...schema,
+];
+---
+
+<!doctype html>
+<html lang={LANG_TAG[lang]} dir={dir}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    {alternates(...segments).map((alt) => (
+      <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />
+    ))}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:image" content={absolute("/og.png")} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="alternate" type="text/plain" href={absolute("/llms.txt")} title="llms.txt" />
+    <link rel="alternate" type="application/json" href={absolute("/specs.json")} title="All specifications" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(graph)} />
+    <!-- Queue stub: the tool can fire an event before the deferred script has loaded. -->
+    <script is:inline>
+      window.sda = window.sda || function () { (window.sda.q = window.sda.q || []).push(arguments); };
+    </script>
+    <script is:inline defer src={SITE.analytics.src} data-source={SITE.analytics.source}></script>
+  </head>
+
+  <body>
+    <Sprite />
+
+    <header class="wrap">
+      <nav class="site-nav">
+        <a class="brand" href={path(lang)}>
+          <span class="mark"><svg width="20" height="20"><use href="#ic-visa" /></svg></span>
+          <span class="wordmark">
+            <span class="wm-name">{SITE.brand.head}<em>{SITE.brand.tail}</em></span>
+            <small>{SITE.tagline}</small>
+          </span>
+        </a>
+        <span class="nav-links">
+          <a href={path(lang)}>{t.nav.countries}</a>
+        </span>
+        <span class="lang">
+          {LANGS.map((other) =>
+            other === lang ? (
+              <b>{LANG_LABEL[other]}</b>
+            ) : (
+              <a href={path(other, ...segments)} hreflang={LANG_TAG[other]}>
+                {LANG_LABEL[other]}
+              </a>
+            ),
+          )}
+        </span>
+      </nav>
+    </header>
+
+    <main class="wrap">
+      <slot />
+    </main>
+
+    <footer class="wrap">
+      <div class="site-foot">
+        <p class="foot-note">{t.seo.disclaimerShort}</p>
+        <nav class="foot-links">
+          <a href={path(lang, "skills")}>{t.agent.openSkills}</a>
+          <a href={path(lang, "models")}>{t.nav.models}</a>
+          <a href={SITE.repo} rel="noopener">Source code</a>
+          <a href="/llms.txt">llms.txt</a>
+          <a href="/specs.json">specs.json</a>
+        </nav>
+      </div>
+    </footer>
+  </body>
+</html>

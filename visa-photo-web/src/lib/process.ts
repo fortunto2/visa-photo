@@ -1,6 +1,45 @@
 import type { Preset } from "./presets";
-import imageCompression from "browser-image-compression";
-import { jsPDF } from "jspdf";
+
+/**
+ * jspdf and browser-image-compression are loaded on demand.
+ *
+ * As static imports they landed in the island's entry chunk, so every country page shipped
+ * 156 KB gzip of JS before anyone had picked a photo — 125 KB of it jsPDF, which is only
+ * reachable from the "A4 sheet" button. Compression only runs when a JPEG overshoots the
+ * preset's size limit.
+ */
+const loadPdf = () => import("jspdf").then((m) => m.jsPDF);
+const loadCompressor = () => import("browser-image-compression").then((m) => m.default);
+
+export interface Levels {
+  brightness: number;
+  contrast: number;
+  shadows: number;
+}
+
+/**
+ * The CSS filter for a set of levels.
+ *
+ * Shared because the preview and the export must agree: the same formula was written out in
+ * the canvas export, in App.tsx and in PhotoTool.tsx, so tweaking the shadow coefficient in
+ * one place silently made the preview lie about the file.
+ */
+export function levelsFilter({ brightness, contrast, shadows }: Levels): string {
+  const bright = 1 + brightness / 100 + (shadows / 100) * 0.3;
+  const contrastValue = 1 + contrast / 100;
+  return `brightness(${bright.toFixed(2)}) contrast(${contrastValue.toFixed(2)})`;
+}
+
+/** Save a blob to the user's downloads. */
+export function download(blob: Blob, name: string): void {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = name;
+  a.click();
+  // Deferred: revoking straight after click() races the download in Firefox.
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
 
 /** Crop + resize image on canvas, return as Blob */
 export async function cropAndExport(
@@ -50,10 +89,7 @@ export async function cropAndExport(
   canvas.height = preset.digital_height;
   const ctx = canvas.getContext("2d")!;
 
-  const brVal = 1 + brightness / 100;
-  const ctVal = 1 + contrast / 100;
-  const shVal = shadows / 100 * 0.3;
-  ctx.filter = `brightness(${(brVal + shVal).toFixed(2)}) contrast(${ctVal.toFixed(2)})`;
+  ctx.filter = levelsFilter({ brightness, contrast, shadows });
 
   ctx.drawImage(sourceCanvas, x, y, cropW, cropH, 0, 0, preset.digital_width, preset.digital_height);
 
@@ -70,6 +106,7 @@ export async function cropAndExport(
   if (blob.size <= preset.max_file_size_kb * 1024) return blob;
 
   const file = new File([blob], "photo.jpg", { type: "image/jpeg" });
+  const imageCompression = await loadCompressor();
   return imageCompression(file, {
     maxSizeMB: preset.max_file_size_kb / 1024,
     maxWidthOrHeight: Math.max(preset.digital_width, preset.digital_height),
@@ -118,10 +155,11 @@ export function generatePrintLayout(
 }
 
 /** Generate A4 print layout as PDF */
-export function generatePrintPdf(
+export async function generatePrintPdf(
   preset: Preset,
   processedBlob: Blob,
 ): Promise<Blob> {
+  const jsPDF = await loadPdf();
   return new Promise((resolve) => {
     const printImg = new Image();
     printImg.onload = () => {
@@ -212,10 +250,11 @@ export function generateMultiPhotoPrintLayout(
 }
 
 /** Generate A4 multi-photo PDF */
-export function generateMultiPhotoPdf(
+export async function generateMultiPhotoPdf(
   preset: Preset,
   processedBlobs: Blob[],
 ): Promise<Blob> {
+  const jsPDF = await loadPdf();
   return new Promise((resolve) => {
     let loaded = 0;
     const dataUrls: string[] = [];

@@ -1,0 +1,117 @@
+---
+import Page from "../../layouts/Page.astro";
+import { KIND_ICON, sizeLabels, CATALOG, presetOf, countryGroups } from "../../data/catalog";
+import { LANGS, dict, type ActiveLang } from "../../data/locales";
+import { SITE, absolute, path } from "../../lib/site";
+
+export function getStaticPaths() {
+  return LANGS.map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: ActiveLang };
+const t = dict(lang);
+
+const schema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: t.hub.h1,
+    numberOfItems: CATALOG.length,
+    itemListElement: CATALOG.map((entry, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: t.docTitle[entry.preset],
+      url: absolute(path(lang, entry.country, entry.doc)),
+    })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: t.hub.faq.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: { "@type": "Answer", text: item.a },
+    })),
+  },
+];
+---
+
+<Page
+  lang={lang}
+  t={t}
+  title={`${t.hub.h1} — ${SITE.name}`}
+  description={t.hub.lead}
+  schema={schema}
+>
+  <h1>{t.hub.h1}</h1>
+  <p class="answer">{t.hub.lead}</p>
+  <p class="verified">
+    <svg width="16" height="16"><use href="#ic-globe" /></svg>
+    {t.hub.stats({ docs: CATALOG.length, langs: LANGS.length })}
+  </p>
+
+  <div class="country-groups">
+  {countryGroups().map((group) => (
+    <section class="country-group">
+      <h2 class="country-head">
+        <a href={path(lang, group.slug)}>
+          <svg class="flag" viewBox="0 0 32 22"><use href={`#fl-${group.flag}`} /></svg>
+          {t.country[group.nameKey]}
+        </a>
+      </h2>
+      <ul class="hub-grid">
+        {group.entries.map((entry) => {
+          const p = presetOf(entry);
+          const kindIcon = KIND_ICON[entry.kind];
+          return (
+            <li>
+              <a class="hub-card" href={path(lang, entry.country, entry.doc)}>
+                <span class="hub-top">
+                  <svg class="doc-ico" width="21" height="21" style="margin-inline-start:0"><use href={`#${kindIcon}`} /></svg>
+                </span>
+                <span class="nm">{t.docShort[entry.preset]}</span>
+                <span class="sz">{sizeLabels(p, entry, t.unit).headline}</span>
+                <span class="px">{p.digital_width} × {p.digital_height} {t.unit.px}</span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  ))}
+  </div>
+
+  <ul class="trust">
+    <li><svg width="17" height="17"><use href="#ic-shield" /></svg>{t.trust.inBrowser}</li>
+    <li><svg width="17" height="17"><use href="#ic-check" /></svg>{t.trust.noServer}</li>
+    <li><svg width="17" height="17"><use href="#ic-check" /></svg>{t.trust.noWatermark}</li>
+    <li><svg width="17" height="17"><use href="#ic-check" /></svg>{t.trust.noSignup}</li>
+  </ul>
+
+  <div class="seo" style="margin-top:44px">
+    <section>
+      <h2>
+        <span class="ico"><svg width="22" height="22"><use href="#ic-sun" /></svg></span>
+        {t.seo.howToShoot}
+      </h2>
+      <p>{t.seo.howToShootBody}</p>
+    </section>
+
+    <section>
+      <h2>
+        <span class="ico"><svg width="22" height="22"><use href="#ic-question" /></svg></span>
+        {t.seo.faq}
+      </h2>
+      {t.hub.faq.map((item) => (
+        <div class="faq-item">
+          <h3>{item.q}</h3>
+          <p>{item.a}</p>
+        </div>
+      ))}
+    </section>
+
+    <section>
+      <p class="disclaimer">{t.seo.disclaimer}</p>
+    </section>
+  </div>
+</Page>

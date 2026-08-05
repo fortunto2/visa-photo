@@ -1,0 +1,80 @@
+---
+import Page from "../../layouts/Page.astro";
+import ModelTable from "../../components/ModelTable.tsx";
+import { LANGS, dict, type ActiveLang } from "../../data/locales";
+import { absolute, path } from "../../lib/site";
+
+export function getStaticPaths() {
+  return LANGS.map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: ActiveLang };
+const t = dict(lang);
+const m = t.modelsPage;
+
+const schema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    headline: m.h1,
+    description: m.lead,
+    url: absolute(path(lang, "models")),
+  },
+];
+---
+
+<Page lang={lang} t={t} title={m.title} description={m.lead} segments={["models"]} schema={schema}>
+  <p class="crumb"><a href={path(lang)}>{t.nav.countries}</a></p>
+
+  <h1>{m.h1}</h1>
+  <p class="answer">{m.lead}</p>
+
+  <div class="seo" style="margin-top:34px">
+    <section>
+      <h2>
+        <span class="ico"><svg width="22" height="22"><use href="#ic-layers" /></svg></span>
+        {m.howItWorks}
+      </h2>
+      <p>{m.howItWorksBody}</p>
+    </section>
+
+    <section>
+      <ModelTable
+        client:visible
+        bestFor={m.bestFor}
+        strings={{
+          model: m.table.model,
+          size: m.table.size,
+          bestFor: m.table.bestFor,
+          status: m.table.status,
+          downloaded: m.downloaded,
+          notDownloaded: m.notDownloaded,
+          download: m.download,
+          downloading: m.downloading,
+          remove: m.remove,
+          makeDefault: m.makeDefault,
+          isDefault: m.isDefault,
+          mb: t.unit.mb,
+        }}
+      />
+      <p class="hint caveat" style="margin-top:14px">{m.defaultNote}</p>
+    </section>
+
+    <section>
+      <h2>
+        <span class="ico"><svg width="22" height="22"><use href="#ic-shield" /></svg></span>
+        {m.storage}
+      </h2>
+      <p>{m.storageBody}</p>
+    </section>
+
+    <section>
+      <h2>
+        <span class="ico"><svg width="22" height="22"><use href="#ic-warn" /></svg></span>
+        {m.limits}
+      </h2>
+      <p>{m.limitsBody}</p>
+      <p class="disclaimer" style="margin-top:14px">{t.seo.disclaimer}</p>
+    </section>
+  </div>
+</Page>

@@ -1,0 +1,103 @@
+---
+import Page from "../../layouts/Page.astro";
+import CopyButton from "../../components/CopyButton.tsx";
+import { CATALOG } from "../../data/catalog";
+import { LANGS, dict, type ActiveLang } from "../../data/locales";
+import { skillFile } from "../../data/skillFile";
+import { absolute, path } from "../../lib/site";
+
+export function getStaticPaths() {
+  return LANGS.map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: ActiveLang };
+const t = dict(lang);
+const s = t.skills;
+const file = skillFile();
+
+const endpoints = [
+  { href: "/skills/visa-photo.md", note: "SKILL.md" },
+  { href: "/specs.json", note: "JSON" },
+  { href: "/llms-full.txt", note: "Markdown" },
+  { href: "/llms.txt", note: "Markdown" },
+  { href: "/.well-known/api-catalog", note: "linkset" },
+];
+
+const schema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    headline: s.h1,
+    description: s.lead,
+    url: absolute(path(lang, "skills")),
+  },
+];
+---
+
+<Page lang={lang} t={t} title={s.title} description={s.lead} segments={["skills"]} schema={schema}>
+  <p class="crumb"><a href={path(lang)}>{t.nav.countries}</a></p>
+
+  <h1>{s.h1}</h1>
+  <p class="answer">{s.lead}</p>
+
+  <div class="agent-actions" style="margin-bottom:26px">
+    <CopyButton client:load payload={file} label={s.copyFile} done={t.agent.copied} />
+    <a class="chip" href="/skills/visa-photo.md">
+      <svg width="18" height="18"><use href="#ic-file" /></svg>
+      SKILL.md
+    </a>
+  </div>
+
+  <div class="seo">
+    <section>
+      <h2>
+        <span class="ico"><svg width="22" height="22"><use href="#ic-download" /></svg></span>
+        {s.install}
+      </h2>
+      <p>{s.installBody}</p>
+      <pre class="code">curl -o ~/.claude/skills/visa-photo/SKILL.md \
+  {absolute("/skills/visa-photo.md")}</pre>
+    </section>
+
+    <section>
+      <h2>
+        <span class="ico"><svg width="22" height="22"><use href="#ic-ruler" /></svg></span>
+        {s.whatItDoes}
+      </h2>
+      <ul>
+        {CATALOG.map((entry) => (
+          <li>
+            <a href={path(lang, entry.country, entry.doc)}>{t.docTitle[entry.preset]}</a>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section>
+      <h2>
+        <span class="ico"><svg width="22" height="22"><use href="#ic-link" /></svg></span>
+        {s.endpoints}
+      </h2>
+      <p>{s.endpointsBody}</p>
+      <ul class="related">
+        {endpoints.map((e) => (
+          <li>
+            <a href={e.href}>
+              <svg width="18" height="18"><use href="#ic-file" /></svg>
+              {e.href} <span class="alt-unit">{e.note}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section>
+      <h2>
+        <span class="ico"><svg width="22" height="22"><use href="#ic-warn" /></svg></span>
+        {s.limits}
+      </h2>
+      <p>{s.limitsBody}</p>
+      <p class="disclaimer" style="margin-top:14px">{t.seo.disclaimer}</p>
+    </section>
+  </div>
+</Page>

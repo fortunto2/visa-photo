@@ -58,8 +58,15 @@ export default function PrintLayout() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const paperDef = PAPER_SIZES[paper];
+  // The custom branch used to omit label/countries, so the union had no such properties and
+  // reading them below did not typecheck once `astro check` was turned on.
   const photoDef = photoSize === "custom"
-    ? { w: Math.max(10, parseInt(customW) || 35), h: Math.max(10, parseInt(customH) || 45) }
+    ? {
+        w: Math.max(10, parseInt(customW) || 35),
+        h: Math.max(10, parseInt(customH) || 45),
+        label: "Custom",
+        countries: "",
+      }
     : PHOTO_SIZES[photoSize];
 
   // Compute grid

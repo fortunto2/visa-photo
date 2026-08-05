@@ -45,13 +45,16 @@ export const MODELS: BgModel[] = [
 const DB_NAME = "visa-photo-models";
 const STORE_NAME = "models";
 
+let dbPromise: Promise<IDBDatabase> | null = null;
+
+/** Memoised: every call used to open its own connection, five at a time on mount. */
 async function openDB(): Promise<IDBDatabase> {
-  return new Promise((resolve, reject) => {
+  return (dbPromise ??= new Promise((resolve, reject) => {
     const req = indexedDB.open(DB_NAME, 1);
     req.onupgradeneeded = () => req.result.createObjectStore(STORE_NAME);
     req.onsuccess = () => resolve(req.result);
     req.onerror = () => reject(req.error);
-  });
+  }));
 }
 
 async function getCachedModel(id: string): Promise<ArrayBuffer | null> {
@@ -64,19 +67,145 @@ async function getCachedModel(id: string): Promise<ArrayBuffer | null> {
   });
 }
 
-async function cacheModel(id: string, data: ArrayBuffer): Promise<void> {
+async function cacheModel(id: string, data: ArrayBuffer | Blob): Promise<void> {
   const db = await openDB();
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const tx = db.transaction(STORE_NAME, "readwrite");
     tx.objectStore(STORE_NAME).put(data, id);
     tx.oncomplete = () => resolve();
+    // Without this a quota-exceeded write leaves the promise pending and the download
+    // spinner never stops.
+    tx.onerror = tx.onabort = () => reject(tx.error ?? new Error("model cache write failed"));
+  });
+}
+
+/**
+ * Which models this browser holds.
+ *
+ * Keys only. Asking `get(id)` per model deserialises the whole stored buffer just to compare
+ * it against null — for someone with three large models cached that is half a gigabyte read
+ * and thrown away on every mount.
+ */
+export async function cachedModelIds(): Promise<Set<string>> {
+  const db = await openDB();
+  return new Promise((resolve) => {
+    const req = db.transaction(STORE_NAME, "readonly").objectStore(STORE_NAME).getAllKeys();
+    req.onsuccess = () => resolve(new Set(req.result as string[]));
+    req.onerror = () => resolve(new Set());
   });
 }
 
 export async function isModelCached(id: string): Promise<boolean> {
-  const data = await getCachedModel(id);
-  return data !== null;
+  return (await cachedModelIds()).has(id);
 }
+
+async function deleteCachedModel(id: string): Promise<void> {
+  const db = await openDB();
+  return new Promise((resolve) => {
+    const tx = db.transaction(STORE_NAME, "readwrite");
+    tx.objectStore(STORE_NAME).delete(id);
+    tx.oncomplete = () => resolve();
+  });
+}
+
+/**
+ * Fetch a model into the browser's storage without running it.
+ *
+ * Downloading and inferring used to be one step inside removeBackground, which meant a model
+ * could only arrive at the moment someone needed it — a 176 MB wait in the middle of the job.
+ * Pulled apart so the models page can fetch one ahead of time, over wifi, before it is needed.
+ */
+export async function ensureModel(
+  model: BgModel,
+  onProgress?: (loaded: number, total: number) => void,
+): Promise<void> {
+  if (await isModelCached(model.id)) return;
+
+  const resp = await fetch(model.url);
+  if (!resp.ok) throw new Error(`Download failed: ${resp.status}`);
+
+  const total = Number(resp.headers.get("content-length")) || model.sizeMb * 1e6;
+
+  // Stream so the progress bar reflects bytes actually on disk, not a spinner that lies.
+  if (!resp.body) {
+    const buf = await resp.arrayBuffer();
+    await cacheModel(model.id, buf);
+    onProgress?.(total, total);
+    return;
+  }
+
+  const reader = resp.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let loaded = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    chunks.push(value);
+    loaded += value.length;
+    onProgress?.(loaded, total);
+  }
+
+  // Stored as a Blob rather than a concatenated Uint8Array: merging the chunks would hold a
+  // second full copy on the JS heap, so a 176 MB model peaked at 352 MB. IndexedDB stores
+  // Blobs natively, and the bytes are only materialised when inference actually needs them.
+  await cacheModel(model.id, new Blob(chunks as BlobPart[]));
+}
+
+/** Bytes for a model, downloading it first if this browser does not have it yet. */
+async function modelBytes(
+  model: BgModel,
+  onProgress?: (msg: string) => void,
+): Promise<ArrayBuffer> {
+  const cached = await getCachedModel(model.id);
+  if (cached) {
+    onProgress?.(`Loading ${model.name} from cache...`);
+    return cached instanceof Blob ? cached.arrayBuffer() : cached;
+  }
+
+  await ensureModel(model, (loaded, total) => {
+    const pct = total ? Math.round((loaded / total) * 100) : 0;
+    onProgress?.(`Downloading ${model.name} (${model.sizeMb} MB) — ${pct} %`);
+  });
+
+  const stored = await getCachedModel(model.id);
+  if (!stored) throw new Error(`Model ${model.id} vanished after download`);
+  return stored instanceof Blob ? stored.arrayBuffer() : stored;
+}
+
+export async function removeModel(id: string): Promise<void> {
+  await deleteCachedModel(id);
+  // The in-memory session still holds the old weights; drop it so the next run reloads.
+  if (loadedModelId === id) {
+    session = null;
+    loadedModelId = null;
+  }
+}
+
+// Keeps the old prefix on purpose: renaming the key would silently reset the model
+// every existing visitor has already chosen and downloaded.
+const DEFAULT_MODEL_KEY = "visaspec:default-model";
+
+/**
+ * Which model the tool reaches for first. Stored per browser, because the answer depends on
+ * the device's connection and on what the person has already downloaded — not on the site.
+ */
+export function getPreferredModel(): BgModel {
+  if (typeof localStorage !== "undefined") {
+    const id = localStorage.getItem(DEFAULT_MODEL_KEY);
+    const found = MODELS.find((m) => m.id === id);
+    if (found) return found;
+  }
+  return MODELS[0];
+}
+
+export function setPreferredModel(id: string): void {
+  if (typeof localStorage === "undefined") return;
+  if (id === MODELS[0].id) localStorage.removeItem(DEFAULT_MODEL_KEY);
+  else localStorage.setItem(DEFAULT_MODEL_KEY, id);
+}
+
+/** Served from public/ by scripts/sync-ort.mjs; see the import site below. */
+const ORT_ENTRY = "/ort.wasm.bundle.min.mjs";
 
 let session: any = null;
 let loadedModelId: string | null = null;
@@ -87,27 +216,22 @@ export async function removeBackground(
   transparent: boolean = false,
   onProgress?: (msg: string) => void,
 ): Promise<Blob> {
-  const ort = await import("onnxruntime-web");
+  // Loaded by URL from public/, not by package name. Importing "onnxruntime-web" makes the
+  // bundler emit its own 24 MB copy of the wasm into _astro/ that nothing ever fetches,
+  // because the runtime is told to take binaries from the site root on the next line.
+  // scripts/sync-ort.mjs puts this file there.
+  //
+  // The path goes through a variable on purpose: a literal is resolved by Rollup at build
+  // time, which fails because the file only exists in the output, not in the source tree.
+  const ort = await import(/* @vite-ignore */ ORT_ENTRY);
   ort.env.wasm.wasmPaths = "/";
 
   if (!session || loadedModelId !== model.id) {
-    // Try IndexedDB cache first
-    let buf = await getCachedModel(model.id);
-    if (buf) {
-      onProgress?.(`Loading ${model.name} from cache...`);
-    } else {
-      onProgress?.(`Downloading ${model.name} (${model.sizeMb}MB)...`);
-      const resp = await fetch(model.url);
-      if (!resp.ok) throw new Error(`Download failed: ${resp.status}`);
-      buf = await resp.arrayBuffer();
-      // Cache for next time
-      await cacheModel(model.id, buf);
-      onProgress?.("Cached for offline use");
-    }
+    // One download path shared with the models page. This used to fetch on its own, which
+    // meant the progress text here was a single static line while 176 MB came down.
+    const buf = await modelBytes(model, onProgress);
     onProgress?.("Loading model...");
-    session = await ort.InferenceSession.create(buf, {
-      executionProviders: ["wasm"],
-    });
+    session = await ort.InferenceSession.create(buf, { executionProviders: ["wasm"] });
     loadedModelId = model.id;
   }
 

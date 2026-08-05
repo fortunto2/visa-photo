@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#F1F5F5"/>
+  <rect x="0" y="0" width="1200" height="10" fill="#0D7A88"/>
+  <g transform="translate(80,120)">
+    <rect x="0" y="0" width="64" height="64" rx="14" fill="#0D7A88"/>
+    <g transform="translate(16,16)" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="4" width="28" height="24" rx="5" transform="scale(1.06)"/>
+      <circle cx="17" cy="17" r="5.4"/>
+    </g>
+    <text x="86" y="46" font-family="Helvetica,Arial,sans-serif" font-size="42" font-weight="700" fill="#16282C">visa</text>
+    <text x="172" y="46" font-family="Helvetica,Arial,sans-serif" font-size="42" font-weight="700" fill="#0D7A88">yes</text>
+  </g>
+  <text x="80" y="300" font-family="Helvetica,Arial,sans-serif" font-size="66" font-weight="700" fill="#16282C">Visa and passport photos,</text>
+  <text x="80" y="378" font-family="Helvetica,Arial,sans-serif" font-size="66" font-weight="700" fill="#16282C">to each country's spec</text>
+  <text x="80" y="452" font-family="Helvetica,Arial,sans-serif" font-size="32" fill="#4E656A">Free. In your browser. Nothing is uploaded.</text>
+  <g transform="translate(80,510)" font-family="Helvetica,Arial,sans-serif" font-size="26" fill="#2E9557">
+    <rect x="0" y="-28" width="250" height="46" rx="23" fill="#DFF3E6"/>
+    <text x="24" y="2">No watermark</text>
+    <rect x="270" y="-28" width="230" height="46" rx="23" fill="#DFF3E6"/>
+    <text x="294" y="2">No sign-up</text>
+    <rect x="520" y="-28" width="290" height="46" rx="23" fill="#DFF3E6"/>
+    <text x="544" y="2">Runs on device</text>
+  </g>
+</svg>

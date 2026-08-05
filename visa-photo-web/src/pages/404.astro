@@ -1,0 +1,76 @@
+---
+import "../styles/site.css";
+import Sprite from "../components/Sprite.astro";
+import { KIND_ICON, sizeLabels, CATALOG, presetOf } from "../data/catalog";
+import { DEFAULT_LANG, LANGS, dict } from "../data/locales";
+import { LANG_TAG } from "../data/i18n";
+import { SITE, path } from "../lib/site";
+
+/**
+ * Without a 404.html, Cloudflare Pages answers unknown paths with 200 and the site's index.
+ * That is a soft 404: crawlers bank pages that do not exist, agents believe a file is there
+ * when it is not, and Google counts the whole thing as a quality problem.
+ *
+ * Astro turns this file into dist/404.html, which Pages then serves with a real 404 status.
+ */
+const t = dict(DEFAULT_LANG);
+---
+
+<!doctype html>
+<html lang={LANG_TAG[DEFAULT_LANG]}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Page not found — {SITE.name}</title>
+    <meta name="robots" content="noindex, follow" />
+  </head>
+  <body>
+    <header class="wrap">
+      <nav class="site-nav">
+        <a class="brand" href={path(DEFAULT_LANG)}>
+          <span class="mark"><svg width="20" height="20"><use href="#ic-visa" /></svg></span>
+          <span class="wordmark">
+            <span class="wm-name">{SITE.brand.head}<em>{SITE.brand.tail}</em></span>
+            <small>{SITE.tagline}</small>
+          </span>
+        </a>
+      </nav>
+    </header>
+
+    <main class="wrap">
+      <Sprite />
+      <h1>Page not found</h1>
+      <p class="answer">
+        That address does not exist here. Every document we have is listed below.
+      </p>
+
+      <ul class="hub-grid">
+        {CATALOG.map((entry) => {
+          const p = presetOf(entry);
+          const kindIcon = KIND_ICON[entry.kind];
+          return (
+            <li>
+              <a class="hub-card" href={path(DEFAULT_LANG, entry.country, entry.doc)}>
+                <span class="hub-top">
+                  <svg class="flag" viewBox="0 0 32 22"><use href={`#fl-${entry.flag}`} /></svg>
+                  <svg class="doc-ico" width="21" height="21"><use href={`#${kindIcon}`} /></svg>
+                </span>
+                <span class="nm">{t.docTitle[entry.preset]}</span>
+                <span class="sz">{sizeLabels(p, entry, t.unit).headline}</span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+
+      <p class="answer" style="margin-top:26px">
+        {LANGS.map((lang, i) => (
+          <>
+            {i > 0 && " · "}
+            <a href={path(lang)} hreflang={LANG_TAG[lang]}>{LANG_TAG[lang]}</a>
+          </>
+        ))}
+      </p>
+    </main>
+  </body>
+</html>

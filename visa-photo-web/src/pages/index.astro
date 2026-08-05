@@ -1,0 +1,44 @@
+---
+import { DEFAULT_LANG, LANGS, dict } from "../data/locales";
+import { LANG_LABEL, LANG_TAG } from "../data/i18n";
+import { SITE, absolute, alternates, path } from "../lib/site";
+
+/**
+ * The root is a signpost, not a page.
+ *
+ * It carries no content of its own so it cannot compete with /en/ in search, and it links
+ * every locale in plain HTML so a crawler that ignores the redirect still finds them all.
+ */
+const t = dict(DEFAULT_LANG);
+const target = path(DEFAULT_LANG);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{t.hub.h1}</title>
+    <meta name="description" content={t.hub.lead} />
+    <meta name="robots" content="noindex, follow" />
+    <link rel="canonical" href={absolute(target)} />
+    {alternates().map((alt) => (
+      <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />
+    ))}
+    <meta http-equiv="refresh" content={`0; url=${target}`} />
+    <script is:inline define:vars={{ langs: LANGS as string[], target }}>
+      const wanted = navigator.languages
+        .map((l) => l.split("-")[0])
+        .find((l) => langs.includes(l));
+      location.replace(wanted ? `/${wanted}/` : target);
+    </script>
+  </head>
+  <body>
+    <ul>
+      {LANGS.map((lang) => (
+        <li><a href={path(lang)} hreflang={LANG_TAG[lang]}>{LANG_LABEL[lang]}</a></li>
+      ))}
+      <li><a href="/app">{SITE.name} desktop-style editor</a></li>
+    </ul>
+  </body>
+</html>

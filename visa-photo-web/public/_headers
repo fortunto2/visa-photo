@@ -1,0 +1,21 @@
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=(self)
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+
+# Cloudflare Pages types extensionless files as octet-stream, which hides what these are
+# from the agents they exist for.
+/.well-known/api-catalog
+  Content-Type: application/linkset+json
+  Cache-Control: public, max-age=3600
+
+/llms.txt
+  Content-Type: text/plain; charset=utf-8
+
+/specs.json
+  Content-Type: application/json; charset=utf-8
+
+# The models are immutable and large; let them sit in the browser cache.
+/*.wasm
+  Cache-Control: public, max-age=31536000, immutable

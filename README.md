@@ -4,7 +4,7 @@
 
 Crop to exact country specs, remove background with AI, add face guides per ICAO standards. No cloud, no subscription, no watermarks. Your photos never leave your device.
 
-**[Try Web Version](https://photo.superduperai.co)** — works in browser, no install needed
+**[Try Web Version](https://visayes.app)** — works in browser, no install needed
 
 <p align="center">
   <img src="docs/demo.png" alt="Visa Photo app" width="600">
@@ -12,7 +12,7 @@ Crop to exact country specs, remove background with AI, add face guides per ICAO
 
 ## Web vs Desktop
 
-| Feature | [Web](https://photo.superduperai.co) | Desktop |
+| Feature | [Web](https://visayes.app) | Desktop |
 |---------|------|---------|
 | **Install** | None — open in browser | Download binary |
 | **BG Removal** | ONNX in browser (WASM) | Apple Vision (0.2s) + ONNX |
@@ -32,7 +32,7 @@ Turkey, USA (Passport + Visa), Schengen (EU), UK, Canada, China, India, Japan, S
 
 ### Web (recommended)
 
-**[photo.superduperai.co](https://photo.superduperai.co)** — open and use, nothing to install.
+**[visayes.app](https://visayes.app)** — open and use, nothing to install.
 
 ### macOS (Homebrew)
 

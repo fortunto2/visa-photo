@@ -8,3 +8,6 @@ tools/rembg-vision
 
 # Astro generated types (root-level, the nested one covers visa-photo-web/)
 .astro/
+
+# Playwright MCP scratch output (snapshots/console logs from competitor research)
+.playwright-mcp/

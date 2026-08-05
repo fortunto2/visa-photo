@@ -13,6 +13,13 @@ export interface Preset {
   eye_line_from_bottom_percent: number;
   photo_count: number;
   notes: string;
+  /**
+   * Both are set on every preset in presets.toml and read on every page; they were missing
+   * from this interface, so three call sites each invented their own `?? "white"` default
+   * for a field that is never actually absent.
+   */
+  background: "white" | "light-grey";
+  format: "jpeg" | "png";
 }
 
 export const PRESETS: Record<string, Preset> = toml.parse(presetsRaw);
