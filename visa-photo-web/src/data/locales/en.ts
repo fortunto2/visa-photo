@@ -51,6 +51,11 @@ const en: Dict = {
       "and a plain wall behind you beats any model.",
     cached: "Already downloaded",
 
+    alignFace: "Align to the face",
+    aligning: "Finding the face…",
+    alignHint: "Positions the head and eye line where this document requires. Downloads a 15 MB model once.",
+    alignFailed: "No face found — position the crop by hand",
+    aligned: "Aligned to the face",
     rotateLeft: "Rotate left",
     rotateRight: "Rotate right",
     autoLevels: "Auto levels",

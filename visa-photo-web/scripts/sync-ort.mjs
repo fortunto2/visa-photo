@@ -26,6 +26,16 @@ const WANTED = [
   "ort-wasm-simd-threaded.wasm", // the only binary the wasm backend needs
 ];
 
+/**
+ * MediaPipe ships three wasm builds; only the SIMD one is used, and it is loaded by URL the
+ * same way ORT is. Copied here rather than bundled for the same reason: the bundler would
+ * emit a second copy nothing fetches.
+ */
+const MEDIAPIPE = {
+  from: "@mediapipe/tasks-vision/wasm",
+  files: ["vision_wasm_internal.js", "vision_wasm_internal.wasm"],
+};
+
 /** Anything ort-shaped that is not wanted was left by an older build; remove it. */
 async function pruneStale() {
   let entries = [];
@@ -59,4 +69,19 @@ for (const name of WANTED) {
   console.log(`  ${name} (${(info.size / 1e6).toFixed(1)} MB)`);
 }
 
-console.log(`sync-ort: ${WANTED.length} files, ${(total / 1e6).toFixed(1)} MB total`);
+const mpFrom = join(root, "node_modules", ...MEDIAPIPE.from.split("/"));
+const mpTo = join(to, "mediapipe");
+await mkdir(mpTo, { recursive: true });
+for (const name of MEDIAPIPE.files) {
+  const src = join(mpFrom, name);
+  const info = await stat(src).catch(() => null);
+  if (!info) {
+    console.error(`sync-ort: ${name} missing from @mediapipe/tasks-vision`);
+    process.exit(1);
+  }
+  await copyFile(src, join(mpTo, name));
+  total += info.size;
+  console.log(`  mediapipe/${name} (${(info.size / 1e6).toFixed(1)} MB)`);
+}
+
+console.log(`sync-ort: ${(total / 1e6).toFixed(1)} MB total`);

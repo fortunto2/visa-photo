@@ -118,6 +118,12 @@ export interface Dict {
     cached: string;
 
     /** small edits carried over from the desktop app */
+    /** face alignment: the crop the specification actually asks for */
+    alignFace: string;
+    aligning: string;
+    alignHint: string;
+    alignFailed: string;
+    aligned: string;
     rotateLeft: string;
     rotateRight: string;
     autoLevels: string;

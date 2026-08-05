@@ -7,9 +7,11 @@ import {
 } from "../lib/process";
 import {
   trackPresetSelected, trackPhotoDownloaded, trackPrintLayoutUsed, trackBackgroundRemoved,
-  type DocContext,
+  track, type DocContext,
 } from "../lib/analytics";
 import { removeBackground, cachedModelIds, getPreferredModel, MODELS, type BgModel } from "../lib/background";
+import { findFace, isFaceModelCached } from "../lib/face";
+import { placeCrop } from "../lib/autocrop";
 
 export interface ToolStrings {
   dropTitle: string;
@@ -33,6 +35,11 @@ export interface ToolStrings {
   tryBetterHint: string;
   modelCaveat: string;
   cached: string;
+  alignFace: string;
+  aligning: string;
+  alignHint: string;
+  alignFailed: string;
+  aligned: string;
   rotateLeft: string;
   rotateRight: string;
   autoLevels: string;
@@ -108,6 +115,11 @@ export default function PhotoTool({
   const [faceOval, setFaceOval] = useState(false);
   const [fileName, setFileName] = useState("");
   const [warned, setWarned] = useState(false);
+  const [aligning, setAligning] = useState(false);
+  const [alignState, setAlignState] = useState<"idle" | "done" | "failed">("idle");
+  /** Surfaced rather than swallowed: "no face found" and "the detector broke" need different fixes. */
+  const [alignError, setAlignError] = useState<string | null>(null);
+  const [faceModelReady, setFaceModelReady] = useState(false);
   /**
    * The markup is server-rendered, so the file input exists before its handler does. An
    * automation that drops a file in between gets silence. This flag is the "you may start now"
@@ -122,7 +134,45 @@ export default function PhotoTool({
   useEffect(() => {
     setDefaultModel(getPreferredModel());
     setHydrated(true);
+    isFaceModelCached().then(setFaceModelReady);
   }, []);
+
+  /**
+   * Puts the head where the document wants it. Offered rather than forced: the model is 15 MB,
+   * and a visitor who only wants to see the size should not pay for it.
+   */
+  const alignToFace = async () => {
+    if (!imgRef.current) return;
+    setAligning(true);
+    try {
+      const face = await findFace(imgRef.current);
+      if (!face) {
+        setAlignState("failed");
+        return;
+      }
+      const placed = placeCrop(face, preset, imgRef.current.naturalWidth, imgRef.current.naturalHeight);
+      if (!placed) {
+        setAlignState("failed");
+        return;
+      }
+      setCx(placed.cx);
+      setCy(placed.cy);
+      setScale(placed.scale);
+      setAlignState("done");
+      setFaceModelReady(true);
+      track("face_aligned", ctx);
+    } catch (e) {
+      setAlignError(e instanceof Error ? e.message : String(e));
+      setAlignState("failed");
+    } finally {
+      setAligning(false);
+    }
+  };
+
+  // Once the model is cached, doing it automatically costs nothing and saves a click.
+  useEffect(() => {
+    if (ready && faceModelReady && alignState === "idle" && !aligning) void alignToFace();
+  }, [ready, faceModelReady]);
 
   // Runs when a photo appears, not on mount: nothing renders cachedIds until then, and most
   // visitors never upload anything.
@@ -138,7 +188,7 @@ export default function PhotoTool({
   // Revoke on unmount only: revoking on every src change kills the image still on screen.
   useEffect(() => () => objectUrls.current.forEach((u) => URL.revokeObjectURL(u)), []);
 
-  const track = (url: string) => {
+  const keepUrl = (url: string) => {
     objectUrls.current.push(url);
     return url;
   };
@@ -147,7 +197,7 @@ export default function PhotoTool({
     const file = files?.[0];
     if (!file || !file.type.startsWith("image/")) return;
     trackPresetSelected(ctx, source);
-    const url = track(URL.createObjectURL(file));
+    const url = keepUrl(URL.createObjectURL(file));
     setReady(false);
     setShowModels(false);
     setCx(0.5);
@@ -180,7 +230,7 @@ export default function PhotoTool({
     try {
       // Progress text comes from the model loader: it names the download and its size.
       const blob = await removeBackground(imgRef.current, model, transparent, setBusy);
-      const url = track(URL.createObjectURL(blob));
+      const url = keepUrl(URL.createObjectURL(blob));
       // The previous result is unreachable now; only the original is still needed for undo.
       if (src && src !== original) URL.revokeObjectURL(src);
       setReady(false);
@@ -352,6 +402,11 @@ export default function PhotoTool({
             <path d="M15 5h4v4M19 5l-4.5 4.5" /><path d="M4 12a8 8 0 1 0 8-8" />
           </svg>
         </button>
+        <button class="tool-btn" type="button" data-testid="align-face"
+          disabled={aligning} onClick={alignToFace}>
+          <svg width="18" height="18"><use href="#ic-face" /></svg>
+          <span>{aligning ? strings.aligning : strings.alignFace}</span>
+        </button>
         <button class="tool-btn" type="button" onClick={applyAutoLevels}>
           <svg width="18" height="18"><use href="#ic-sun" /></svg>
           <span>{strings.autoLevels}</span>
@@ -370,7 +425,12 @@ export default function PhotoTool({
         </label>
       </div>
 
-      <p class="tip">{strings.tip}</p>
+      <p class="tip" data-testid="align-state" data-align={alignState} data-error={alignError ?? ""}>
+        {alignState === "failed" ? (alignError ? `${strings.alignFailed} (${alignError})` : strings.alignFailed)
+          : alignState === "done" ? strings.aligned
+          : aligning ? strings.alignHint
+          : strings.tip}
+      </p>
 
       {/* The crop in numbers: an automation can assert placement without inspecting pixels. */}
       <span
