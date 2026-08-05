@@ -20,6 +20,36 @@ const t = dict(lang);
 const countryName = t.country[group.nameKey];
 const segments = [group.slug];
 
+const sizes = new Set(
+  group.entries.map((e) => {
+    const p = presetOf(e);
+    return `${p.digital_width}x${p.digital_height}`;
+  }),
+);
+const first = presetOf(group.entries[0]);
+const faq = [
+  {
+    q: t.countryPage.faqDocs(countryName),
+    a: t.countryPage.faqDocsA({
+      country: countryName,
+      list: group.entries.map((e) => t.docShort[e.preset]).join(", "),
+    }),
+  },
+  ...(group.entries.length > 1
+    ? [
+        {
+          q: t.countryPage.faqSame(countryName),
+          a:
+            sizes.size === 1
+              ? t.countryPage.faqSameYes({
+                  size: sizeLabels(first, group.entries[0], t.unit).headline,
+                })
+              : t.countryPage.faqSameNo,
+        },
+      ]
+    : []),
+];
+
 const schema = [
   {
     "@context": "https://schema.org",
@@ -39,6 +69,15 @@ const schema = [
       position: i + 1,
       name: t.docTitle[entry.preset],
       url: absolute(path(lang, entry.country, entry.doc)),
+    })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faq.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: { "@type": "Answer", text: item.a },
     })),
   },
 ];
@@ -91,6 +130,19 @@ const schema = [
   </ul>
 
   <div class="seo" style="margin-top:44px">
+    <section>
+      <h2>
+        <span class="ico"><svg width="22" height="22"><use href="#ic-question" /></svg></span>
+        {t.seo.faq}
+      </h2>
+      {faq.map((item) => (
+        <div class="faq-item">
+          <h3>{item.q}</h3>
+          <p>{item.a}</p>
+        </div>
+      ))}
+    </section>
+
     <section>
       <h2>
         <span class="ico"><svg width="22" height="22"><use href="#ic-shield" /></svg></span>

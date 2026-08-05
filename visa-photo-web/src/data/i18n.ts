@@ -170,6 +170,12 @@ export interface Dict {
   /** country page: one country, all of its documents */
   countryPage: {
     h1: (country: string) => string;
+    /** Answers built from the catalogue, so a country page carries facts, not just links. */
+    faqDocs: (country: string) => string;
+    faqDocsA: (v: { country: string; list: string }) => string;
+    faqSame: (country: string) => string;
+    faqSameYes: (v: { size: string }) => string;
+    faqSameNo: string;
     lead: (v: { country: string; n: number }) => string;
     title: (country: string) => string;
   };

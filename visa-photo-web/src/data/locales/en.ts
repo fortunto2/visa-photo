@@ -142,6 +142,11 @@ const en: Dict = {
   },
 
   countryPage: {
+    faqDocs: (country) => `Which documents does ${country} need a photo for?`,
+    faqDocsA: ({ country, list }) => `${country}: ${list}. Each page states the exact size and has a tool that crops to it.`,
+    faqSame: (country) => `Can one photo be used for every ${country} document?`,
+    faqSameYes: ({ size }) => `Yes — they all use ${size}, so a single export works for all of them.`,
+    faqSameNo: "No — the sizes differ, so each one needs its own export.",
     h1: (country) => `${country}: photo requirements`,
     lead: ({ country, n }) =>
       `${n} document${n === 1 ? "" : "s"} for ${country}, each with its exact size and a tool that crops to it.`,
