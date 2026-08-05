@@ -238,6 +238,19 @@ export const CATALOG: CatalogEntry[] = [
     checked: "2026-08-06",
   },
   {
+    preset: "es_tie",
+    submission: "print",
+    warnings: ["no-home-print"],
+    country: "spain",
+    doc: "residence-card",
+    kind: "permit",
+    flag: "es",
+    // The TIE rules do not restate the photo spec; they point at the one for the national ID
+    // card, which is where 26x32 mm and the 70-80 % head come from.
+    source: { label: "Policía Nacional", url: "https://www.policia.es/_es/extranjeria_portada.php" },
+    checked: "2026-08-06",
+  },
+  {
     preset: "au_passport",
     submission: "print",
     country: "australia",

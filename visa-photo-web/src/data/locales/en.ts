@@ -315,6 +315,7 @@ const en: Dict = {
   },
 
   country: {
+    es_tie: "Spain",
     ie_passport: "Ireland",
     nz_passport: "New Zealand",
     in_visa: "India",
@@ -335,6 +336,7 @@ const en: Dict = {
   },
 
   docTitle: {
+    es_tie: "Spain TIE photo (residence card)",
     ie_passport: "Irish passport photo",
     nz_passport: "New Zealand passport photo",
     in_visa: "India e-Visa photo",
@@ -355,11 +357,12 @@ const en: Dict = {
   },
 
   docNotes: {
+    es_tie: "White background, 26×32 mm — smaller than the 35×45 everything else uses. Head 70–80 % of the height. Handed in on photographic paper; a file is not accepted.",
     ie_passport: "At least 715 × 951 px, JPEG, not a scan of a printed photo, taken in the last six months.",
     nz_passport: "3:4 portrait, at least 900 × 1200 px, file between 250 KB and 5 MB. Selfies are rejected.",
     in_visa: "White background, square 2×2 inches, head 50–69 % of the height. Rejected automatically if the dimensions are even slightly off.",
     us_dv: "White background, 2×2 inches. A non-compliant photo disqualifies the entry, and there is no second chance until next year.",
-    turkey: "White background, no headwear. The photo must be under 120 days old.",
+    turkey: "White background, no headwear, taken within the last six months. White suits dark hair; their own sheet prefers a mid grey behind light hair.",
     eu_schengen: "White background, face 32–36 mm from chin to crown.",
     us_visa: "White background, 2×2 inches, head between 50 % and 69 % of the height.",
     us_passport: "White background, 2×2 inches, head 1 to 1⅜ inches.",
@@ -367,7 +370,7 @@ const en: Dict = {
     ca_passport: "White background, 50×70 mm, face 31–36 mm.",
     ca_visa: "White background, 35×45 mm, face 31–36 mm.",
     cn_passport: "White background, 33×48 mm, face 28–33 mm.",
-    in_passport: "White background. Both 35×45 mm and 51×51 mm are accepted.",
+    in_passport: "Pure white background, 35×45 mm. The portal takes exactly 630×810 px under 250 KB, with the face filling 80–85 % of the height.",
     jp_passport: "White background, face 34 mm ± 2 mm.",
     kr_passport: "White background, 35×45 mm.",
     au_passport: "White background, head 32–36 mm.",
@@ -375,6 +378,7 @@ const en: Dict = {
   },
 
   docShort: {
+    es_tie: "Residence card (TIE)",
     ie_passport: "Passport",
     nz_passport: "Passport",
     in_visa: "e-Visa",
@@ -475,6 +479,7 @@ const en: Dict = {
   },
 
   pageTitle: {
+    es_tie: "Spain TIE Photo Size — 26x32 mm, requirements & free tool",
     ie_passport: "Irish Passport Photo Size — 715x951 px minimum, free tool",
     nz_passport: "New Zealand Passport Photo — 3:4, 900x1200 px minimum, free tool",
     in_visa: "India Visa Photo Size — 2x2 inch (51x51 mm), free tool",

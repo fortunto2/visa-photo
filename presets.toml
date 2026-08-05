@@ -325,3 +325,23 @@ background = "white"
 photo_count = 4
 format = "jpeg"
 notes = "Set your own dimensions"
+
+# Spain's residence card, and unusually small: 26x32 mm rather than the 35x45 everything else
+# uses, which is why a photo made for any other document is the wrong shape here. The numbers
+# are published: head 70-80 % of the height, 23.5 mm to the top of the hair, 2 mm above it.
+# Those work out to 73.4 % and 6.25 %. Submitted on photographic paper — the police do not take
+# a digital file — so this preset exists to be printed, not uploaded.
+[es_tie]
+name = "Spain TIE (residence card)"
+digital_width = 614
+digital_height = 756
+max_file_size_kb = 5000
+print_width_mm = 26
+print_height_mm = 32
+face_height_percent = 73.5
+face_top_margin_percent = 6.3
+eye_line_from_bottom_percent = 60.5
+background = "white"
+photo_count = 2
+format = "jpeg"
+notes = "26x32mm on photographic paper, white background, no dark glasses. Head 70-80% of the height."
