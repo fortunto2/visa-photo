@@ -92,20 +92,45 @@ format = "jpeg"
 notes = "Light grey or cream bg, 35x45mm, head 29-34mm"
 
 # ── Canada ──
+# Canada publishes three different photo rules, and they are not interchangeable: the passport
+# is 50x70mm, every immigration application (visitor, work, study, PR) is 35x45mm, and IRCC
+# rejects a work permit that arrives with a passport-sized photo. They get a preset each.
 [ca_passport]
-name = "Canada Passport / Visa / PR"
-digital_width = 420
-digital_height = 540
-max_file_size_kb = 500
+name = "Canada Passport"
+digital_width = 1500
+digital_height = 2100
+digital_max_width = 3000
+digital_max_height = 4500
+min_file_size_kb = 200
+max_file_size_kb = 5000
 print_width_mm = 50
 print_height_mm = 70
-face_height_percent = 46.0
-face_top_margin_percent = 14.3
+# Measured off the official diagram (photo-passport-en.jpg): crown at 21.2 % of frame height,
+# chin at 67.5 %, head 46.3 % — inside the 45-50 % band the online renewal rules state.
+face_height_percent = 47.0
+face_top_margin_percent = 20.5
 eye_line_from_bottom_percent = 58.0
 background = "white"
 photo_count = 2
 format = "jpeg"
-notes = "White bg, 50x70mm, face 31-36mm"
+notes = "White bg, 50x70mm, chin to crown 31-36mm (45-50% of height). 5:7 at this resolution also clears the 1200x1800 minimum for online renewal, so one file serves both routes."
+
+[ca_visa]
+name = "Canada Visa / Work / Study / PR"
+digital_width = 840
+digital_height = 1080
+min_file_size_kb = 240
+max_file_size_kb = 4000
+print_width_mm = 35
+print_height_mm = 45
+# Head 31-36mm inside a 45mm frame is 69-80 %; 74 % sits in the middle.
+face_height_percent = 74.0
+face_top_margin_percent = 6.0
+eye_line_from_bottom_percent = 60.5
+background = "white"
+photo_count = 2
+format = "jpeg"
+notes = "White or light bg, 35x45mm, head 31-36mm. Do not send the 50x70mm passport photo: IRCC refuses it."
 
 # ── Asia ──
 [cn_passport]
@@ -245,8 +270,12 @@ max_file_size_kb = 5000
 min_file_size_kb = 250
 print_width_mm = 35
 print_height_mm = 45
-face_height_percent = 60.0
-face_top_margin_percent = 10.0
+# Tuned against their official checker, then restated. The accepted photo was made while the
+# crown estimate ran 15 % low, so a preset reading 60 % was really putting a 70 % head in the
+# frame; 71 % is that same photo, honestly labelled, and is also the floor of the 32-36mm in
+# 45mm they publish. The one they refused as "taken too close" measured 83 %.
+face_height_percent = 71.0
+face_top_margin_percent = 8.0
 eye_line_from_bottom_percent = 60.0
 background = "white"
 photo_count = 2

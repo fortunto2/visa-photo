@@ -30,7 +30,13 @@ export function placeCrop(
 
   // The eye line sits at a stated distance from the bottom of the crop.
   const eyeFromTop = 1 - preset.eye_line_from_bottom_percent / 100;
-  const cropTop = face.eyeY * imgH - eyeFromTop * cropH;
+  let cropTop = face.eyeY * imgH - eyeFromTop * cropH;
+
+  // A crown touching the top edge is refused everywhere, while an eye line a point or two off
+  // usually is not, so when the estimate leaves the head short of room the crop gives way.
+  const crownY = face.skullTopY * imgH;
+  const headroom = 0.02 * cropH;
+  if (cropTop > crownY - headroom) cropTop = crownY - headroom;
 
   const cx = face.faceCenterX;
   const cy = (cropTop + cropH / 2) / imgH;

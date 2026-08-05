@@ -477,7 +477,8 @@ export default function PhotoTool({
                   <svg width="19" height="19"><use href="#ic-warn" /></svg>
                   {strings.noEditingAtAction}
                 </p>
-                <button class="btn-reset" type="button" onClick={() => setWarned(true)}>
+                <button class="btn-reset" type="button" data-testid="acknowledge-editing"
+                  onClick={() => setWarned(true)}>
                   {strings.proceedAnyway}
                 </button>
               </div>

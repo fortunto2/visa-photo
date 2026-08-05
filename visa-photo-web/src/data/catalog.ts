@@ -132,8 +132,25 @@ export const CATALOG: CatalogEntry[] = [
     doc: "passport",
     kind: "passport",
     flag: "ca",
-    source: { label: "Government of Canada", url: "https://www.canada.ca/" },
-    checked: "2026-08-05",
+    source: {
+      label: "Government of Canada",
+      url: "https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/photos.html",
+    },
+    checked: "2026-08-06",
+  },
+  {
+    preset: "ca_visa",
+    submission: "upload",
+    warnings: ["no-editing"],
+    country: "canada",
+    doc: "visa",
+    kind: "visa",
+    flag: "ca",
+    source: {
+      label: "Immigration, Refugees and Citizenship Canada",
+      url: "https://www.canada.ca/en/immigration-refugees-citizenship/services/application/application-forms-guides/temporary-resident-visa-application-photograph-specifications.html",
+    },
+    checked: "2026-08-06",
   },
   {
     preset: "cn_passport",

@@ -48,11 +48,19 @@ const LEFT_EYE = 33;
 const RIGHT_EYE = 263;
 
 /**
- * The face occupies roughly the lower 87 % of the skull: the forehead landmark sits at the
- * hairline, not at the crown. This constant lifts it the rest of the way, which is the same
- * correction the open-source `ppp` tool applies for exactly this reason.
+ * How much skull sits above landmark 10, as a share of the forehead-to-chin distance.
+ *
+ * This was 0.13, and 0.13 is too little. Measured against a ruler overlay on a real photo:
+ * true crown at 28.5 % of the frame, landmark 10 at 36.0 %, chin at 59.0 %. That puts the
+ * missing skull at 7.5 points over a 23-point face, so 0.33.
+ *
+ * The cost of the old value was not subtle. Believing the head to be 26 % of the source when
+ * it was 30.5 %, the placement asked for a crop 15 % too short, and every export came out with
+ * the head oversized: the Australian one had the crown cut off by the top edge, which no
+ * authority accepts. Anthropometry agrees with the measurement — trichion to vertex is about
+ * 0.30 of trichion to menton — so this is not a quirk of one face.
  */
-const FOREHEAD_TO_CROWN = 0.13;
+const FOREHEAD_TO_CROWN = 0.33;
 
 async function loadLandmarker() {
   if (landmarker) return landmarker;
