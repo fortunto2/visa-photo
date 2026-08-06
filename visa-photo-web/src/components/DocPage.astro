@@ -328,11 +328,14 @@ const schema = [
 
 
   <ul class="trust">
+    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-check" /></svg>{t.trust.free}</li>
     <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-shield" /></svg>{t.trust.inBrowser}</li>
     <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-check" /></svg>{t.trust.noServer}</li>
     <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-check" /></svg>{t.trust.noWatermark}</li>
     <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-check" /></svg>{t.trust.noSignup}</li>
   </ul>
+  {/* The objection is not "is it private" but "how would that even work". Answer that. */}
+  <p class="trust-why">{t.trust.why}</p>
 
   <div class="seo">
     <section>

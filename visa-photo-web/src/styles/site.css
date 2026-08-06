@@ -656,3 +656,10 @@ h1 {
 
 /* the tabs are links now, so they need the anchor reset the buttons never did */
 .mode-tabs a { text-decoration: none; }
+
+/* The mechanism, under the claims. People do not disbelieve "private" — they disbelieve that
+   a browser could do this at all, and that is the sentence that answers them. */
+.trust-why {
+  max-width: 72ch; margin: 12px 0 0;
+  font-size: 15px; line-height: 1.6; color: var(--ink-soft);
+}

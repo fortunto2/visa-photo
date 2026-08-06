@@ -118,6 +118,8 @@ const pt: Dict = {
     noServer: "Nunca enviada para um servidor",
     noWatermark: "Sem marca d'água",
     noSignup: "Sem cadastro",
+    free: "Grátis, sem limites",
+    why: "Nada é enviado porque não precisa ser. O corte acontece em um canvas dentro do seu navegador, e o fundo é removido por uma rede neural que baixa para o seu aparelho e roda ali. A única coisa que viaja é o modelo descendo; a sua foto não sai da aba. O código é público, então dá para conferir em vez de acreditar.",
   },
 
   seo: {

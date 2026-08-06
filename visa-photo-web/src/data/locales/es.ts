@@ -119,6 +119,8 @@ const es: Dict = {
     noServer: "Nunca se envía a un servidor",
     noWatermark: "Sin marca de agua",
     noSignup: "Sin registro",
+    free: "Gratis, sin límites",
+    why: "No se sube nada porque no hace falta. El recorte ocurre en un lienzo dentro de tu navegador, y el fondo lo quita una red neuronal que se descarga a tu dispositivo y se ejecuta ahí. Lo único que viaja es el modelo al bajar; tu foto no sale de la pestaña. El código es público, así que esto se comprueba en lugar de creerse.",
   },
 
   seo: {

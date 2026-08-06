@@ -107,6 +107,8 @@ const en: Dict = {
     noServer: "Never sent to a server",
     noWatermark: "No watermark",
     noSignup: "No sign-up",
+    free: "Free, no limits",
+    why: "Nothing is uploaded because nothing needs to be. Cropping happens on a canvas in your browser, and the background is removed by a neural network that downloads to your device and runs there. The only thing that travels is the model coming down — your photo never leaves the tab, and the source code is public so this can be checked rather than believed.",
   },
 
   seo: {

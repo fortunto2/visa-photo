@@ -174,7 +174,19 @@ export interface Dict {
     backdropRequired: string;
   };
 
-  trust: { inBrowser: string; noServer: string; noWatermark: string; noSignup: string };
+  trust: {
+    inBrowser: string;
+    noServer: string;
+    noWatermark: string;
+    noSignup: string;
+    free: string;
+    /**
+     * Why it is private, in terms of what the machine does. "We respect your privacy" is what
+     * everyone says; "the network downloads to your device and runs there, only the model
+     * travels" is checkable, and the objection it answers is the real one.
+     */
+    why: string;
+  };
 
   /** SEO zone below the tool */
   seo: {

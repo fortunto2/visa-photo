@@ -118,6 +118,8 @@ const tr: Dict = {
     noServer: "Hiçbir sunucuya gitmez",
     noWatermark: "Filigran yok",
     noSignup: "Kayıt yok",
+    free: "Ücretsiz, sınırsız",
+    why: "Hiçbir şey yüklenmiyor, çünkü gerek yok. Kırpma tarayıcınızdaki bir tuval üzerinde yapılıyor, arka planı ise cihazınıza inip orada çalışan bir sinir ağı kaldırıyor. Yolculuk edenin tek şey modelin kendisi; fotoğrafınız sekmeden çıkmıyor. Kaynak kod açık olduğu için buna inanmak yerine bakıp doğrulayabilirsiniz.",
   },
 
   seo: {

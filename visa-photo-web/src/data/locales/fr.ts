@@ -119,6 +119,8 @@ const fr: Dict = {
     noServer: "Jamais envoyée à un serveur",
     noWatermark: "Sans filigrane",
     noSignup: "Sans inscription",
+    free: "Gratuit, sans limite",
+    why: "Rien n\u2019est envoyé parce que rien n\u2019a besoin de l\u2019être. Le recadrage se fait sur un canvas dans votre navigateur, et le fond est retiré par un réseau de neurones téléchargé sur votre appareil et exécuté là. La seule chose qui circule, c\u2019est le modèle qui descend ; votre photo ne quitte pas l\u2019onglet. Le code est public : cela se vérifie au lieu de se croire.",
   },
 
   seo: {
