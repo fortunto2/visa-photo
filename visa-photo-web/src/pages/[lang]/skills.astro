@@ -1,7 +1,7 @@
 ---
 import Page from "../../layouts/Page.astro";
 import CopyButton from "../../components/CopyButton.tsx";
-import { countryGroups, CATALOG } from "../../data/catalog";
+import { countryGroups, CATALOG, idOf } from "../../data/catalog";
 import { langsFor, dict, type ActiveLang } from "../../data/locales";
 import { skillFile } from "../../data/skillFile";
 import { absolute, path } from "../../lib/site";
@@ -70,7 +70,7 @@ const schema = [
       <ul>
         {CATALOG.map((entry) => (
           <li>
-            <a href={path(lang, entry.country, entry.doc)}>{t.docTitle[entry.preset]}</a>
+            <a href={path(lang, entry.country, entry.doc)}>{t.docTitle[idOf(entry)]}</a>
           </li>
         ))}
       </ul>

@@ -1,5 +1,5 @@
 import type { Dict } from "./i18n";
-import { conversionsOf, dpiOf, presetOf, sizeLabels, type CatalogEntry } from "./catalog";
+import { conversionsOf, dpiOf, presetOf, sizeLabels, type CatalogEntry , idOf } from "./catalog";
 
 /**
  * Everything a document page states, derived once.
@@ -30,7 +30,7 @@ export interface DocView {
 
 export function docView(entry: CatalogEntry, t: Dict): DocView {
   const p = presetOf(entry);
-  const key = entry.preset;
+  const key = idOf(entry);
   const conv = conversionsOf(p, entry);
   const { headline, alt } = sizeLabels(p, entry, t.unit);
   const bg = p.background;

@@ -1,4 +1,4 @@
-import { CATALOG, REGION, presetOf, sizeLabels, type CatalogEntry } from "./catalog";
+import { CATALOG, REGION, idOf, presetOf, sizeLabels, type CatalogEntry } from "./catalog";
 import type { Dict, Lang } from "./i18n";
 import { ltr } from "../lib/bidi";
 
@@ -25,7 +25,7 @@ import { ltr } from "../lib/bidi";
 type TextMap = Record<string, string>;
 
 function countryName(lang: Lang, entry: CatalogEntry, override: TextMap): string {
-  const written = override[entry.preset];
+  const written = override[idOf(entry)];
   if (written) return written;
 
   const region = REGION[entry.country];
@@ -56,7 +56,7 @@ export function docText(lang: Lang, raw: Dict): Pick<
   const pageTitle: TextMap = {};
 
   for (const entry of CATALOG) {
-    const key = entry.preset;
+    const key = idOf(entry);
     const preset = presetOf(entry);
     const name = countryName(lang, entry, raw.country);
 

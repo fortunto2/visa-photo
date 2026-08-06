@@ -1,7 +1,7 @@
 ---
 import "../styles/site.css";
 import Sprite from "../components/Sprite.astro";
-import { KIND_ICON, sizeLabels, CATALOG, presetOf } from "../data/catalog";
+import { KIND_ICON, sizeLabels, CATALOG, presetOf, idOf } from "../data/catalog";
 import { DEFAULT_LANG, LANGS, dict } from "../data/locales";
 import { LANG_TAG } from "../data/i18n";
 import { SITE, path } from "../lib/site";
@@ -55,7 +55,7 @@ const t = dict(DEFAULT_LANG);
                   <svg class="flag" viewBox="0 0 32 22" aria-hidden="true"><use href={`#fl-${entry.flag}`} /></svg>
                   <svg class="doc-ico" width="21" height="21" aria-hidden="true"><use href={`#${kindIcon}`} /></svg>
                 </span>
-                <span class="nm">{t.docTitle[entry.preset]}</span>
+                <span class="nm">{t.docTitle[idOf(entry)]}</span>
                 <span class="sz">{sizeLabels(p, entry, t.unit).headline}</span>
               </a>
             </li>

@@ -2,8 +2,7 @@
 import Page from "../layouts/Page.astro";
 import PhotoTool from "./PhotoTool.tsx";
 import {
-  CATALOG, KIND_ICON, presetOf, dpiOf, sameCountry, type CatalogEntry,
-} from "../data/catalog";
+  CATALOG, KIND_ICON, presetOf, dpiOf, sameCountry, type CatalogEntry, idOf } from "../data/catalog";
 import { docView } from "../data/docView";
 import { agentCard, agentPrompt } from "../data/agentCard";
 import CopyButton from "./CopyButton.tsx";
@@ -30,7 +29,7 @@ const { lang, entry, mode } = Astro.props as Props;
 
 const t = dict(lang);
 const p = presetOf(entry);
-const key = entry.preset;
+const key = idOf(entry);
 
 
 const view = docView(entry, t);

@@ -2,7 +2,7 @@
 import Page from "../../layouts/Page.astro";
 import CustomTool from "../../components/CustomTool.tsx";
 import { PRESETS } from "../../lib/presets";
-import { CATALOG } from "../../data/catalog";
+import { CATALOG, idOf } from "../../data/catalog";
 import { langsFor, dict, type ActiveLang } from "../../data/locales";
 import { absolute, path } from "../../lib/site";
 
@@ -84,7 +84,7 @@ const schema = [
           <li>
             <a href={path(lang, entry.country, entry.doc)}>
               <svg width="24" height="17" viewBox="0 0 32 22" aria-hidden="true"><use href={`#fl-${entry.flag}`} /></svg>
-              {t.docTitle[entry.preset]}
+              {t.docTitle[idOf(entry)]}
             </a>
           </li>
         ))}

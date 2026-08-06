@@ -1,6 +1,6 @@
 ---
 import Page from "../../../layouts/Page.astro";
-import { KIND_ICON, sizeLabels, countryGroups, presetOf, dpiOf, type CountryGroup } from "../../../data/catalog";
+import { KIND_ICON, sizeLabels, countryGroups, presetOf, dpiOf, type CountryGroup, idOf } from "../../../data/catalog";
 import { LANGS, dict, type ActiveLang } from "../../../data/locales";
 import { absolute, path } from "../../../lib/site";
 import { ltr } from "../../../lib/bidi";
@@ -33,7 +33,7 @@ const faq = [
     q: t.countryPage.faqDocs(countryName),
     a: t.countryPage.faqDocsA({
       country: countryName,
-      list: group.entries.map((e) => t.docShort[e.preset]).join(", "),
+      list: group.entries.map((e) => t.docShort[idOf(e)]).join(", "),
     }),
   },
   ...(group.entries.length > 1
@@ -68,7 +68,7 @@ const schema = [
     itemListElement: group.entries.map((entry, i) => ({
       "@type": "ListItem",
       position: i + 1,
-      name: t.docTitle[entry.preset],
+      name: t.docTitle[idOf(entry)],
       url: absolute(path(lang, entry.country, entry.doc)),
     })),
   },
@@ -114,7 +114,7 @@ const schema = [
               <svg class="flag" viewBox="0 0 32 22" aria-hidden="true"><use href={`#fl-${entry.flag}`} /></svg>
               <svg class="doc-ico" width="21" height="21" aria-hidden="true"><use href={`#${kindIcon}`} /></svg>
             </span>
-            <span class="nm">{t.docShort[entry.preset]}</span>
+            <span class="nm">{t.docShort[idOf(entry)]}</span>
             <span class="sz">{sizeLabels(p, entry, t.unit).headline}</span>
             <span class="px">{ltr(`${p.digital_width} × ${p.digital_height}`)} {t.unit.px}, {dpiOf(p)} dpi</span>
           </a>
@@ -152,7 +152,7 @@ const schema = [
       <ul>
         {group.entries.map((entry) => (
           <li>
-            {t.docTitle[entry.preset]}:{" "}
+            {t.docTitle[idOf(entry)]}:{" "}
             <a href={entry.source.url} rel="nofollow noopener">{entry.source.label}</a>
           </li>
         ))}

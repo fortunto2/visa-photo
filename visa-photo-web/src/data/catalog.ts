@@ -16,6 +16,14 @@ export type DocKind = "visa" | "passport" | "permit";
 export interface CatalogEntry {
   /** key in presets.toml */
   preset: string;
+  /**
+   * Key for this entry's text, when several entries share one specification.
+   *
+   * The Schengen countries are all 35x45 mm because one EU decision says so, so they share a
+   * preset — duplicating the numbers would put them out of step the first time one changed.
+   * They still need their own names and titles, and those hang off this instead.
+   */
+  id?: string;
   /** URL segment for the country, stable across languages */
   country: string;
   /** URL segment for the document, stable across languages */
@@ -93,6 +101,10 @@ export const REGION: Record<string, string | null> = {
   spain: "ES",
   thailand: "TH",
   vietnam: "VN",
+  france: "FR",
+  germany: "DE",
+  italy: "IT",
+  greece: "GR",
   "saudi-arabia": "SA",
   australia: "AU",
   russia: "RU",
@@ -104,6 +116,11 @@ export const KIND_ICON: Record<DocKind, string> = {
   passport: "ic-passport",
   permit: "ic-permit",
 };
+
+/** The key a locale looks text up by: its own id where it has one, else the preset. */
+export function idOf(entry: CatalogEntry): string {
+  return entry.id ?? entry.preset;
+}
 
 export const CATALOG: CatalogEntry[] = [
   {
@@ -332,6 +349,64 @@ export const CATALOG: CatalogEntry[] = [
     flag: "jp",
     source: { label: "MOFA Japan", url: "https://www.mofa.go.jp/j_info/visit/visa/index.html" },
     checked: "2026-08-06",
+  },
+  {
+    preset: "eu_schengen",
+    id: "fr_schengen",
+    submission: "print",
+    country: "france",
+    doc: "visa",
+    kind: "visa",
+    flag: "fr",
+    form: { name: "France-Visas", online: true, url: "https://france-visas.gouv.fr/" },
+    source: { label: "France-Visas", url: "https://france-visas.gouv.fr/" },
+    checked: "2026-08-07",
+  },
+  {
+    preset: "eu_schengen",
+    id: "de_schengen",
+    submission: "print",
+    country: "germany",
+    doc: "visa",
+    kind: "visa",
+    flag: "de",
+    form: { name: "VIDEX", online: true, url: "https://videx.diplo.de/" },
+    source: { label: "Auswärtiges Amt", url: "https://www.auswaertiges-amt.de/en/visa-service" },
+    checked: "2026-08-07",
+  },
+  {
+    preset: "eu_schengen",
+    id: "it_schengen",
+    submission: "print",
+    country: "italy",
+    doc: "visa",
+    kind: "visa",
+    flag: "it",
+    form: { name: "Prenot@Mi", online: true, url: "https://prenotami.esteri.it/" },
+    source: { label: "Ministero degli Affari Esteri", url: "https://vistoperitalia.esteri.it/" },
+    checked: "2026-08-07",
+  },
+  {
+    preset: "eu_schengen",
+    id: "es_schengen",
+    submission: "print",
+    country: "spain",
+    doc: "visa",
+    kind: "visa",
+    flag: "es",
+    source: { label: "Ministerio de Asuntos Exteriores", url: "https://www.exteriores.gob.es/" },
+    checked: "2026-08-07",
+  },
+  {
+    preset: "eu_schengen",
+    id: "gr_schengen",
+    submission: "print",
+    country: "greece",
+    doc: "visa",
+    kind: "visa",
+    flag: "gr",
+    source: { label: "Hellenic Ministry of Foreign Affairs", url: "https://www.mfa.gr/en/visas/" },
+    checked: "2026-08-07",
   },
   {
     preset: "au_passport",

@@ -1,4 +1,4 @@
-import { CATALOG, presetOf, dpiOf, conversionsOf } from "./catalog";
+import { CATALOG, presetOf, dpiOf, conversionsOf, idOf } from "./catalog";
 import { SITE, absolute, path } from "../lib/site";
 import { DEFAULT_LANG, dict } from "./locales";
 
@@ -43,7 +43,7 @@ export function skillFile(): string {
     const p = presetOf(entry);
     const conv = conversionsOf(p, entry);
     out.push(
-      `| ${t.docTitle[entry.preset]} | ${conv.mm} mm | ${conv.cm} cm / ${conv.inch} in | ` +
+      `| ${t.docTitle[idOf(entry)]} | ${conv.mm} mm | ${conv.cm} cm / ${conv.inch} in | ` +
         `${conv.px} | ${dpiOf(p)} | ${t.backgroundName[p.background]} | ` +
         `${p.max_file_size_kb} KB | ${p.photo_count} |`,
     );
@@ -60,7 +60,7 @@ export function skillFile(): string {
   for (const entry of CATALOG) {
     const p = presetOf(entry);
     out.push(
-      `| ${t.docTitle[entry.preset]} | ${p.face_height_percent} % | ` +
+      `| ${t.docTitle[idOf(entry)]} | ${p.face_height_percent} % | ` +
         `${p.face_top_margin_percent} % | ${p.eye_line_from_bottom_percent} % |`,
     );
   }
@@ -104,7 +104,7 @@ export function skillFile(): string {
   out.push("Document pages:");
   out.push("");
   for (const entry of CATALOG) {
-    out.push(`- ${t.docTitle[entry.preset]}: ${absolute(path(DEFAULT_LANG, entry.country, entry.doc))}`);
+    out.push(`- ${t.docTitle[idOf(entry)]}: ${absolute(path(DEFAULT_LANG, entry.country, entry.doc))}`);
   }
   out.push("");
   out.push("Advice worth repeating to anyone taking one: stand a metre from a plain wall facing");
@@ -126,7 +126,7 @@ export function skillFile(): string {
   out.push("");
   for (const entry of CATALOG) {
     out.push(
-      `- ${t.docTitle[entry.preset]}: ${entry.source.label} — ${entry.source.url} ` +
+      `- ${t.docTitle[idOf(entry)]}: ${entry.source.label} — ${entry.source.url} ` +
         `(checked ${entry.checked})`,
     );
   }

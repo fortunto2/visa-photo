@@ -428,6 +428,41 @@ const en: Dict = {
   },
 
   faq: {
+    fr_schengen: [
+      {
+        q: "Is the French visa photo different from other Schengen countries?",
+        a:
+          "No. France uses the same 35 × 45 mm photo as the other 28 Schengen countries, because the rule comes from one EU decision rather than from each country. What is specific to France is the process around it: the form is filled in on France-Visas, and the appointment and the printed photo go to the centre that serves your country — usually TLScontact or VFS Global, some of which photograph you on the spot.",
+      },
+    ],
+    de_schengen: [
+      {
+        q: "Is the German visa photo different from other Schengen countries?",
+        a:
+          "No. Germany uses the same 35 × 45 mm photo as the rest of the Schengen area. What is German is the form: it is completed in VIDEX, printed and signed, and taken to the mission or the visa centre with the photo. Germany also publishes its own biometric photo template for national documents, which is stricter than the Schengen rule and is not what a visa application is judged against.",
+      },
+    ],
+    it_schengen: [
+      {
+        q: "Is the Italian visa photo different from other Schengen countries?",
+        a:
+          "No. Italy uses the same 35 × 45 mm photo as the rest of the Schengen area. What is Italian is the appointment: most consulates book through Prenot@Mi, and the printed photo is handed over at the appointment rather than uploaded with the form.",
+      },
+    ],
+    es_schengen: [
+      {
+        q: "Is the Spanish visa photo different from other Schengen countries?",
+        a:
+          "No. Spain uses the same 35 × 45 mm photo as the rest of the Schengen area. Note that this is not the same as the Spanish residence card, which is 26 × 32 mm on photographic paper — a different document with a genuinely different photo.",
+      },
+    ],
+    gr_schengen: [
+      {
+        q: "Is the Greek visa photo different from other Schengen countries?",
+        a:
+          "No. Greece uses the same 35 × 45 mm photo as the rest of the Schengen area. What differs is where the application is filed: Greek consulates work through visa centres in most countries, and the printed photo is handed over there.",
+      },
+    ],
     eu_schengen: [
       {
         q: "Is the photo the same for Germany, Italy, France and the other Schengen countries?",
