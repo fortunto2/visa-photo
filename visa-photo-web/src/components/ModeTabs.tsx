@@ -1,4 +1,4 @@
-import { useEffect, useState } from "preact/hooks";
+import { useEffect } from "preact/hooks";
 import { onHandOff } from "../lib/handoff";
 import type { ComponentChildren } from "preact";
 
@@ -10,56 +10,43 @@ interface Props {
   children?: ComponentChildren;
   /** which mode this URL is */
   initial?: "make" | "check";
-  makeHref?: string;
-  checkHref?: string;
+  makeHref: string;
+  checkHref: string;
 }
 
 /**
- * Two jobs on one page: produce a photo, or judge one that already exists.
+ * Two jobs, two addresses.
  *
- * Each mode has its own URL, because "passport photo checker" is a different search from
- * "passport photo size" and a tab cannot be linked to or ranked. Switching stays instant all
- * the same: the tab swaps the panel and rewrites the address, with no round trip. Back and
- * forward then work the way the address bar promises.
+ * These were client-side tabs that rewrote the URL as they switched, which looked instant and
+ * was wrong: the heading, the description and the sections below are rendered per URL, so
+ * after a click the address said "checker" while the page still said "photo size". Only a
+ * reload put them back in agreement.
+ *
+ * Links instead. A static page over a CDN arrives in about the time the swap took, and now
+ * everything on it matches the address — including the title, which is what a shared link
+ * shows and what a search result shows.
  */
 export default function ModeTabs({
   makeLabel, checkLabel, check, children, initial = "make", makeHref, checkHref,
 }: Props) {
-  const [mode, setMode] = useState<"make" | "check">(initial);
-
-  const go = (next: "make" | "check") => {
-    setMode(next);
-    const href = next === "check" ? checkHref : makeHref;
-    if (href && typeof history !== "undefined") history.pushState({ mode: next }, "", href);
-  };
-
-  // The editor finished something and wants it judged; move the visitor there.
-  useEffect(() => onHandOff(() => go("check")), []);
-
-  // Someone pressing Back expects the panel to follow the address.
-  useEffect(() => {
-    const onPop = () => setMode(location.pathname.replace(/\/$/, "").endsWith("/check") ? "check" : "make");
-    addEventListener("popstate", onPop);
-    return () => removeEventListener("popstate", onPop);
-  }, []);
+  // The editor finished something and wants it judged: take them to the checker's own page.
+  useEffect(() => onHandOff(() => { location.href = checkHref; }), [checkHref]);
 
   return (
     <>
       <div class="mode-tabs" role="tablist" data-testid="mode-tabs">
-        <button role="tab" type="button" aria-selected={mode === "make"}
-          data-testid="tab-make" onClick={() => go("make")}>
+        <a role="tab" href={makeHref} aria-selected={initial === "make"} data-testid="tab-make">
           <svg width="17" height="17" aria-hidden="true"><use href="#ic-camera" /></svg>
           {makeLabel}
-        </button>
-        <button role="tab" type="button" aria-selected={mode === "check"}
-          data-testid="tab-check" onClick={() => go("check")}>
+        </a>
+        <a role="tab" href={checkHref} aria-selected={initial === "check"} data-testid="tab-check">
           <svg width="17" height="17" aria-hidden="true"><use href="#ic-check" /></svg>
           {checkLabel}
-        </button>
+        </a>
       </div>
 
-      <div hidden={mode !== "make"}>{children}</div>
-      <div hidden={mode !== "check"}>{check}</div>
+      <div hidden={initial !== "make"}>{children}</div>
+      <div hidden={initial !== "check"}>{check}</div>
     </>
   );
 }

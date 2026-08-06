@@ -450,13 +450,13 @@ h1 {
   display: inline-flex; gap: 4px; margin-bottom: 18px; padding: 5px;
   background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-pill);
 }
-.mode-tabs button {
+.mode-tabs a {
   display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
   border: 0; background: transparent; color: var(--ink-soft);
   font-family: var(--ui); font-size: 15.5px; font-weight: 650;
   padding: 10px 20px; border-radius: var(--r-pill);
 }
-.mode-tabs button[aria-selected="true"] { background: var(--teal); color: var(--on-teal); }
+.mode-tabs a[aria-selected="true"] { background: var(--teal); color: var(--on-teal); }
 
 /* checker */
 .check-result {
@@ -650,6 +650,9 @@ h1 {
 
 /* The two modes are the page's main fork, so they read as a choice rather than as chips. */
 .mode-tabs { gap: 10px; margin-bottom: 20px; }
-.mode-tabs button {
+.mode-tabs a {
   font-size: 16.5px; font-weight: 700; padding: 12px 22px;
 }
+
+/* the tabs are links now, so they need the anchor reset the buttons never did */
+.mode-tabs a { text-decoration: none; }
