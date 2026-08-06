@@ -3,6 +3,7 @@ import Page from "../layouts/Page.astro";
 import { KIND_ICON, sizeLabels, CATALOG, presetOf, countryGroups } from "../data/catalog";
 import { LANGS, dict, type ActiveLang } from "../data/locales";
 import { SITE, absolute, path } from "../lib/site";
+import { ltr } from "../lib/bidi";
 
 /**
  * The hub, rendered for whichever locale asks for it.
@@ -75,7 +76,7 @@ const schema = [
                 </span>
                 <span class="nm">{t.docShort[entry.preset]}</span>
                 <span class="sz">{sizeLabels(p, entry, t.unit).headline}</span>
-                <span class="px">{p.digital_width} × {p.digital_height} {t.unit.px}</span>
+                <span class="px">{ltr(`${p.digital_width} × ${p.digital_height}`)} {t.unit.px}</span>
               </a>
             </li>
           );

@@ -1,4 +1,5 @@
 import { PRESETS, dpiOf, type Preset } from "../lib/presets";
+import { ltr } from "../lib/bidi";
 
 export { dpiOf };
 
@@ -376,14 +377,16 @@ export function conversionsOf(preset: Preset, entry?: CatalogEntry): SizeConvers
   const { print_width_mm: w, print_height_mm: h } = preset;
   const native = entry?.native;
   return {
-    mm: `${w} × ${h}`,
-    cm: `${trimZeros(w / 10, 1)} × ${trimZeros(h / 10, 1)}`,
+    mm: ltr(`${w} × ${h}`),
+    cm: ltr(`${trimZeros(w / 10, 1)} × ${trimZeros(h / 10, 1)}`),
     // Prefer the country's own figure: converting the rounded millimetres back gives 2.01 in
     // for a photo every US form calls 2 × 2.
-    inch: native
-      ? `${trimZeros(native.w, 2)} × ${trimZeros(native.h, 2)}`
-      : `${trimZeros(w / 25.4, 2)} × ${trimZeros(h / 25.4, 2)}`,
-    px: `${preset.digital_width} × ${preset.digital_height}`,
+    inch: ltr(
+      native
+        ? `${trimZeros(native.w, 2)} × ${trimZeros(native.h, 2)}`
+        : `${trimZeros(w / 25.4, 2)} × ${trimZeros(h / 25.4, 2)}`,
+    ),
+    px: ltr(`${preset.digital_width} × ${preset.digital_height}`),
   };
 }
 

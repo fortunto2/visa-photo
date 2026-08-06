@@ -1,4 +1,5 @@
 import type { APIRoute } from "astro";
+import { plain } from "../lib/bidi";
 import { CATALOG } from "../data/catalog";
 import { docView } from "../data/docView";
 import { SITE, absolute, path } from "../lib/site";
@@ -55,7 +56,7 @@ export const GET: APIRoute = () => {
     }
   }
 
-  return new Response(out.join("\n"), {
+  return new Response(plain(out.join("\n")), {
     headers: {
       "content-type": "text/plain; charset=utf-8",
       "cache-control": "public, max-age=3600",

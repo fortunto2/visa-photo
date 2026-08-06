@@ -223,6 +223,12 @@ export interface Dict {
     faqSameNo: string;
     lead: (v: { country: string; n: number }) => string;
     title: (country: string) => string;
+    /**
+     * The document heading: its title and its size. The punctuation between them belongs to
+     * the language — Chinese wants a full-width colon, and a title that already ends in a dash
+     * may want none at all.
+     */
+    docHeadline: (v: { title: string; size: string }) => string;
   };
 
   /** the models page: what the background remover actually downloads and why */

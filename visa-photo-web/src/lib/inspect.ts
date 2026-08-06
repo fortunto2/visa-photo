@@ -1,3 +1,4 @@
+import { ltr } from "./bidi";
 import type { Preset } from "./presets";
 
 /**
@@ -93,10 +94,10 @@ export function inspectPhoto({ img, fileSizeKb, mimeType, preset }: InspectInput
   add(
     "dimensions",
     sizeOk ? "pass" : "fail",
-    `${w} × ${h} px`,
+    `${ltr(`${w} × ${h}`)} px`,
     maxW && maxH
-      ? `${preset.digital_width}–${maxW} × ${preset.digital_height}–${maxH} px`
-      : `${preset.digital_width} × ${preset.digital_height} px`,
+      ? `${ltr(`${preset.digital_width}–${maxW} × ${preset.digital_height}–${maxH}`)} px`
+      : `${ltr(`${preset.digital_width} × ${preset.digital_height}`)} px`,
   );
 
   // Aspect ratio is reported separately: a photo of the wrong size but right shape can be

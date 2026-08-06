@@ -1,5 +1,6 @@
 import { CATALOG, REGION, presetOf, sizeLabels, type CatalogEntry } from "./catalog";
 import type { Dict, Lang } from "./i18n";
+import { ltr } from "../lib/bidi";
 
 /**
  * Fills in the per-document text a locale did not write, from data it already has.
@@ -72,7 +73,7 @@ export function docText(lang: Lang, raw: Dict): Pick<
         doc: short,
         kind: entry.kind,
         size: sizes.headline,
-        px: `${preset.digital_width} × ${preset.digital_height} ${raw.unit.px}`,
+        px: `${ltr(`${preset.digital_width} × ${preset.digital_height}`)} ${raw.unit.px}`,
       });
     docNotes[key] =
       raw.docNotes[key] ??

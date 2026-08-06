@@ -1,4 +1,5 @@
 import type { APIRoute } from "astro";
+import { plain } from "../lib/bidi";
 import { CATALOG, presetOf, dpiOf } from "../data/catalog";
 import { SITE, absolute, path } from "../lib/site";
 import { DEFAULT_LANG, LANGS } from "../data/locales";
@@ -49,7 +50,7 @@ export const GET: APIRoute = () => {
     documents,
   };
 
-  return new Response(JSON.stringify(body, null, 2), {
+  return new Response(plain(JSON.stringify(body, null, 2)), {
     headers: {
       "content-type": "application/json; charset=utf-8",
       "cache-control": "public, max-age=3600",

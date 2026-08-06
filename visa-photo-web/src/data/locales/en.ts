@@ -197,6 +197,7 @@ const en: Dict = {
     lead: ({ country, n }) =>
       `${n} document${n === 1 ? "" : "s"} for ${country}, each with its exact size and a tool that crops to it.`,
     title: (country) => `${country} photo size and requirements — free maker`,
+    docHeadline: ({ title, size }) => `${title}: ${size}`,
   },
 
   agent: {

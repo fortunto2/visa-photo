@@ -11,6 +11,7 @@ import PhotoChecker from "../../../components/PhotoChecker.tsx";
 import ModeTabs from "../../../components/ModeTabs.tsx";
 import { LANGS, DEFAULT_LANG, dict, hasSection, type ActiveLang } from "../../../data/locales";
 import { absolute, path } from "../../../lib/site";
+import { ltr } from "../../../lib/bidi";
 import { LANG_TAG } from "../../../data/i18n";
 
 export function getStaticPaths() {
@@ -122,7 +123,7 @@ const schema = [
     )}
   </p>
 
-  <h1>{docTitle}: {headlineSize}</h1>
+  <h1>{t.countryPage.docHeadline({ title: docTitle, size: headlineSize })}</h1>
 
   <p class="answer">{answer}</p>
 
@@ -263,7 +264,7 @@ const schema = [
           </div>
           <div class="spec-row">
             <dt><svg width="17" height="17" aria-hidden="true"><use href="#ic-pixel" /></svg>{t.spec.digital}</dt>
-            <dd>{p.digital_width} × {p.digital_height} {t.unit.px}</dd>
+            <dd>{ltr(`${p.digital_width} × ${p.digital_height}`)} {t.unit.px}</dd>
           </div>
           <div class="spec-row">
             <dt><svg width="17" height="17" aria-hidden="true"><use href="#ic-drop" /></svg>{t.spec.background}</dt>
