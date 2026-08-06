@@ -26,6 +26,19 @@ const OF: Record<"visa" | "passport" | "permit", string> = {
   permit: "تصريح الإقامة",
 };
 
+/**
+ * The word people type, which is not the word the page is written in.
+ *
+ * Autocomplete goes far deeper on the colloquial "فيزا" than on the formal "تأشيرة", and it takes
+ * the country as a bare noun straight after it — "مقاس صورة فيزا امريكا", "… فيزا الصين". So the
+ * title uses that construction while the prose keeps the formal noun.
+ */
+const SEARCH: Record<"visa" | "passport" | "permit", string> = {
+  visa: "فيزا",
+  passport: "جواز سفر",
+  permit: "تصريح إقامة",
+};
+
 const ar: Dict = {
   nav: { countries: "كل الدول", models: "نماذج الخلفية" },
   unit: { mm: "مم", cm: "سم", in: "بوصة", px: "بكسل", kb: "كيلوبايت", mb: "ميغابايت" },
@@ -36,7 +49,7 @@ const ar: Dict = {
   gen: {
     docTitle: ({ country, kind }) => `صورة ${OF[kind]} — ${country}`,
     pageTitle: ({ country, kind, size }) =>
-      `مقاس صورة ${OF[kind]} ${forCountry(country)} ${size} — الشروط والمواصفات، وتعديل الصورة أونلاين مجانًا`,
+      `مقاس صورة ${SEARCH[kind]} ${country} ${size} — الشروط والمواصفات، وتعديل الصورة أونلاين مجانًا`,
     docNotes: ({ background, size, headMm, mm }) =>
       `خلفية ${background}، ${size}، وارتفاع الرأس نحو ${headMm} ${mm} من الذقن إلى أعلى الرأس.`,
   },
