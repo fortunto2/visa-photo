@@ -75,16 +75,20 @@ export function docText(lang: Lang, raw: Dict): Pick<
         size: sizes.headline,
         px: `${ltr(`${preset.digital_width} × ${preset.digital_height}`)} ${raw.unit.px}`,
       });
+    // With no print size there are no millimetres to quote, so the generated note would be
+    // making one up. A locale can still write its own; otherwise the page simply has no note.
     docNotes[key] =
       raw.docNotes[key] ??
-      raw.gen.docNotes({
-        background: raw.backgroundIn[preset.background],
-        size: sizes.headline,
-        // Derived rather than restated: the preset holds a share of the frame, and the
-        // millimetres follow from the print height. No second place to keep in step.
-        headMm: Math.round((preset.face_height_percent / 100) * preset.print_height_mm),
-        mm: raw.unit.mm,
-      });
+      (preset.print_height_mm === undefined
+        ? ""
+        : raw.gen.docNotes({
+            background: raw.backgroundIn[preset.background],
+            size: sizes.headline,
+            // Derived rather than restated: the preset holds a share of the frame, and the
+            // millimetres follow from the print height. No second place to keep in step.
+            headMm: Math.round((preset.face_height_percent / 100) * preset.print_height_mm),
+            mm: raw.unit.mm,
+          }));
   }
 
   return { country, docShort, docTitle, docNotes, pageTitle };

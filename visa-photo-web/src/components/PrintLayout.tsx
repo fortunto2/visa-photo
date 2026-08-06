@@ -21,6 +21,8 @@ function buildPhotoSizes() {
   for (const key of PRESET_KEYS) {
     if (key === "custom") continue;
     const p = PRESETS[key];
+    // A document with no published print size has nothing to offer a sheet of printed photos.
+    if (!p.print_width_mm || !p.print_height_mm) continue;
     const sizeKey = `${p.print_width_mm}x${p.print_height_mm}`;
     const existing = sizeMap.get(sizeKey);
     if (existing) {

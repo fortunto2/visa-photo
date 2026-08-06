@@ -83,6 +83,9 @@ export const REGION: Record<string, string | null> = {
   "new-zealand": "NZ",
   ireland: "IE",
   spain: "ES",
+  thailand: "TH",
+  vietnam: "VN",
+  "saudi-arabia": "SA",
   australia: "AU",
   russia: "RU",
 };
@@ -280,6 +283,49 @@ export const CATALOG: CatalogEntry[] = [
     checked: "2026-08-06",
   },
   {
+    preset: "th_evisa",
+    submission: "upload",
+    country: "thailand",
+    doc: "evisa",
+    kind: "visa",
+    flag: "th",
+    form: { name: "thaievisa.go.th", online: true },
+    source: { label: "Thai e-Visa portal", url: "https://www.thaievisa.go.th/" },
+    checked: "2026-08-06",
+  },
+  {
+    preset: "sa_evisa",
+    submission: "upload",
+    country: "saudi-arabia",
+    doc: "evisa",
+    kind: "visa",
+    flag: "sa",
+    form: { name: "visa.visitsaudi.com", online: true },
+    source: { label: "Saudi tourist e-visa portal", url: "https://visa.visitsaudi.com/Home/PhotoSpecifications" },
+    checked: "2026-08-06",
+  },
+  {
+    preset: "vn_evisa",
+    submission: "upload",
+    country: "vietnam",
+    doc: "evisa",
+    kind: "visa",
+    flag: "vn",
+    form: { name: "evisa.gov.vn", online: true },
+    source: { label: "Vietnam National E-Visa portal", url: "https://evisa.gov.vn/instruction" },
+    checked: "2026-08-06",
+  },
+  {
+    preset: "jp_visa",
+    submission: "print",
+    country: "japan",
+    doc: "visa",
+    kind: "visa",
+    flag: "jp",
+    source: { label: "MOFA Japan", url: "https://www.mofa.go.jp/j_info/visit/visa/index.html" },
+    checked: "2026-08-06",
+  },
+  {
     preset: "au_passport",
     submission: "print",
     country: "australia",
@@ -366,9 +412,10 @@ export function countryGroups(): CountryGroup[] {
  * question unanswered.
  */
 export interface SizeConversions {
-  mm: string;
-  cm: string;
-  inch: string;
+  /** null where the authority publishes no physical size; the pixels are then the whole spec. */
+  mm: string | null;
+  cm: string | null;
+  inch: string | null;
   px: string;
 }
 
@@ -379,6 +426,10 @@ function trimZeros(value: number, digits: number): string {
 export function conversionsOf(preset: Preset, entry?: CatalogEntry): SizeConversions {
   const { print_width_mm: w, print_height_mm: h } = preset;
   const native = entry?.native;
+  // No physical size published — the pixel count is the whole specification.
+  if (!w || !h) {
+    return { mm: null, cm: null, inch: null, px: ltr(`${preset.digital_width} × ${preset.digital_height}`) };
+  }
   return {
     mm: ltr(`${w} × ${h}`),
     cm: ltr(`${trimZeros(w / 10, 1)} × ${trimZeros(h / 10, 1)}`),
@@ -404,9 +455,11 @@ export function conversionsOf(preset: Preset, entry?: CatalogEntry): SizeConvers
 export function sizeLabels(
   preset: Preset,
   entry: CatalogEntry,
-  unit: { mm: string; cm: string; in: string },
+  unit: { mm: string; cm: string; in: string; px: string },
 ): { headline: string; alt: string } {
   const conv = conversionsOf(preset, entry);
+  // Where no millimetres exist, the pixels are the headline and there is no second line.
+  if (!conv.mm) return { headline: `${conv.px} ${unit.px}`, alt: "" };
   return entry.native
     ? {
         headline: `${conv.inch} ${unit.in}`,

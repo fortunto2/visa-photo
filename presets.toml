@@ -69,8 +69,8 @@ notes = "White bg, 2x2 inch, head 50-69%"
 # ── Europe ──
 [eu_schengen]
 name = "Schengen (EU)"
-digital_width = 600
-digital_height = 750
+digital_width = 700
+digital_height = 900
 max_file_size_kb = 500
 print_width_mm = 35
 print_height_mm = 45
@@ -87,15 +87,13 @@ name = "UK Passport"
 digital_width = 600
 digital_height = 750
 max_file_size_kb = 500
-print_width_mm = 35
-print_height_mm = 45
 face_height_percent = 66.7
 face_top_margin_percent = 6.7
 eye_line_from_bottom_percent = 62.0
 background = "light-grey"
 photo_count = 2
 format = "jpeg"
-notes = "Light grey or cream bg, 35x45mm, head 29-34mm"
+notes = "Light grey or cream bg. 600x750 px is the minimum GOV.UK states for the digital photo; a printed one is 35x45mm and a different shape."
 
 # ── Canada ──
 # Canada publishes three different photo rules, and they are not interchangeable: the passport
@@ -177,8 +175,8 @@ notes = "Pure white bg, 35x45mm. Portal wants exactly 630x810 px under 250 KB, f
 
 [jp_passport]
 name = "Japan Passport"
-digital_width = 600
-digital_height = 750
+digital_width = 700
+digital_height = 900
 max_file_size_kb = 500
 print_width_mm = 35
 print_height_mm = 45
@@ -192,8 +190,8 @@ notes = "White bg, 35x45mm, face 34mm+/-2mm"
 
 [kr_passport]
 name = "South Korea Passport"
-digital_width = 600
-digital_height = 750
+digital_width = 700
+digital_height = 900
 max_file_size_kb = 500
 print_width_mm = 35
 print_height_mm = 45
@@ -208,8 +206,8 @@ notes = "White bg, 35x45mm"
 # ── Australia ──
 [au_passport]
 name = "Australia Passport"
-digital_width = 600
-digital_height = 750
+digital_width = 700
+digital_height = 900
 max_file_size_kb = 500
 print_width_mm = 35
 print_height_mm = 45
@@ -224,8 +222,8 @@ notes = "White bg, 35x45mm, head 32-36mm"
 # ── Russia / CIS ──
 [ru_passport]
 name = "Russia Passport"
-digital_width = 600
-digital_height = 750
+digital_width = 700
+digital_height = 900
 max_file_size_kb = 500
 print_width_mm = 35
 print_height_mm = 45
@@ -280,8 +278,6 @@ digital_max_width = 4500
 digital_max_height = 6000
 max_file_size_kb = 5000
 min_file_size_kb = 250
-print_width_mm = 35
-print_height_mm = 45
 # Tuned against their official checker, then restated. The accepted photo was made while the
 # crown estimate ran 15 % low, so a preset reading 60 % was really putting a 70 % head in the
 # frame; 71 % is that same photo, honestly labelled, and is also the floor of the 32-36mm in
@@ -292,7 +288,7 @@ eye_line_from_bottom_percent = 60.0
 background = "white"
 photo_count = 2
 format = "jpeg"
-notes = "3:4 portrait, 900-4500 px wide, file 250 KB to 5 MB, no selfies"
+notes = "3:4 portrait, 900-4500 px wide, file 250 KB to 5 MB, no selfies. A printed photo is 35x45mm and a different shape."
 
 # ── Ireland ──
 [ie_passport]
@@ -300,15 +296,13 @@ name = "Ireland Passport"
 digital_width = 715
 digital_height = 951
 max_file_size_kb = 9000
-print_width_mm = 35
-print_height_mm = 45
 face_height_percent = 71.0
 face_top_margin_percent = 6.7
 eye_line_from_bottom_percent = 62.0
 background = "white"
 photo_count = 4
 format = "jpeg"
-notes = "At least 715x951 px, not a scan of a print, taken in the last six months"
+notes = "At least 715x951 px, JPEG, not a scan of a printed photo, taken in the last six months. A printed one is 35x45mm and a different shape."
 
 # ── Custom ──
 [custom]
@@ -345,3 +339,77 @@ background = "white"
 photo_count = 2
 format = "jpeg"
 notes = "26x32mm on photographic paper — smaller than the 35x45mm used almost everywhere else. White background, no dark glasses, head 70-80% of the height."
+
+# Thailand's e-Visa publishes no physical size at all — only a head share, a file ceiling and a
+# minimum height in pixels, taken from the portal's own validator and the MFA manual. The
+# 35x45mm every photo service quotes belongs to the paper visa Thailand replaced, and that
+# process also had a different recency rule, so repeating it would be wrong twice.
+[th_evisa]
+name = "Thailand e-Visa"
+digital_width = 600
+digital_height = 800
+digital_max_width = 3000
+digital_max_height = 4000
+max_file_size_kb = 3000
+face_height_percent = 75.0
+face_top_margin_percent = 6.0
+eye_line_from_bottom_percent = 60.0
+background = "white"
+photo_count = 1
+format = "jpeg"
+notes = "Uploaded only, no printed size exists. JPEG under 3 MB, at least 160 px tall, light plain background, head 70-80% of the height, taken within six months."
+
+# Saudi Arabia states one fixed pixel size and a genuine file-size corridor, and no millimetres.
+# Their wording says the face fills "70% - 80% of the face", which is an error in their own
+# copy; 1.4-1.6 inches of chin-to-crown on a 200 px photo is 70-80 % of its height, so that is
+# what it means. The Enjaz route publishes nothing at all — its manual has no photo section.
+[sa_evisa]
+name = "Saudi Arabia e-Visa"
+digital_width = 200
+digital_height = 200
+min_file_size_kb = 5
+max_file_size_kb = 100
+face_height_percent = 75.0
+face_top_margin_percent = 8.0
+eye_line_from_bottom_percent = 58.0
+background = "white"
+photo_count = 1
+format = "jpeg"
+notes = "Uploaded only, no printed size exists. Exactly 200x200 px, 5-100 KB, plain white background with no shadows, head 70-80% of the height, taken within six months."
+
+# Vietnam states a size and a format and nothing about the head at all — no chin-to-crown, no
+# eye line, no margins, no pixels. The 60 % below is our framing choice, not their rule, and
+# the page says so. Their own portal contradicts itself on weight (<2 MB in the form note and
+# the instructions, 10 MB on the printed request form); 2 MB is the safe reading.
+[vn_evisa]
+name = "Vietnam e-Visa"
+digital_width = 600
+digital_height = 900
+max_file_size_kb = 2048
+print_width_mm = 40
+print_height_mm = 60
+face_height_percent = 60.0
+face_top_margin_percent = 12.0
+eye_line_from_bottom_percent = 58.0
+background = "white"
+photo_count = 1
+format = "jpeg"
+notes = "Uploaded to evisa.gov.vn as JPEG under 2 MB, 4x6 cm, white background, no hat and no glasses. Vietnam publishes no head height, so the framing here follows the usual proportion for this size."
+
+# Japan's current MOFA form says 35x45; the 45x45 everyone quotes is the 2012 form, which some
+# posts (India, the United States, South Africa) still require. The head geometry is published
+# by embassies rather than by MOFA: 34mm +/- 2 chin to crown, which is 75.6 % of 45mm.
+[jp_visa]
+name = "Japan Visa"
+digital_width = 700
+digital_height = 900
+max_file_size_kb = 500
+print_width_mm = 35
+print_height_mm = 45
+face_height_percent = 75.6
+face_top_margin_percent = 8.9
+eye_line_from_bottom_percent = 57.0
+background = "white"
+photo_count = 1
+format = "jpeg"
+notes = "35x45mm on the current MOFA form, head 34mm plus or minus 2 from chin to crown, white or plain background, taken within six months. Printed and glued to the form. Some posts still use the older 45x45mm form, and the eVISA is digital with no size at all."

@@ -20,7 +20,10 @@ export const GET: APIRoute = () => {
       document: entry.doc,
       kind: entry.kind,
       url: absolute(path(DEFAULT_LANG, entry.country, entry.doc)),
-      print_mm: { width: p.print_width_mm, height: p.print_height_mm },
+      // null, not a guess: some authorities publish no physical size at all.
+      print_mm: p.print_width_mm
+        ? { width: p.print_width_mm, height: p.print_height_mm }
+        : null,
       digital_px: { width: p.digital_width, height: p.digital_height },
       dpi: dpiOf(p),
       background: p.background,

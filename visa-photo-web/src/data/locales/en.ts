@@ -365,7 +365,7 @@ const en: Dict = {
     eu_schengen: "White background, face 32–36 mm from chin to crown.",
     us_visa: "White background, 2×2 inches, head between 50 % and 69 % of the height.",
     us_passport: "White background, 2×2 inches, head 1 to 1⅜ inches.",
-    uk_passport: "Light grey or cream background, head 29–34 mm.",
+    uk_passport: "Light grey or cream background. GOV.UK states a minimum of 600 × 750 px for the digital photo; a printed one is a different shape.",
     ca_passport: "White background, 50×70 mm, face 31–36 mm.",
     ca_visa: "White background, 35×45 mm, face 31–36 mm.",
     cn_passport: "White background, 33×48 mm, face 28–33 mm.",
@@ -424,6 +424,25 @@ const en: Dict = {
   },
 
   faq: {
+    eu_schengen: [
+      {
+        q: "Is the photo the same for Germany, Italy, France and the other Schengen countries?",
+        a: "Yes. All 29 Schengen countries — Austria, Belgium, Bulgaria, Croatia, Czechia, " +
+          "Denmark, Estonia, Finland, France, Germany, Greece, Hungary, Iceland, Italy, Latvia, " +
+          "Liechtenstein, Lithuania, Luxembourg, Malta, the Netherlands, Norway, Poland, " +
+          "Portugal, Romania, Slovakia, Slovenia, Spain, Sweden and Switzerland — take the same " +
+          "35 × 45 mm photo, because the rule comes from a single EU decision rather than from " +
+          "each country. What differs is who collects it: most consulates work through a visa " +
+          "centre such as VFS Global, TLScontact or BLS, and some of those photograph you on the " +
+          "spot.",
+      },
+      {
+        q: "How many copies do I need?",
+        a: "Usually two, and consulates differ. Bring the printed pair to the appointment even " +
+          "if the application was filled in online — the sheet this page exports has both at the " +
+          "right size.",
+      },
+    ],
     us_visa: [
       {
         q: "What size is a US visa photo?",

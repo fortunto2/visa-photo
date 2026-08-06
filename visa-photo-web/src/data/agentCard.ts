@@ -24,14 +24,23 @@ export function agentCard(entry: CatalogEntry, v: DocView): string {
     "",
     "## Requirements",
     "",
-    `- Print size: ${v.headlineSize} (${v.altUnits})`,
-    `- Digital size: ${v.conv.px} px at ${v.dpi} dpi`,
+    // An authority that publishes no physical size gets no print line rather than a made-up
+    // one. An agent reading "not published" can say so; one reading a number cannot.
+    ...(v.conv.mm
+      ? [
+          `- Print size: ${v.headlineSize} (${v.altUnits})`,
+          `- Digital size: ${v.conv.px} px at ${v.dpi} dpi`,
+          `- Photos per A4 sheet: ${v.perSheet}`,
+        ]
+      : [
+          `- Print size: not published by the authority; this document is uploaded, not printed`,
+          `- Digital size: ${v.conv.px} px`,
+        ]),
     `- Background: ${v.background}`,
     `- File: ${v.format}, max ${v.maxKb} KB`,
     `- Head height: ${v.faceHeightPercent} % of the photo height`,
     `- Eye line: ${v.eyeLinePercent} % from the bottom`,
-    `- Photos per A4 sheet: ${v.perSheet}`,
-    `- ${v.notes}`,
+    ...(v.notes ? [`- ${v.notes}`] : []),
   ];
 
   if (entry.form) {

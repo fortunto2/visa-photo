@@ -133,10 +133,12 @@ export async function cropAndExport(
   }
 
   // The pixel count was always right; the metadata said 72 dpi, which some forms read as
-  // "8 inches wide". Stamped from the preset's own print size.
+  // "8 inches wide". Stamped from the preset's own print size — and left alone where the
+  // authority publishes no print size, since there is then no resolution to claim.
   const dpi = dpiOf(preset);
+  const stamp = (b: Blob) => (dpi === null ? b : withJpegDpi(b, dpi));
 
-  if (blob.size <= preset.max_file_size_kb * 1024) return withJpegDpi(blob, dpi);
+  if (blob.size <= preset.max_file_size_kb * 1024) return stamp(blob);
 
   const file = new File([blob], "photo.jpg", { type: "image/jpeg" });
   const imageCompression = await loadCompressor();
@@ -145,7 +147,7 @@ export async function cropAndExport(
     maxWidthOrHeight: Math.max(preset.digital_width, preset.digital_height),
     useWebWorker: true,
   });
-  return withJpegDpi(compressed, dpi);
+  return stamp(compressed);
 }
 
 /** Generate A4 print layout as PNG */
@@ -159,8 +161,8 @@ export function generatePrintLayout(
       const dpi = 300;
       const a4W = Math.round(210 / 25.4 * dpi);
       const a4H = Math.round(297 / 25.4 * dpi);
-      const photoW = Math.round(preset.print_width_mm / 25.4 * dpi);
-      const photoH = Math.round(preset.print_height_mm / 25.4 * dpi);
+      const photoW = Math.round(preset.print_width_mm! / 25.4 * dpi);
+      const photoH = Math.round(preset.print_height_mm! / 25.4 * dpi);
 
       const canvas = document.createElement("canvas");
       canvas.width = a4W;
@@ -200,8 +202,9 @@ export async function generatePrintPdf(
       const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
       const pageW = 210;
       const pageH = 297;
-      const pw = preset.print_width_mm;
-      const ph = preset.print_height_mm;
+      // Both buttons are hidden unless a print size exists; see PhotoTool.
+      const pw = preset.print_width_mm!;
+      const ph = preset.print_height_mm!;
       const gap = 5;
 
       const cols = Math.floor((pageW - 10) / (pw + gap));
@@ -240,8 +243,8 @@ export function generateMultiPhotoPrintLayout(
     const dpi = 300;
     const a4W = Math.round(210 / 25.4 * dpi);
     const a4H = Math.round(297 / 25.4 * dpi);
-    const photoW = Math.round(preset.print_width_mm / 25.4 * dpi);
-    const photoH = Math.round(preset.print_height_mm / 25.4 * dpi);
+    const photoW = Math.round(preset.print_width_mm! / 25.4 * dpi);
+    const photoH = Math.round(preset.print_height_mm! / 25.4 * dpi);
     const gap = 20;
 
     const cols = Math.floor((a4W - 40) / (photoW + gap));
@@ -304,7 +307,7 @@ export async function generateMultiPhotoPdf(
         if (loaded === processedBlobs.length) {
           const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
           const pageW = 210, pageH = 297;
-          const pw = preset.print_width_mm, ph = preset.print_height_mm;
+          const pw = preset.print_width_mm!, ph = preset.print_height_mm!;
           const gap = 5;
           const cols = Math.floor((pageW - 10) / (pw + gap));
           const rows = Math.floor((pageH - 10) / (ph + gap));

@@ -84,6 +84,11 @@ interface Props {
   ctx: DocContext;
   /** true when the authority rejects edited photos, so the warning appears at the click */
   editingForbidden?: boolean;
+  /**
+   * False where no printed size is published. A sheet of photos needs millimetres, and
+   * offering one built from a size we invented is the error this whole field exists to avoid.
+   */
+  canPrintSheet?: boolean;
 }
 
 /** Lightest model, and the fallback when nothing has been chosen: 5 MB, not 176. */
@@ -100,7 +105,7 @@ const NO_LEVELS = { brightness: 0, contrast: 0, shadows: 0 };
  * says the edges came out wrong — a retry they can judge, not a choice they cannot.
  */
 export default function PhotoTool({
-  preset, presetKey, strings, modelsHref, ctx, editingForbidden = false,
+  preset, presetKey, strings, modelsHref, ctx, editingForbidden = false, canPrintSheet = true,
 }: Props) {
   const [src, setSrc] = useState<string | null>(null);
   const [original, setOriginal] = useState<string | null>(null);
@@ -643,10 +648,12 @@ export default function PhotoTool({
           onClick={() => exportPhoto(true)}>
           <svg width="19" height="19" aria-hidden="true"><use href="#ic-file" /></svg>{strings.downloadPng}
         </button>
-        <button class="btn-dl" type="button" disabled={!!busy} data-testid="download-sheet"
-          onClick={exportSheet}>
-          <svg width="19" height="19" aria-hidden="true"><use href="#ic-print" /></svg>{strings.downloadSheet}
-        </button>
+        {canPrintSheet && (
+          <button class="btn-dl" type="button" disabled={!!busy} data-testid="download-sheet"
+            onClick={exportSheet}>
+            <svg width="19" height="19" aria-hidden="true"><use href="#ic-print" /></svg>{strings.downloadSheet}
+          </button>
+        )}
         <button class="btn-dl" type="button" disabled={!!busy} data-testid="check-this"
           onClick={checkThis}>
           <svg width="19" height="19" aria-hidden="true"><use href="#ic-check" /></svg>

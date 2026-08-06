@@ -6,8 +6,16 @@ export interface Preset {
   digital_width: number;
   digital_height: number;
   max_file_size_kb: number;
-  print_width_mm: number;
-  print_height_mm: number;
+  /**
+   * Absent where the authority publishes no physical size.
+   *
+   * Thailand's e-Visa is the case that forced this: the portal states a head share, a file
+   * ceiling and a minimum height in pixels, and no millimetres anywhere. Every photo service
+   * quotes 35x45 mm for it, a figure that belongs to the paper visa Thailand replaced. Writing
+   * that number here to satisfy the type would have made us repeat the error we found.
+   */
+  print_width_mm?: number;
+  print_height_mm?: number;
   face_height_percent: number;
   face_top_margin_percent: number;
   eye_line_from_bottom_percent: number;
@@ -43,7 +51,8 @@ export const PRESET_KEYS = Object.keys(PRESETS);
  * US 2x2 photo is filed as 51 mm rather than 50.8, and dividing by that yields 299 for a file
  * that is plainly 300. Stamping a made-up number into the metadata is worse than stamping none.
  */
-export function dpiOf(preset: Preset): number {
+export function dpiOf(preset: Preset): number | null {
+  if (!preset.print_width_mm) return null;
   const exact = (preset.digital_width / preset.print_width_mm) * 25.4;
   for (const standard of [72, 150, 300, 600]) {
     if (Math.abs(exact - standard) / standard < 0.02) return standard;

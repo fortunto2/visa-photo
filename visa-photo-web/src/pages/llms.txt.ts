@@ -56,8 +56,8 @@ export const GET: APIRoute = () => {
     const title = defaults.docTitle[entry.preset] ?? entry.preset;
     const url = absolute(path(DEFAULT_LANG, entry.country, entry.doc));
     lines.push(
-      `| ${title} | ${p.print_width_mm}×${p.print_height_mm} mm | ` +
-        `${p.digital_width}×${p.digital_height} px | ${dpiOf(p)} | ${p.background} | ` +
+      `| ${title} | ${p.print_width_mm ? `${p.print_width_mm}×${p.print_height_mm} mm` : "not published"} | ` +
+        `${p.digital_width}×${p.digital_height} px | ${dpiOf(p) ?? "not published"} | ${p.background} | ` +
         `${p.max_file_size_kb} KB | ${p.photo_count} | ${url} |`,
     );
   }

@@ -16,7 +16,8 @@ export interface DocView {
   headlineSize: string;
   altUnits: string;
   conv: ReturnType<typeof conversionsOf>;
-  dpi: number;
+  /** null where no print size is published, so no resolution can be derived */
+  dpi: number | null;
   background: string;
   format: string;
   maxKb: number;
@@ -41,9 +42,16 @@ export function docView(entry: CatalogEntry, t: Dict): DocView {
    * the same follow-ups repeat for every country in the search data: size in cm, size in
    * inches, size in pixels, background, file size, how many per sheet.
    */
+  const dpi = dpiOf(p);
   const generated = [
-    { q: t.autoFaq.size({ doc: title }), a: t.autoFaq.sizeA(conv) },
-    { q: t.autoFaq.pixels({ doc: title }), a: t.autoFaq.pixelsA({ px: conv.px, dpi: dpiOf(p) }) },
+    // "What is it in cm and inches" and "how many per sheet" both assume a printed photo.
+    // Where the authority publishes none, asking them invents the answer.
+    ...(conv.mm && conv.cm && conv.inch
+      ? [{ q: t.autoFaq.size({ doc: title }), a: t.autoFaq.sizeA({ mm: conv.mm, cm: conv.cm, inch: conv.inch }) }]
+      : []),
+    ...(dpi === null
+      ? []
+      : [{ q: t.autoFaq.pixels({ doc: title }), a: t.autoFaq.pixelsA({ px: conv.px, dpi }) }]),
     {
       q: t.autoFaq.background({ doc: title }),
       a: t.autoFaq.backgroundA({ bg: t.backgroundName[bg] }),
@@ -52,10 +60,12 @@ export function docView(entry: CatalogEntry, t: Dict): DocView {
       q: t.autoFaq.fileSize({ doc: title }),
       a: t.autoFaq.fileSizeA({ format, kb: p.max_file_size_kb }),
     },
-    {
-      q: t.autoFaq.perSheet({ doc: title }),
-      a: t.autoFaq.perSheetA({ n: p.photo_count, size: `${conv.mm} ${t.unit.mm}` }),
-    },
+    ...(conv.mm
+      ? [{
+          q: t.autoFaq.perSheet({ doc: title }),
+          a: t.autoFaq.perSheetA({ n: p.photo_count, size: `${conv.mm} ${t.unit.mm}` }),
+        }]
+      : []),
     // Only forms that actually accept an upload: DS-11 is filed on paper, and inventing an
     // upload rule for it would be publishing a requirement that does not exist.
     ...(entry.form?.online
@@ -83,7 +93,7 @@ export function docView(entry: CatalogEntry, t: Dict): DocView {
     headlineSize: headline,
     altUnits: alt,
     conv,
-    dpi: dpiOf(p),
+    dpi,
     background: t.backgroundName[bg],
     format,
     maxKb: p.max_file_size_kb,

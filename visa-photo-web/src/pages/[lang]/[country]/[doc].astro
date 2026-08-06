@@ -74,7 +74,7 @@ const schema = [
     operatingSystem: "Any browser",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
     featureList: [
-      `Crops to ${p.print_width_mm}×${p.print_height_mm} mm (${p.digital_width}×${p.digital_height} px)`,
+      `Crops to ${headlineSize} (${p.digital_width}×${p.digital_height} px)`,
       "Runs entirely in the browser; no upload",
       "No watermark, no sign-up",
     ],
@@ -192,7 +192,7 @@ const schema = [
     </div>
 
   <div class="tool">
-    <PhotoTool client:idle preset={p} presetKey={key} modelsHref={path(hasSection(lang, "models") ? lang : DEFAULT_LANG, "models")}
+    <PhotoTool client:idle preset={p} presetKey={key} canPrintSheet={Boolean(p.print_width_mm)} modelsHref={path(hasSection(lang, "models") ? lang : DEFAULT_LANG, "models")}
       ctx={{ preset: key, country: entry.country, doc: entry.doc }}
       editingForbidden={entry.warnings?.includes("no-editing")} strings={{
       dropTitle: t.tool.dropTitle,
@@ -200,7 +200,7 @@ const schema = [
       choose: t.tool.choose,
       camera: t.tool.camera,
       working: t.tool.working,
-      framedTo: t.tool.framedTo(`${p.print_width_mm} × ${p.print_height_mm} ${t.unit.mm}`),
+      framedTo: t.tool.framedTo(headlineSize),
       downloadJpeg: t.tool.downloadJpeg,
       downloadPng: t.tool.downloadPng,
       downloadSheet: t.tool.downloadSheet(p.photo_count),
@@ -258,13 +258,15 @@ const schema = [
           {t.spec.heading}
         </p>
         <dl>
-          <div class="spec-row">
-            <dt><svg width="17" height="17" aria-hidden="true"><use href="#ic-ruler" /></svg>{t.spec.print}</dt>
-            <dd>
-              {headlineSize}
-              <br /><span class="alt-unit">{altUnits}</span>
-            </dd>
-          </div>
+          {p.print_width_mm && (
+            <div class="spec-row">
+              <dt><svg width="17" height="17" aria-hidden="true"><use href="#ic-ruler" /></svg>{t.spec.print}</dt>
+              <dd>
+                {headlineSize}
+                <br /><span class="alt-unit">{altUnits}</span>
+              </dd>
+            </div>
+          )}
           <div class="spec-row">
             <dt><svg width="17" height="17" aria-hidden="true"><use href="#ic-pixel" /></svg>{t.spec.digital}</dt>
             <dd>{ltr(`${p.digital_width} × ${p.digital_height}`)} {t.unit.px}</dd>
@@ -285,10 +287,12 @@ const schema = [
             <dt><svg width="17" height="17" aria-hidden="true"><use href="#ic-file" /></svg>{t.spec.file}</dt>
             <dd>{format} ≤ {p.max_file_size_kb} {t.unit.kb}</dd>
           </div>
-          <div class="spec-row">
-            <dt><svg width="17" height="17" aria-hidden="true"><use href="#ic-copies" /></svg>{t.spec.perSheet}</dt>
-            <dd>{p.photo_count} {t.spec.pieces}</dd>
-          </div>
+          {p.print_width_mm && (
+            <div class="spec-row">
+              <dt><svg width="17" height="17" aria-hidden="true"><use href="#ic-copies" /></svg>{t.spec.perSheet}</dt>
+              <dd>{p.photo_count} {t.spec.pieces}</dd>
+            </div>
+          )}
         </dl>
         {notes && (
           <p class="spec-foot">
@@ -335,13 +339,16 @@ const schema = [
       <p>{t.seo.howToShootBody}</p>
     </section>
 
-    <section>
-      <h2>
-        <span class="ico"><svg width="22" height="22" aria-hidden="true"><use href="#ic-print" /></svg></span>
-        {t.seo.printing}
-      </h2>
-      <p>{t.seo.printingBody({ n: p.photo_count, w: p.print_width_mm, h: p.print_height_mm, dpi: dpiOf(p) })}</p>
-    </section>
+    {/* Nothing to say about printing where the authority publishes no physical size. */}
+    {p.print_width_mm && p.print_height_mm && view.dpi !== null && (
+      <section>
+        <h2>
+          <span class="ico"><svg width="22" height="22" aria-hidden="true"><use href="#ic-print" /></svg></span>
+          {t.seo.printing}
+        </h2>
+        <p>{t.seo.printingBody({ n: p.photo_count, w: p.print_width_mm, h: p.print_height_mm, dpi: view.dpi })}</p>
+      </section>
+    )}
 
     {related.length > 0 && (
       <section>
