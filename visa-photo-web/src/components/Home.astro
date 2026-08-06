@@ -14,6 +14,12 @@ import { ltr } from "../lib/bidi";
 interface Props { lang: ActiveLang }
 const { lang } = Astro.props;
 const t = dict(lang);
+const groups = countryGroups().sort((a, b) =>
+  // Alphabetical in the reader's own language: twenty-one countries in catalogue order is an
+  // order only the catalogue knows, and Arabic or Chinese would not share ours anyway.
+  t.country[a.nameKey].localeCompare(t.country[b.nameKey], lang),
+);
+
 const schema = [
   {
     "@context": "https://schema.org",
@@ -56,7 +62,7 @@ const schema = [
   </p>
 
   <div class="country-groups">
-  {countryGroups().map((group) => (
+  {groups.map((group) => (
     <section class="country-group">
       <h2 class="country-head">
         <a href={path(lang, group.slug)}>

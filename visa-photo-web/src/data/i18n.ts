@@ -291,6 +291,13 @@ export interface Dict {
     seoTitle: (doc: string) => string;
     /** page <title> for the checker hub, which has no country */
     hubTitle: string;
+    /**
+     * The checker's own URL needs its own heading and description. Sharing them with the
+     * editor's page would leave two addresses saying the same thing, which is the duplicate
+     * the separate URL was meant to avoid.
+     */
+    h1: (doc: string) => string;
+    seoDescription: (doc: string) => string;
     makeTab: string;
     title: string;
     lead: string;

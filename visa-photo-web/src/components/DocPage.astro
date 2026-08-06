@@ -74,7 +74,7 @@ const schema = [
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    name: `${docTitle} maker`,
+    name: mode === "check" ? t.check.h1(docTitle) : `${docTitle} maker`,
     applicationCategory: "MultimediaApplication",
     operatingSystem: "Any browser",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
@@ -106,7 +106,7 @@ const schema = [
   lang={lang}
   t={t}
   title={mode === "check" ? t.check.seoTitle(t.docTitle[key]) : t.pageTitle[key]}
-  description={answer}
+  description={mode === "check" ? t.check.seoDescription(docTitle) : answer}
   segments={segments}
   schema={schema}
 >
@@ -122,9 +122,14 @@ const schema = [
     </span>
   </p>
 
-  <h1>{t.countryPage.docHeadline({ title: docTitle, size: headlineSize })}</h1>
+  {/* Two addresses must not say the same thing: the checker leads with checking. */}
+  <h1>
+    {mode === "check"
+      ? t.check.h1(docTitle)
+      : t.countryPage.docHeadline({ title: docTitle, size: headlineSize })}
+  </h1>
 
-  <p class="answer">{answer}</p>
+  <p class="answer">{mode === "check" ? t.check.lead : answer}</p>
 
   {entry.warnings && entry.warnings.length > 0 && (
     <div class="warn-banner">
@@ -347,16 +352,18 @@ const schema = [
       </ul>
     </section>
 
-    <section>
-      <h2>
-        <span class="ico"><svg width="22" height="22" aria-hidden="true"><use href="#ic-sun" /></svg></span>
-        {t.seo.howToShoot}
-      </h2>
-      <p>{t.seo.howToShootBody}</p>
-    </section>
+    {mode === "make" && (
+      <section>
+        <h2>
+          <span class="ico"><svg width="22" height="22" aria-hidden="true"><use href="#ic-sun" /></svg></span>
+          {t.seo.howToShoot}
+        </h2>
+        <p>{t.seo.howToShootBody}</p>
+      </section>
+    )}
 
     {/* Nothing to say about printing where the authority publishes no physical size. */}
-    {p.print_width_mm && p.print_height_mm && view.dpi !== null && (
+    {mode === "make" && p.print_width_mm && p.print_height_mm && view.dpi !== null && (
       <section>
         <h2>
           <span class="ico"><svg width="22" height="22" aria-hidden="true"><use href="#ic-print" /></svg></span>

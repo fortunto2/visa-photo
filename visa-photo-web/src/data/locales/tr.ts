@@ -194,6 +194,8 @@ const tr: Dict = {
     tab: "Fotoğraf denetleme",
     seoTitle: (doc: string) => `${doc} denetleyici — ücretsiz, tarayıcınızda`,
     hubTitle: "Pasaport ve vize fotoğrafı denetleyici — ücretsiz, yükleme yok",
+    h1: (doc: string) => `${doc}: denetleme`,
+    seoDescription: (doc: string) => `Fotoğrafı buraya bırakın ve hangi şartları karşıladığını görün: ölçü, boyut, biçim, arka plan, baş yüksekliği ve göz hizası. Hiçbir şey yüklenmiyor, denetimler tarayıcınızda çalışıyor.`,
     makeTab: "Fotoğraf hazırlama",
     title: "Elinizdeki fotoğrafı denetleyin",
     lead:

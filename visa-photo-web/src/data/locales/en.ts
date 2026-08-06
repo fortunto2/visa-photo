@@ -217,6 +217,8 @@ const en: Dict = {
     tab: "Check a photo",
     seoTitle: (doc: string) => `${doc} checker — free, runs in your browser`,
     hubTitle: "Passport and visa photo checker — free, no upload",
+    h1: (doc: string) => `${doc} checker`,
+    seoDescription: (doc: string) => `Drop in your photo and see which requirements it meets — size, weight, format, background, head height and eye line. Nothing is uploaded; the checks run in your browser.`,
     makeTab: "Make a photo",
     title: "Check an existing photo",
     lead: "Already have a file? Drop it here and see which requirements it meets. Nothing is uploaded — the checks run in your browser.",

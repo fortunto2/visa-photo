@@ -188,6 +188,8 @@ const zh: Dict = {
     tab: "检测照片",
     seoTitle: (doc: string) => `${doc}检测 — 免费，在浏览器中运行`,
     hubTitle: "护照与签证照片检测 — 免费，无需上传",
+    h1: (doc: string) => `${doc}检测`,
+    seoDescription: (doc: string) => `把照片拖进来，看看它满足哪些要求：尺寸、体积、格式、背景、头部高度和眼睛位置。什么都不会上传，检测在你的浏览器里进行。`,
     makeTab: "制作照片",
     title: "检测已有的照片",
     lead:

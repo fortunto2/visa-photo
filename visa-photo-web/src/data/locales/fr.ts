@@ -196,6 +196,8 @@ const fr: Dict = {
     tab: "Contrôler une photo",
     seoTitle: (doc: string) => `${doc} : vérificateur en ligne — gratuit, dans votre navigateur`,
     hubTitle: "Vérificateur de photo de passeport et de visa — gratuit, sans envoi",
+    h1: (doc: string) => `${doc} : vérificateur`,
+    seoDescription: (doc: string) => `Déposez la photo et voyez quelles exigences elle respecte : format, poids, fond, hauteur du visage et ligne des yeux. Rien n\u2019est envoyé — les contrôles tournent dans votre navigateur.`,
     makeTab: "Faire une photo",
     title: "Contrôler une photo existante",
     lead:

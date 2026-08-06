@@ -478,7 +478,7 @@ export function countryGroups(): CountryGroup[] {
       groups.set(entry.country, {
         slug: entry.country,
         flag: entry.flag,
-        nameKey: entry.preset,
+        nameKey: idOf(entry),
         entries: [entry],
       });
     }

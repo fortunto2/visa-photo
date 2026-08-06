@@ -195,6 +195,8 @@ const es: Dict = {
     tab: "Verificar una foto",
     seoTitle: (doc: string) => `${doc}: verificador online — gratis, en tu navegador`,
     hubTitle: "Verificador de fotos de pasaporte y visa — gratis, sin subir nada",
+    h1: (doc: string) => `${doc}: verificador`,
+    seoDescription: (doc: string) => `Suelta la foto y comprueba qué requisitos cumple: tamaño, peso, formato, fondo, altura de la cabeza y línea de los ojos. No se sube nada: las comprobaciones se hacen en tu navegador.`,
     makeTab: "Hacer una foto",
     title: "Verificar una foto que ya tienes",
     lead:
