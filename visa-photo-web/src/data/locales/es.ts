@@ -306,6 +306,10 @@ const es: Dict = {
     fileSizeA: ({ format, kb }) =>
       `${format}, sin pasar de ${kb} KB. La exportación de esta página comprime la foto para quedar ` +
       `por debajo de ese límite sin bajar de la resolución exigida.`,
+    howFiled: ({ doc }: { doc: string }) => `${doc}: ¿se sube como archivo o se entrega impresa?`,
+    howFiledA: ({ route, form }: { route: string; form: string }) => `${route}${form}`,
+    editing: ({ doc }: { doc: string }) => `${doc}: ¿el organismo acepta una foto editada?`,
+    checked: ({ doc }: { doc: string }) => `${doc}: ¿se ha verificado oficialmente una foto de esta página?`,
     uploadFails: ({ form }) => `¿Por qué ${form} rechaza la foto?`,
     uploadFailsA: ({ form, format, kb, px }) =>
       `${form} rechaza todo lo que no sea ${format}, todo lo que pase de ${kb} KB y todo lo que ` +

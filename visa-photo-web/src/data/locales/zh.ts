@@ -286,6 +286,10 @@ const zh: Dict = {
     fileSize: ({ doc }) => `${doc}要什么格式？文件不能超过多大？`,
     fileSizeA: ({ format, kb }) =>
       `${format}，不超过 ${kb} KB。本站导出时会在保证分辨率达标的前提下压缩，把文件控制在这个上限内。`,
+    howFiled: ({ doc }: { doc: string }) => `${doc}：上传文件还是交打印件？`,
+    howFiledA: ({ route, form }: { route: string; form: string }) => `${route}${form}`,
+    editing: ({ doc }: { doc: string }) => `${doc}：该机构接受修过的照片吗？`,
+    checked: ({ doc }: { doc: string }) => `${doc}：本页生成的照片经过官方检测吗？`,
     uploadFails: ({ form }) => `${form} 为什么不接受我的照片？`,
     uploadFailsA: ({ form, format, kb, px }) =>
       `${form} 会拒收所有非 ${format} 格式、大于 ${kb} KB，或者小于 ${px} 像素的文件。` +

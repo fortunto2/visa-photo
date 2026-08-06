@@ -447,6 +447,10 @@ const ru: Dict = {
     fileSizeA: ({ format, kb }) =>
       `${format}, не тяжелее ${kb} КБ. Экспорт отсюда сжимает до этого предела, не опускаясь ` +
       `ниже требуемого разрешения.`,
+    howFiled: ({ doc }: { doc: string }) => `${doc}: загружают файлом или несут распечатанным?`,
+    howFiledA: ({ route, form }: { route: string; form: string }) => `${route}${form}`,
+    editing: ({ doc }: { doc: string }) => `${doc}: принимает ли ведомство обработанный снимок?`,
+    checked: ({ doc }: { doc: string }) => `${doc}: проверялся ли снимок с этой страницы официально?`,
     uploadFails: ({ form }) => `Почему ${form} не принимает фотографию?`,
     uploadFailsA: ({ form, format, kb, px }) =>
       `${form} отклоняет всё, что не ${format}, тяжелее ${kb} КБ и меньше ${px} пикселей. ` +

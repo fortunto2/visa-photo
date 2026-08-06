@@ -450,6 +450,16 @@ export interface Dict {
     backgroundA: (v: { bg: string }) => string;
     fileSize: (v: { doc: string }) => string;
     fileSizeA: (v: { format: string; kb: number }) => string;
+    /**
+     * Answerable from the catalogue rather than the preset: how the photo is filed, whether
+     * the authority takes an edited one, whether its own checker has passed ours. Four
+     * templates per language cover twenty-four documents; writing them out by hand would
+     * have been seven languages times seven questions for less.
+     */
+    howFiled: (v: { doc: string }) => string;
+    howFiledA: (v: { route: string; form: string }) => string;
+    editing: (v: { doc: string }) => string;
+    checked: (v: { doc: string }) => string;
     uploadFails: (v: { form: string }) => string;
     uploadFailsA: (v: { form: string; format: string; kb: number; px: string }) => string;
   };

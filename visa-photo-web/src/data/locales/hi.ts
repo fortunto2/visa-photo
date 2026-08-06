@@ -306,6 +306,10 @@ const hi: Dict = {
     fileSizeA: ({ format, kb }) =>
       `${format}, ${kb} KB से बड़ी नहीं। यहाँ से एक्सपोर्ट करने पर फ़ाइल इसी सीमा के अंदर रहने के लिए ` +
       `कंप्रेस होती है, और ज़रूरी रिज़ॉल्यूशन से नीचे भी नहीं गिरती।`,
+    howFiled: ({ doc }: { doc: string }) => `${doc}: फ़ाइल के रूप में जमा होती है या प्रिंट करके?`,
+    howFiledA: ({ route, form }: { route: string; form: string }) => `${route}${form}`,
+    editing: ({ doc }: { doc: string }) => `${doc}: क्या विभाग एडिट की गई फ़ोटो स्वीकार करता है?`,
+    checked: ({ doc }: { doc: string }) => `${doc}: क्या इस पेज की फ़ोटो की आधिकारिक जाँच हुई है?`,
     uploadFails: ({ form }) => `${form} फ़ोटो क्यों अस्वीकार करता है?`,
     uploadFailsA: ({ form, format, kb, px }) =>
       `${form} ऐसी हर फ़ाइल अस्वीकार कर देता है जो ${format} नहीं है, जो ${kb} KB से बड़ी है, या जो ${px} ` +

@@ -66,6 +66,34 @@ export function docView(entry: CatalogEntry, t: Dict): DocView {
           a: t.autoFaq.perSheetA({ n: p.photo_count, size: `${conv.mm} ${t.unit.mm}` }),
         }]
       : []),
+    /**
+     * Straight from the catalogue. These are the questions the numbers cannot answer — how the
+     * photo reaches the application, whether this authority takes an edited one, whether its
+     * own checker has passed what this page produces — and every one of them is a field we
+     * already keep, so all nine languages get them from one template each.
+     */
+    {
+      q: t.autoFaq.howFiled({ doc: title }),
+      a: t.autoFaq.howFiledA({
+        route: t.submission[entry.submission],
+        form: entry.form ? `. ${entry.form.name}.` : ".",
+      }),
+    },
+    ...(entry.warnings?.includes("no-editing")
+      ? [{ q: t.autoFaq.editing({ doc: title }), a: t.warn.noEditing }]
+      : []),
+    ...(entry.warnings?.includes("studio-only")
+      ? [{ q: t.autoFaq.editing({ doc: title }), a: t.warn.studioOnly }]
+      : []),
+    ...(entry.checkerVerified
+      ? [{
+          q: t.autoFaq.checked({ doc: title }),
+          a: t.checkerVerified({
+            date: new Intl.DateTimeFormat(t.dateLocale, { day: "numeric", month: "long", year: "numeric" })
+              .format(new Date(entry.checkerVerified)),
+          }),
+        }]
+      : []),
     // Only forms that actually accept an upload: DS-11 is filed on paper, and inventing an
     // upload rule for it would be publishing a requirement that does not exist.
     ...(entry.form?.online

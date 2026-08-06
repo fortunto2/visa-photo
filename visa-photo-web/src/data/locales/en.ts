@@ -431,6 +431,10 @@ const en: Dict = {
     fileSizeA: ({ format, kb }) =>
       `${format}, no larger than ${kb} KB. The export here compresses to stay under that limit ` +
       `without dropping below the required resolution.`,
+    howFiled: ({ doc }: { doc: string }) => `${doc}: uploaded, or handed over printed?`,
+    howFiledA: ({ route, form }: { route: string; form: string }) => `${route}${form}`,
+    editing: ({ doc }: { doc: string }) => `${doc}: does this authority accept an edited photo?`,
+    checked: ({ doc }: { doc: string }) => `${doc}: has one from this page been checked officially?`,
     uploadFails: ({ form }) => `Why does ${form} reject the photo?`,
     uploadFailsA: ({ form, format, kb, px }) =>
       `${form} refuses anything that is not ${format}, anything above ${kb} KB, and anything ` +

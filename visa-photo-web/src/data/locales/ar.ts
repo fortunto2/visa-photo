@@ -313,6 +313,10 @@ const ar: Dict = {
     fileSizeA: ({ format, kb }) =>
       `${format}، وبحجم لا يتجاوز ${kb} كيلوبايت. التصدير هنا يضغط الملف ليبقى تحت هذا الحد دون ` +
       `النزول عن الدقة المطلوبة.`,
+    howFiled: ({ doc }: { doc: string }) => `${doc}: تُرفع كملف أم تُسلَّم مطبوعة؟`,
+    howFiledA: ({ route, form }: { route: string; form: string }) => `${route}${form}`,
+    editing: ({ doc }: { doc: string }) => `${doc}: هل تقبل هذه الجهة صورة معدَّلة؟`,
+    checked: ({ doc }: { doc: string }) => `${doc}: هل خضعت صورة من هذه الصفحة لفحص رسمي؟`,
     uploadFails: ({ form }) => `لماذا يرفض ${form} الصورة؟`,
     uploadFailsA: ({ form, format, kb, px }) =>
       `يرفض ${form} كل ما ليس بصيغة ${format}، وكل ما يتجاوز ${kb} كيلوبايت، وكل ما هو أصغر من ` +

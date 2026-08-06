@@ -303,6 +303,10 @@ const tr: Dict = {
     fileSizeA: ({ format, kb }) =>
       `${format}, en çok ${kb} KB. Buradaki dışa aktarma, gereken çözünürlüğün altına düşmeden ` +
       `bu sınırın içinde kalacak şekilde sıkıştırır.`,
+    howFiled: ({ doc }: { doc: string }) => `${doc}: dosya olarak mı yükleniyor, basılı mı veriliyor?`,
+    howFiledA: ({ route, form }: { route: string; form: string }) => `${route}${form}`,
+    editing: ({ doc }: { doc: string }) => `${doc}: kurum düzenlenmiş fotoğraf kabul ediyor mu?`,
+    checked: ({ doc }: { doc: string }) => `${doc}: bu sayfadan çıkan fotoğraf resmî olarak denetlendi mi?`,
     uploadFails: ({ form }) => `${form} fotoğrafı neden reddediyor?`,
     uploadFailsA: ({ form, format, kb, px }) =>
       `${form}, ${format} olmayan her şeyi, ${kb} KB üzerindeki her şeyi ve ${px} pikselden küçük ` +
