@@ -307,11 +307,21 @@ const tr: Dict = {
     howFiledA: ({ route, form }: { route: string; form: string }) => `${route}${form}`,
     editing: ({ doc }: { doc: string }) => `${doc}: kurum düzenlenmiş fotoğraf kabul ediyor mu?`,
     checked: ({ doc }: { doc: string }) => `${doc}: bu sayfadan çıkan fotoğraf resmî olarak denetlendi mi?`,
-    uploadFails: ({ form }) => `${form} fotoğrafı neden reddediyor?`,
+    uploadFails: ({ form }) => `${form} fotoğraf yükleme sorunu: neden kabul etmiyor?`,
     uploadFailsA: ({ form, format, kb, px }) =>
       `${form}, ${format} olmayan her şeyi, ${kb} KB üzerindeki her şeyi ve ${px} pikselden küçük ` +
       `her şeyi geri çevirir. Buradan dışa aktarmak üçünü de sınırın içinde tutar. Dosya şartnameye ` +
       `uyuyorsa ve site yine hata veriyorsa, sorun onların hizmetinde, sizin fotoğrafınızda değil.`,
+    covering: ({ doc }) => `${doc}: başörtüsü, türban veya başka bir örtüyle çekilebilir mi?`,
+    coveringA: () =>
+      `Evet. Dini sebeple her gün takılan başörtüsü kabul edilir; sıradan şapka edilmez. Yüz, çene ` +
+      `ucundan alına kadar görünmeli, yüzün iki kenarı da açık olmalı ve üzerine gölge düşmemeli. ` +
+      `Kumaş desensiz ve düz renk olsun, rengi de fondan farklı olsun: beyaz örtü beyaz fonun ` +
+      `içinde kaybolur, Göç İdaresi de Kanada da tam bunu ayrıca uyarır. Buradaki palet, fonu ` +
+      `kontrast bir renge çevirmenizi sağlar.`,
+    coveringStatement:
+      `Amerika ayrıca, örtünün her gün toplum içinde giyilen dini bir kıyafet olduğunu belirten ` +
+      `imzalı bir not ister. Başvuruyla verilen bir cümledir, fotoğrafın kendisiyle ilgisi yoktur.`,
   },
 
   // Generated from the catalogue and presets.toml — see ../docText.ts.

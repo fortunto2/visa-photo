@@ -290,11 +290,18 @@ const zh: Dict = {
     howFiledA: ({ route, form }: { route: string; form: string }) => `${route}${form}`,
     editing: ({ doc }: { doc: string }) => `${doc}：该机构接受修过的照片吗？`,
     checked: ({ doc }: { doc: string }) => `${doc}：本页生成的照片经过官方检测吗？`,
-    uploadFails: ({ form }) => `${form} 为什么不接受我的照片？`,
+    uploadFails: ({ form }) => `${form} 照片上传不了或被退回，为什么？`,
     uploadFailsA: ({ form, format, kb, px }) =>
       `${form} 会拒收所有非 ${format} 格式、大于 ${kb} KB，或者小于 ${px} 像素的文件。` +
       `在本站导出，这三项都会控制在限制之内。如果文件本身符合规格、网站还是报错，那是他们的系统问题，` +
       `不是你的照片问题。`,
+    covering: ({ doc }) => `${doc}可以戴头巾、盖头或其他宗教头饰吗？`,
+    coveringA: () =>
+      `可以。出于宗教原因每天佩戴的头饰是被接受的，普通帽子则不行。脸部必须从下巴露到额头，` +
+      `两侧脸缘都要露出，脸上不能有任何阴影。布料要素色无花纹，颜色要和背景区分开——` +
+      `白色头饰配白色背景会糊成一片，加拿大和土耳其都专门提醒过这一点。本站的调色板可以换成对比色背景。`,
+    coveringStatement:
+      `美国还要求附一份签名说明，写明这是每天在公共场合佩戴的宗教服饰。那是随申请提交的一句话，与照片本身无关。`,
   },
 
   // Generated from the catalogue and presets.toml — see ../docText.ts.

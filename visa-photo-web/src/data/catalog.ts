@@ -72,6 +72,13 @@ export interface CatalogEntry {
   warnings?: ("no-editing" | "no-home-print" | "studio-only")[];
 
   /**
+   * This authority wants a signed note explaining a religious head covering. Every jurisdiction
+   * here accepts the covering itself; only the US attaches paperwork to it, and someone who is
+   * going to be asked for a letter should learn that before the appointment rather than at it.
+   */
+  coveringStatement?: true;
+
+  /**
    * Date this preset's output was accepted by the authority's own online checker.
    * Only a handful of countries publish one; where they do, it beats reading the spec.
    */
@@ -147,6 +154,7 @@ export const CATALOG: CatalogEntry[] = [
   },
   {
     preset: "us_visa",
+    coveringStatement: true,
     submission: "upload",
     country: "united-states",
     doc: "visa",
@@ -159,6 +167,7 @@ export const CATALOG: CatalogEntry[] = [
   },
   {
     preset: "us_passport",
+    coveringStatement: true,
     submission: "print",
     country: "united-states",
     doc: "passport",
@@ -222,6 +231,7 @@ export const CATALOG: CatalogEntry[] = [
   },
   {
     preset: "us_dv",
+    coveringStatement: true,
     submission: "upload",
     country: "united-states",
     doc: "dv-lottery",

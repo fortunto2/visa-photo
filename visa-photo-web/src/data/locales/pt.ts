@@ -307,11 +307,21 @@ const pt: Dict = {
     howFiledA: ({ route, form }: { route: string; form: string }) => `${route}${form}`,
     editing: ({ doc }: { doc: string }) => `${doc}: o órgão aceita uma foto editada?`,
     checked: ({ doc }: { doc: string }) => `${doc}: alguma foto desta página foi verificada oficialmente?`,
-    uploadFails: ({ form }) => `Por que ${form} rejeita a foto?`,
+    uploadFails: ({ form }) => `${form}: não consigo enviar a foto ou ela é recusada — por quê?`,
     uploadFailsA: ({ form, format, kb, px }) =>
       `${form} recusa tudo o que não for ${format}, tudo acima de ${kb} KB e tudo menor que ${px} ` +
       `pixels. Exportar daqui mantém os três dentro do limite. Se o arquivo está dentro da ` +
       `especificação e o site ainda dá erro, o problema é do serviço deles, não da sua foto.`,
+    covering: ({ doc }) => `${doc}: pode ser com hijab, turbante ou outra cobertura de cabeça?`,
+    coveringA: () =>
+      `Pode. A cobertura usada todos os dias por motivo religioso é aceita; um chapéu comum, não. ` +
+      `O rosto precisa aparecer do queixo até a testa, com as duas bordas do rosto à mostra e sem ` +
+      `nenhuma sombra sobre ele. Tecido liso, sem estampa, e de cor diferente do fundo: uma ` +
+      `cobertura branca sobre fundo branco se funde com ele, e é essa a recusa que Canadá e Turquia ` +
+      `avisam pelo nome. A paleta daqui deixa você pôr um fundo que contraste.`,
+    coveringStatement:
+      `Os Estados Unidos pedem ainda um bilhete assinado dizendo que é traje religioso usado ` +
+      `diariamente em público. É uma frase no papel, entregue com o pedido, e não tem a ver com a foto.`,
   },
 
   // Generated from the catalogue and presets.toml — see ../docText.ts.

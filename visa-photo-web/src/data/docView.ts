@@ -94,6 +94,17 @@ export function docView(entry: CatalogEntry, t: Dict): DocView {
           }),
         }]
       : []),
+    /**
+     * Asked of every document, because the rule does not vary by country: the six authorities
+     * whose wording was read all permit a religious covering and all forbid an everyday hat.
+     * The US adds a signed note, which is the only part that is per-entry.
+     */
+    {
+      q: t.autoFaq.covering({ doc: title }),
+      a: entry.coveringStatement
+        ? `${t.autoFaq.coveringA()} ${t.autoFaq.coveringStatement}`
+        : t.autoFaq.coveringA(),
+    },
     // Only forms that actually accept an upload: DS-11 is filed on paper, and inventing an
     // upload rule for it would be publishing a requirement that does not exist.
     ...(entry.form?.online

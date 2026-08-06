@@ -311,12 +311,24 @@ const fr: Dict = {
     howFiledA: ({ route, form }: { route: string; form: string }) => `${route}${form}`,
     editing: ({ doc }: { doc: string }) => `${doc} : l\u2019administration accepte-t-elle une photo retouchée ?`,
     checked: ({ doc }: { doc: string }) => `${doc} : une photo de cette page a-t-elle été contrôlée officiellement ?`,
-    uploadFails: ({ form }) => `Pourquoi ${form} refuse-t-il la photo ?`,
+    uploadFails: ({ form }) => `${form} : la photo ne se charge pas ou elle est refusée, pourquoi ?`,
     uploadFailsA: ({ form, format, kb, px }) =>
       `${form} refuse tout ce qui n'est pas ${format}, tout ce qui dépasse ${kb} Ko et tout ce qui ` +
       `est plus petit que ${px} pixels. L'export proposé ici respecte les trois limites. Si le ` +
       `fichier est conforme et que le site renvoie quand même une erreur, le problème vient de leur ` +
       `service, pas de votre photo.`,
+    covering: ({ doc }) => `${doc} : possible avec un hijab, un turban ou un autre couvre-chef ?`,
+    coveringA: () =>
+      `Oui. Le couvre-chef porté chaque jour pour un motif religieux est accepté ; un chapeau ` +
+      `ordinaire ne l'est pas. Le visage doit être visible du bas du menton jusqu'au front, les deux ` +
+      `bords du visage dégagés, et rien ne doit y porter d'ombre. Tissu uni, sans motif, et d'une ` +
+      `couleur qui tranche avec le fond : un voile blanc sur fond blanc s'y confond, et c'est ` +
+      `le refus que le Canada et la Türkiye signalent nommément. La palette proposée ici permet de ` +
+      `mettre un fond contrasté.`,
+    coveringStatement:
+      `Les États-Unis demandent en plus une note signée attestant qu'il s'agit d'un vêtement ` +
+      `religieux porté quotidiennement en public. Une phrase sur papier, jointe au dossier, sans ` +
+      `rapport avec la photo.`,
   },
 
   // Generated from the catalogue and presets.toml — see ../docText.ts.

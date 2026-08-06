@@ -310,11 +310,22 @@ const es: Dict = {
     howFiledA: ({ route, form }: { route: string; form: string }) => `${route}${form}`,
     editing: ({ doc }: { doc: string }) => `${doc}: ¿el organismo acepta una foto editada?`,
     checked: ({ doc }: { doc: string }) => `${doc}: ¿se ha verificado oficialmente una foto de esta página?`,
-    uploadFails: ({ form }) => `¿Por qué ${form} rechaza la foto?`,
+    uploadFails: ({ form }) => `${form}: no deja subir la foto o la rechaza, ¿por qué?`,
     uploadFailsA: ({ form, format, kb, px }) =>
       `${form} rechaza todo lo que no sea ${format}, todo lo que pase de ${kb} KB y todo lo que ` +
       `baje de ${px} píxeles. Exportar aquí mantiene los tres dentro de los límites. Si el archivo ` +
       `cumple y el sitio sigue dando error, el problema es de su servicio, no de tu foto.`,
+    covering: ({ doc }) => `${doc}: ¿vale con hiyab, turbante u otra prenda en la cabeza?`,
+    coveringA: () =>
+      `Sí. Se acepta la prenda que se lleva a diario por motivos religiosos; un gorro corriente, no. ` +
+      `La cara tiene que verse desde el mentón hasta la frente, con los dos bordes del rostro a la ` +
+      `vista y sin que nada le proyecte sombra. La tela, lisa y sin estampado, y de un color que se ` +
+      `distinga del fondo: una prenda blanca sobre fondo blanco se funde con él, que es el ` +
+      `rechazo que Canadá y Turquía advierten por su nombre. La paleta de aquí permite poner un ` +
+      `fondo que contraste.`,
+    coveringStatement:
+      `Estados Unidos pide además una nota firmada que diga que es indumentaria religiosa de uso ` +
+      `diario en público. Es una frase en papel que va con la solicitud, no forma parte de la foto.`,
   },
 
   // Generated from the catalogue and presets.toml — see ../docText.ts.

@@ -462,5 +462,23 @@ export interface Dict {
     checked: (v: { doc: string }) => string;
     uploadFails: (v: { form: string }) => string;
     uploadFailsA: (v: { form: string; format: string; kb: number; px: string }) => string;
+    /**
+     * Head coverings, which is the one question on this site with a person on the other end of
+     * it rather than a form. Nobody publishes a straight answer, so people arrive expecting to
+     * be told no.
+     *
+     * The answer is the same in every jurisdiction we cover, and it was read out of six of
+     * them — State Department, gov.uk, IRCC, the Schengen/ICAO annex, Göç İdaresi, and the
+     * Chinese consular spec: a covering worn for religious reasons is accepted, an everyday hat
+     * is not. The conditions are also the same everywhere, and they are the useful part:
+     * chin-to-forehead and both edges of the face visible, no shadow, plain and unpatterned,
+     * and a colour that differs from the background — the one condition this site can act on,
+     * because a white covering on a white background is the failure Canada and Turkey both
+     * warn about by name, and there is a palette here for exactly that.
+     */
+    covering: (v: { doc: string }) => string;
+    coveringA: () => string;
+    /** Only the US asks for this, and only on paper: a signed note that it is worn daily. */
+    coveringStatement: string;
   };
 }

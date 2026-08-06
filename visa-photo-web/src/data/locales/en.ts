@@ -435,11 +435,22 @@ const en: Dict = {
     howFiledA: ({ route, form }: { route: string; form: string }) => `${route}${form}`,
     editing: ({ doc }: { doc: string }) => `${doc}: does this authority accept an edited photo?`,
     checked: ({ doc }: { doc: string }) => `${doc}: has one from this page been checked officially?`,
-    uploadFails: ({ form }) => `Why does ${form} reject the photo?`,
+    uploadFails: ({ form }) => `${form}: the photo will not upload, or comes back rejected — why?`,
     uploadFailsA: ({ form, format, kb, px }) =>
       `${form} refuses anything that is not ${format}, anything above ${kb} KB, and anything ` +
       `smaller than ${px} pixels. Exporting here keeps all three inside the limits. If the file ` +
       `is within spec and the site still errors, that is their service, not your photo.`,
+    covering: ({ doc }) => `Can a ${doc} be taken in a hijab, turban or other head covering?`,
+    coveringA: () =>
+      `Yes. A covering worn every day for religious reasons is accepted; an ordinary hat is not. ` +
+      `The face has to be visible from the bottom of the chin to the forehead, both edges of the ` +
+      `face have to show, and nothing may cast a shadow across it. Keep the fabric plain and ` +
+      `unpatterned, and pick a colour that stands apart from the background — a white ` +
+      `covering on a white background merges into it, which is the rejection Canada and Türkiye ` +
+      `both warn about by name. The palette here can set a background that contrasts.`,
+    coveringStatement:
+      `The United States also asks for a signed note saying the covering is religious attire worn ` +
+      `daily in public. It is a sentence on paper, filed with the application, not part of the photo.`,
   },
 
   faq: {
