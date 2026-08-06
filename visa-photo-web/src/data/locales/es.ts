@@ -19,7 +19,7 @@ const es: Dict = {
   gen: {
     docTitle: ({ country, doc }) => `Foto para ${doc.toLowerCase()} — ${country}`,
     pageTitle: ({ country, doc, size }) =>
-      `${country}: tamaño de foto para ${doc.toLowerCase()} — ${size}, requisitos y herramienta gratis`,
+      `${country}: foto para ${doc.toLowerCase()} ${size} — tamaño y requisitos | editor gratis`,
     docNotes: ({ background, size, headMm, mm }) =>
       `Fondo ${background}, ${size}, cabeza de unos ${headMm} ${mm} desde el mentón hasta la coronilla.`,
   },

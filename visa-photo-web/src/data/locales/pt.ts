@@ -18,7 +18,7 @@ const pt: Dict = {
   gen: {
     docTitle: ({ country, doc }) => `Foto para ${doc.toLowerCase()} — ${country}`,
     pageTitle: ({ country, doc, size }) =>
-      `${country}: tamanho da foto para ${doc.toLowerCase()} — ${size}, requisitos e ferramenta grátis`,
+      `${country}: foto para ${doc.toLowerCase()} ${size} — tamanho | fazer foto online grátis`,
     docNotes: ({ background, size, headMm, mm }) =>
       `Fundo ${background}, ${size}, cabeça com cerca de ${headMm} ${mm} do queixo ao topo.`,
   },

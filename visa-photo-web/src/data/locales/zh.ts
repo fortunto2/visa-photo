@@ -18,7 +18,7 @@ const zh: Dict = {
   gen: {
     docTitle: ({ country, doc }) => `${country}${doc}照片`,
     pageTitle: ({ country, doc, size }) =>
-      `${country}${doc}照片尺寸 — ${size}，要求与免费工具`,
+      `${country}${doc}照片要求和尺寸 ${size} | 在线制作，免费换底色`,
     docNotes: ({ background, size, headMm, mm }) =>
       `${background}背景，${size}，下巴到头顶约 ${headMm} ${mm}。`,
   },

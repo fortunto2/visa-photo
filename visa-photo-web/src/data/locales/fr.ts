@@ -18,7 +18,7 @@ const fr: Dict = {
   gen: {
     docTitle: ({ country, doc }) => `Photo de ${doc.toLowerCase()} — ${country}`,
     pageTitle: ({ country, doc, size }) =>
-      `Photo de ${doc.toLowerCase()} — ${country} : ${size}, exigences et outil gratuit`,
+      `Photo ${doc.toLowerCase()} ${country} : format et dimensions ${size} | photo d'identité en ligne gratuit`,
     docNotes: ({ background, size, headMm, mm }) =>
       `Fond ${background}, ${size}, tête de ${headMm} ${mm} environ du menton au sommet du crâne.`,
   },

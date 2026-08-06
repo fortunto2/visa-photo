@@ -36,7 +36,7 @@ const ar: Dict = {
   gen: {
     docTitle: ({ country, kind }) => `صورة ${OF[kind]} — ${country}`,
     pageTitle: ({ country, kind, size }) =>
-      `مقاس صورة ${OF[kind]} ${forCountry(country)} — ${size}، المتطلبات وأداة مجانية`,
+      `مقاس صورة ${OF[kind]} ${forCountry(country)} ${size} — الشروط والمواصفات، وتعديل الصورة أونلاين مجانًا`,
     docNotes: ({ background, size, headMm, mm }) =>
       `خلفية ${background}، ${size}، وارتفاع الرأس نحو ${headMm} ${mm} من الذقن إلى أعلى الرأس.`,
   },

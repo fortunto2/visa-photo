@@ -24,7 +24,7 @@ const hi: Dict = {
   gen: {
     docTitle: ({ country, kind }) => `${country} की ${FOR[kind]} फ़ोटो`,
     pageTitle: ({ country, kind, size }) =>
-      `${country}: ${FOR[kind]} फ़ोटो का आकार — ${size}, आवश्यकताएँ और मुफ़्त टूल`,
+      `${country}: ${FOR[kind]} फ़ोटो साइज़ ${size} — फ़ोटो मेकर ऑनलाइन फ्री`,
     docNotes: ({ background, size, headMm, mm }) =>
       `${background} बैकग्राउंड पर ${size} की फ़ोटो, ठोड़ी से सिर के ऊपर तक क़रीब ${headMm} ${mm}।`,
   },

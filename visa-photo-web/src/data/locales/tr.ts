@@ -17,7 +17,7 @@ const tr: Dict = {
   gen: {
     docTitle: ({ country, doc }) => `${country} ${doc.toLocaleLowerCase("tr")} fotoğrafı`,
     pageTitle: ({ country, doc, size }) =>
-      `${country} ${doc.toLocaleLowerCase("tr")} fotoğrafı ölçüleri — ${size}, şartlar ve ücretsiz araç`,
+      `${country} ${doc.toLocaleLowerCase("tr")} fotoğraf ölçüsü ${size} — online biyometrik fotoğraf yapma (ücretsiz)`,
     docNotes: ({ background, size, headMm, mm }) =>
       `${background} arka plan, ${size}, çeneden tepeye baş yüksekliği yaklaşık ${headMm} ${mm}.`,
   },
