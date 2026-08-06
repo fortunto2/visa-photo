@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
 import { CATALOG, countryGroups } from "../data/catalog";
 import { absolute, alternates, path } from "../lib/site";
-import { LANGS } from "../data/locales";
+import { langsFor } from "../data/locales";
 
 /**
  * Written by hand rather than via @astrojs/sitemap because every URL needs its full
@@ -19,9 +19,10 @@ export const GET: APIRoute = () => {
   ];
 
   const urls = groups.flatMap((segments) =>
-    LANGS.map((lang) => {
+    // A language that has not translated the models or skills page simply has no such URL.
+    langsFor(segments).map((lang) => {
       const loc = absolute(path(lang, ...segments));
-      const alts = alternates(...segments).map(
+      const alts = alternates(segments).map(
         (alt) =>
           `    <xhtml:link rel="alternate" hreflang="${alt.hreflang}" href="${alt.href}"/>`,
       );

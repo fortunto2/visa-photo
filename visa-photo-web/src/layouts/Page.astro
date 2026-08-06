@@ -4,7 +4,7 @@ import Sprite from "../components/Sprite.astro";
 import { SITE, absolute, alternates, path } from "../lib/site";
 import { LANG_LABEL, LANG_TAG, dirOf } from "../data/i18n";
 import type { Dict } from "../data/i18n";
-import { LANGS, type ActiveLang } from "../data/locales";
+import { LANGS, type ActiveLang, hasSection} from "../data/locales";
 
 interface Props {
   lang: ActiveLang;
@@ -43,7 +43,7 @@ const graph = [
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
 
-    {alternates(...segments).map((alt) => (
+    {alternates(segments).map((alt) => (
       <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />
     ))}
 
@@ -105,8 +105,8 @@ const graph = [
       <div class="site-foot">
         <p class="foot-note">{t.seo.disclaimerShort}</p>
         <nav class="foot-links">
-          <a href={path(lang, "skills")}>{t.agent.openSkills}</a>
-          <a href={path(lang, "models")}>{t.nav.models}</a>
+          {hasSection(lang, "skills") && <a href={path(lang, "skills")}>{t.agent.openSkills}</a>}
+          {hasSection(lang, "models") && <a href={path(lang, "models")}>{t.nav.models}</a>}
           <a href={SITE.repo} rel="noopener">Source code</a>
           <a href="/llms.txt">llms.txt</a>
           <a href="/specs.json">specs.json</a>

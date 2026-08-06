@@ -1,5 +1,5 @@
 import { LANG_TAG } from "../data/i18n";
-import { DEFAULT_LANG, LANGS, type ActiveLang } from "../data/locales";
+import { DEFAULT_LANG, LANGS, langsFor, type ActiveLang } from "../data/locales";
 
 /**
  * One place for anything that changes when the domain is decided.
@@ -56,9 +56,13 @@ export function absolute(p: string): string {
  * One implementation, because the same loop was written out three times — in the layout, in
  * the root signpost and in the sitemap — while this helper sat unused.
  */
-export function alternates(...segments: string[]): { hreflang: string; href: string }[] {
+export function alternates(segments: string[] = []): { hreflang: string; href: string }[] {
+  // Only the languages the page actually exists in: claiming a Hindi models page that was
+  // never translated points Google at a 404 and, worse, says we translated something we did
+  // not. x-default stays on the default language, which always has every section.
+  const langs = langsFor(segments);
   return [
-    ...LANGS.map((lang) => ({ hreflang: LANG_TAG[lang], href: absolute(path(lang, ...segments)) })),
+    ...langs.map((lang) => ({ hreflang: LANG_TAG[lang], href: absolute(path(lang, ...segments)) })),
     { hreflang: "x-default", href: absolute(path(DEFAULT_LANG, ...segments)) },
   ];
 }

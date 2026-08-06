@@ -9,7 +9,7 @@ import { agentCard, agentPrompt } from "../../../data/agentCard";
 import CopyButton from "../../../components/CopyButton.tsx";
 import PhotoChecker from "../../../components/PhotoChecker.tsx";
 import ModeTabs from "../../../components/ModeTabs.tsx";
-import { LANGS, dict, type ActiveLang } from "../../../data/locales";
+import { LANGS, DEFAULT_LANG, dict, hasSection, type ActiveLang } from "../../../data/locales";
 import { absolute, path } from "../../../lib/site";
 import { LANG_TAG } from "../../../data/i18n";
 
@@ -188,7 +188,7 @@ const schema = [
     </div>
 
   <div class="tool">
-    <PhotoTool client:idle preset={p} presetKey={key} modelsHref={path(lang, "models")}
+    <PhotoTool client:idle preset={p} presetKey={key} modelsHref={path(hasSection(lang, "models") ? lang : DEFAULT_LANG, "models")}
       ctx={{ preset: key, country: entry.country, doc: entry.doc }}
       editingForbidden={entry.warnings?.includes("no-editing")} strings={{
       dropTitle: t.tool.dropTitle,
@@ -382,10 +382,12 @@ const schema = [
       <div class="agent-actions">
         <CopyButton client:load payload={prompt} label={t.agent.copyPrompt} done={t.agent.copied} />
         <CopyButton client:load payload={card} label={t.agent.copySpec} done={t.agent.copied} variant="quiet" />
-        <a class="chip" href={path(lang, "skills")}>
-          <svg width="18" height="18" aria-hidden="true"><use href="#ic-spark" /></svg>
-          {t.agent.openSkills}
-        </a>
+        {hasSection(lang, "skills") && (
+          <a class="chip" href={path(lang, "skills")}>
+            <svg width="18" height="18" aria-hidden="true"><use href="#ic-spark" /></svg>
+            {t.agent.openSkills}
+          </a>
+        )}
       </div>
       <p class="hint caveat">{t.agent.disclaimer}</p>
     </section>

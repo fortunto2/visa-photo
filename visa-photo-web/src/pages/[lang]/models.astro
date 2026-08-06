@@ -1,16 +1,18 @@
 ---
 import Page from "../../layouts/Page.astro";
 import ModelTable from "../../components/ModelTable.tsx";
-import { LANGS, dict, type ActiveLang } from "../../data/locales";
+import { langsFor, dict, type ActiveLang } from "../../data/locales";
 import { absolute, path } from "../../lib/site";
 
 export function getStaticPaths() {
-  return LANGS.map((lang) => ({ params: { lang } }));
+  // Only where this page has been translated; see Dict for why there is no fallback.
+  return langsFor(["models"]).map((lang) => ({ params: { lang } }));
 }
 
 const { lang } = Astro.params as { lang: ActiveLang };
 const t = dict(lang);
-const m = t.modelsPage;
+// getStaticPaths only produced this route for locales that carry the block, so it is here.
+const m = t.modelsPage!;
 
 const schema = [
   {

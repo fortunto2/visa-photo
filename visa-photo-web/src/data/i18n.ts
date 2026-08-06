@@ -49,6 +49,16 @@ export function dirOf(lang: Lang): "ltr" | "rtl" {
   return RTL_LANGS.has(lang) ? "rtl" : "ltr";
 }
 
+/**
+ * Three of the blocks below are optional: `modelsPage`, `customPage` and `skills`.
+ *
+ * They are secondary pages, and together they are a third of the words in a locale file. A
+ * language that has translated the tool and the document pages should be able to ship without
+ * them rather than wait — so a missing block means the route is not generated for that
+ * language, hreflang does not claim it exists, and the sitemap leaves it out. What it never
+ * means is an English page served under /hi/, which would be a duplicate competing with the
+ * real English one.
+ */
 export interface Dict {
   /** site-wide */
   nav: { countries: string; models: string };
@@ -216,7 +226,7 @@ export interface Dict {
   };
 
   /** the models page: what the background remover actually downloads and why */
-  modelsPage: {
+  modelsPage?: {
     title: string;
     h1: string;
     lead: string;
@@ -289,7 +299,7 @@ export interface Dict {
   };
 
   /** the any-size page: what the catalogue does not cover */
-  customPage: {
+  customPage?: {
     title: string;
     h1: string;
     lead: string;
@@ -305,7 +315,7 @@ export interface Dict {
   };
 
   /** the skills section */
-  skills: {
+  skills?: {
     title: string;
     h1: string;
     lead: string;

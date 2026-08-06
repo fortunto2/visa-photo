@@ -43,3 +43,28 @@ export function dict(lang: ActiveLang): Dict {
   RESOLVED.set(lang, merged);
   return merged;
 }
+
+/**
+ * Pages that a locale may skip, keyed by the URL segment they live at.
+ */
+const OPTIONAL: Record<string, "modelsPage" | "customPage" | "skills"> = {
+  models: "modelsPage",
+  custom: "customPage",
+  skills: "skills",
+};
+
+/** Whether this locale has translated the section a URL segment belongs to. */
+export function hasSection(lang: ActiveLang, segment: string): boolean {
+  const block = OPTIONAL[segment];
+  return !block || DICTS[lang][block] !== undefined;
+}
+
+/**
+ * Which languages a given page exists in. Everything except the optional sections exists
+ * everywhere, so this is the one place routes, hreflang and the sitemap agree on.
+ */
+export function langsFor(segments: string[]): ActiveLang[] {
+  const first = segments[0];
+  if (!first || !OPTIONAL[first]) return LANGS;
+  return LANGS.filter((lang) => hasSection(lang, first));
+}
