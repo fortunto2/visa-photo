@@ -330,6 +330,13 @@ export interface Dict {
   /** BCP-47 tag used to format the "checked on" date; ISO dates look untranslated */
   dateLocale: string;
 
+  /**
+   * Offered on the root to a visitor whose browser prefers this language, written in that
+   * language — the point is that it reads as an invitation to someone who cannot read the
+   * page they landed on.
+   */
+  readHere: string;
+
   /** names, keyed by catalog preset */
   country: Record<string, string>;
   docTitle: Record<string, string>;

@@ -27,7 +27,14 @@ export const SITE = {
 } as const;
 
 /**
- * /en/... for every locale, including the default — no bare-root duplicates to canonicalise.
+ * /<lang>/... everywhere, with one exception: the default language's home page is the domain
+ * root.
+ *
+ * That exception is the whole point. Links from elsewhere land on `visayes.app`, not on
+ * `visayes.app/en/`, so the root should be the page rather than a signpost pointing at one —
+ * a signpost either carries noindex, which contradicts its own canonical, or spends a redirect
+ * hop. Inner pages keep the prefix, because moving those to the root would put country slugs
+ * in the same namespace as /app, /print and /skills.
  *
  * Always ends in a slash. Astro writes each page as `<path>/index.html`, and Cloudflare Pages
  * answers the slashless form with a 308. Without the slash here, canonical, hreflang and every
@@ -35,7 +42,8 @@ export const SITE = {
  */
 export function path(lang: ActiveLang, ...segments: string[]): string {
   const tail = segments.filter(Boolean).join("/");
-  return tail ? `/${lang}/${tail}/` : `/${lang}/`;
+  if (!tail) return lang === DEFAULT_LANG ? "/" : `/${lang}/`;
+  return `/${lang}/${tail}/`;
 }
 
 export function absolute(p: string): string {

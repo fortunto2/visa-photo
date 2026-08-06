@@ -1,44 +1,55 @@
 ---
+import Home from "../components/Home.astro";
 import { DEFAULT_LANG, LANGS, dict } from "../data/locales";
-import { LANG_LABEL, LANG_TAG } from "../data/i18n";
-import { SITE, absolute, alternates, path } from "../lib/site";
+import { LANG_TAG } from "../data/i18n";
+import { path } from "../lib/site";
 
 /**
- * The root is a signpost, not a page.
+ * The English hub, served from the root itself.
  *
- * It carries no content of its own so it cannot compete with /en/ in search, and it links
- * every locale in plain HTML so a crawler that ignores the redirect still finds them all.
+ * It used to be a noindex signpost that bounced everyone to /en/ by browser language. Two
+ * things were wrong with that. The page carried noindex and a canonical at the same time,
+ * which are contradictory instructions, and an automatic redirect on language is the one
+ * thing Google asks sites not to do — it stops both people and crawlers from reaching the
+ * other versions. So the root is now the page, and a language offer is a bar you can dismiss.
  */
-const t = dict(DEFAULT_LANG);
-const target = path(DEFAULT_LANG);
+const offers = LANGS.filter((lang) => lang !== DEFAULT_LANG).map((lang) => ({
+  lang,
+  href: path(lang),
+  tag: LANG_TAG[lang],
+  label: dict(lang).readHere,
+}));
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{t.hub.h1}</title>
-    <meta name="description" content={t.hub.lead} />
-    <meta name="robots" content="noindex, follow" />
-    <link rel="canonical" href={absolute(target)} />
-    {alternates().map((alt) => (
-      <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />
+<Home lang={DEFAULT_LANG}>
+  <div class="lang-offer" hidden data-lang-offer>
+    {offers.map((offer) => (
+      <a class="lang-offer-link" hidden data-offer={offer.lang} href={offer.href} hreflang={offer.tag}>
+        {offer.label} →
+      </a>
     ))}
-    <meta http-equiv="refresh" content={`0; url=${target}`} />
-    <script is:inline define:vars={{ langs: LANGS as string[], target }}>
-      const wanted = navigator.languages
-        .map((l) => l.split("-")[0])
-        .find((l) => langs.includes(l));
-      location.replace(wanted ? `/${wanted}/` : target);
-    </script>
-  </head>
-  <body>
-    <ul>
-      {LANGS.map((lang) => (
-        <li><a href={path(lang)} hreflang={LANG_TAG[lang]}>{LANG_LABEL[lang]}</a></li>
-      ))}
-      <li><a href="/app">{SITE.name} desktop-style editor</a></li>
-    </ul>
-  </body>
-</html>
+    <button type="button" class="lang-offer-close" data-offer-close aria-label="Dismiss">×</button>
+  </div>
+</Home>
+
+<script is:inline define:vars={{ langs: LANGS as string[] }}>
+  (function () {
+    const KEY = "visayes:lang-offer-dismissed";
+    const bar = document.querySelector("[data-lang-offer]");
+    if (!bar || localStorage.getItem(KEY)) return;
+
+    const wanted = (navigator.languages || [navigator.language || ""])
+      .map((tag) => tag.split("-")[0])
+      .find((tag) => langs.includes(tag) && tag !== "en");
+    if (!wanted) return;
+
+    const link = bar.querySelector(`[data-offer="${wanted}"]`);
+    if (!link) return;
+    link.hidden = false;
+    bar.hidden = false;
+    bar.querySelector("[data-offer-close]")?.addEventListener("click", () => {
+      localStorage.setItem(KEY, "1");
+      bar.hidden = true;
+    });
+  })();
+</script>

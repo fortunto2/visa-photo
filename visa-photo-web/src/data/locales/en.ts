@@ -4,6 +4,7 @@ const en: Dict = {
   nav: { countries: "All countries", models: "Background models" },
   unit: { mm: "mm", cm: "cm", in: "in", px: "px", kb: "KB", mb: "MB" },
   dateLocale: "en-GB",
+  readHere: "Read this in English",
 
   answer: ({ w, h, kb, format, bg }) =>
     `You need a ${w} × ${h} pixel photo on a ${bg} background, ${format} under ${kb} KB. ` +

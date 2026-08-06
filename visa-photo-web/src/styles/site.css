@@ -311,6 +311,23 @@ h1 {
 }
 .retry-q { margin: 0; font-size: 15.5px; font-weight: 650; color: var(--ink); }
 
+/* offer of another language on the root — a bar, never a redirect */
+.lang-offer {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 22px; padding: 11px 14px;
+  border: 1px solid var(--teal-line); background: var(--teal-soft);
+  border-radius: var(--r-md);
+}
+.lang-offer[hidden] { display: none; }
+.lang-offer-link { font-weight: 650; color: var(--teal); text-decoration: none; }
+.lang-offer-link:hover { text-decoration: underline; }
+.lang-offer-link[hidden] { display: none; }
+.lang-offer-close {
+  margin-inline-start: auto; border: 0; background: none; cursor: pointer;
+  font-size: 21px; line-height: 1; color: var(--ink-soft); padding: 0 4px;
+}
+.lang-offer-close:hover { color: var(--ink); }
+
 /* backdrop picker, shown once the subject has been cut out */
 .backdrops { display: flex; flex-direction: column; gap: 10px; }
 .swatches { display: flex; gap: 10px; flex-wrap: wrap; }

@@ -4,6 +4,7 @@ const ru: Dict = {
   nav: { countries: "Все страны", models: "Модели фона" },
   unit: { mm: "мм", cm: "см", in: "дюйма", px: "px", kb: "КБ", mb: "МБ" },
   dateLocale: "ru-RU",
+  readHere: "Читать по-русски",
 
   answer: ({ w, h, kb, format, bg }) =>
     `Нужен снимок ${w} × ${h} пикселей на ${bg} фоне, ${format} до ${kb} КБ. ` +
