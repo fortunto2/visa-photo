@@ -153,6 +153,8 @@ const fr: Dict = {
       "Supprimer le fond, c'est retoucher la photo, et cette administration refuse les photos " +
       "retouchées. Servez-vous-en pour vérifier votre cadrage, pas pour produire le fichier que vous déposerez.",
     noHomePrint: "Les photos imprimées chez soi ne sont pas acceptées — passez par un service d'impression professionnel.",
+    studioOnly:
+      "Cette administration exige que la photo soit prise dans un studio commercial, qui inscrit son nom et la date au dos. Servez-vous de l'outil pour voir le cadrage et les chiffres ; la photo elle-même doit venir du studio.",
     proceedAnyway: "Le supprimer quand même",
   },
 
@@ -262,7 +264,8 @@ const fr: Dict = {
         a:
           "Oui. Chaque page de document exporte une feuille A4 en PNG et en PDF, avec le bon nombre " +
           "de copies au bon format. Imprimez à l'échelle 100 % — « ajuster à la page » les " +
-          "redimensionne sans prévenir.",
+          "redimensionne sans prévenir. Une bonne imprimante domestique et du papier photo conviennent " +
+          "à la plupart des documents ; là où un studio est exigé, la page du document le précise.",
       },
       {
         q: "Ma demande sera-t-elle acceptée ?",

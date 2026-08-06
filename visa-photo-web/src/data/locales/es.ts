@@ -152,6 +152,8 @@ const es: Dict = {
       "Quitar el fondo es editar la foto, y este organismo rechaza las fotos editadas. " +
       "Hazlo solo para ver si el encuadre funciona, no para el archivo que vas a presentar.",
     noHomePrint: "Las fotos impresas en casa no se aceptan: usa un servicio de impresión profesional.",
+    studioOnly:
+      "Este organismo exige que la foto se tome en un estudio comercial, que escribe su nombre y la fecha al dorso. Usa la herramienta para ver el encuadre y las medidas; la foto en sí tiene que salir del estudio.",
     proceedAnyway: "Quitarlo de todos modos",
   },
 
@@ -261,7 +263,8 @@ const es: Dict = {
         a:
           "Sí. Cada página de documento exporta una hoja A4 en PNG y PDF con el número de copias " +
           "correcto y al tamaño exacto. Imprime al 100 % de escala: «ajustar a la página» las " +
-          "redimensiona sin avisar.",
+          "redimensiona sin avisar. Una buena impresora doméstica con papel fotográfico sirve para la " +
+          "mayoría de los documentos; donde hace falta un estudio, lo dice la página de ese documento.",
       },
       {
         q: "¿Van a aceptar mi solicitud?",

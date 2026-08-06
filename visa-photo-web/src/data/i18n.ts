@@ -201,6 +201,12 @@ export interface Dict {
     noEditing: string;
     noEditingAtAction: string;
     noHomePrint: string;
+    /**
+     * Stronger than noHomePrint and a different rule: the photo has to be taken in a studio,
+     * not merely printed in one. Canada asks the studio to write its name and the date on the
+     * back, which no file can satisfy.
+     */
+    studioOnly: string;
     proceedAnyway: string;
   };
 

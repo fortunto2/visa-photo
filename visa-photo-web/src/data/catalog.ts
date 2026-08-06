@@ -53,7 +53,7 @@ export interface CatalogEntry {
   submission: "upload" | "print" | "captured";
 
   /** Rules that contradict what this tool does, stated on the page rather than buried. */
-  warnings?: ("no-editing" | "no-home-print")[];
+  warnings?: ("no-editing" | "no-home-print" | "studio-only")[];
 
   /**
    * Date this preset's output was accepted by the authority's own online checker.
@@ -153,7 +153,10 @@ export const CATALOG: CatalogEntry[] = [
   {
     preset: "ca_passport",
     submission: "print",
-    warnings: ["no-editing", "no-home-print"],
+    // Not a printing rule: Canada requires the photo to be *taken* in a commercial studio,
+    // whose name, address and the date go on the back of one copy. Someone who made a file
+    // here and had it printed professionally would still be turned away.
+    warnings: ["no-editing", "studio-only"],
     country: "canada",
     doc: "passport",
     kind: "passport",

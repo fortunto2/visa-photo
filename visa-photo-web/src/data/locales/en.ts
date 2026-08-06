@@ -178,6 +178,8 @@ const en: Dict = {
       "Removing the background edits the photo, and this authority rejects edited photos. " +
       "Use it to see whether your framing works, not for the file you submit.",
     noHomePrint: "Photos printed at home are not accepted — use a professional print service.",
+    studioOnly:
+      "This authority wants the photo taken in a commercial studio, which writes its name and the date on the back. Use the tool here to see the framing and the numbers; the photo itself has to come from the studio.",
     proceedAnyway: "Remove it anyway",
   },
 
@@ -316,7 +318,7 @@ const en: Dict = {
       {
         q: "Can I print these at home?",
         a: "Yes. Every document page exports an A4 sheet as PNG and PDF with the right number of " +
-          "copies at the correct size. Print at 100 % scale — “fit to page” silently resizes them.",
+          "copies at the correct size. Print at 100 % scale — “fit to page” silently resizes them. A good home printer on photo paper is fine for most documents; where an authority insists on a studio or a print shop, that document's page says so.",
       },
       {
         q: "Will my application be accepted?",

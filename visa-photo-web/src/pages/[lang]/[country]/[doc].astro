@@ -132,6 +132,9 @@ const schema = [
       {entry.warnings.includes("no-editing") && (
         <p><svg width="19" height="19" aria-hidden="true"><use href="#ic-warn" /></svg>{t.warn.noEditing}</p>
       )}
+      {entry.warnings.includes("studio-only") && (
+        <p><svg width="19" height="19" aria-hidden="true"><use href="#ic-warn" /></svg>{t.warn.studioOnly}</p>
+      )}
       {entry.warnings.includes("no-home-print") && (
         <p><svg width="19" height="19" aria-hidden="true"><use href="#ic-warn" /></svg>{t.warn.noHomePrint}</p>
       )}

@@ -151,6 +151,8 @@ const pt: Dict = {
       "Remover o fundo é editar a foto, e este órgão rejeita fotos editadas. " +
       "Use só para conferir se o enquadramento funciona; não use no arquivo que você vai entregar.",
     noHomePrint: "Fotos impressas em casa não são aceitas — use um serviço de impressão profissional.",
+    studioOnly:
+      "Este órgão exige que a foto seja tirada em um estúdio comercial, que escreve o nome e a data no verso. Use a ferramenta para ver o enquadramento e as medidas; a foto em si precisa vir do estúdio.",
     proceedAnyway: "Remover mesmo assim",
   },
 
@@ -258,7 +260,8 @@ const pt: Dict = {
         q: "Dá para imprimir em casa?",
         a:
           "Dá. Cada página de documento exporta uma folha A4 em PNG e PDF com o número certo de " +
-          "cópias no tamanho certo. Imprima em escala 100 % — o “ajustar à página” redimensiona sem avisar.",
+          "cópias no tamanho certo. Imprima em escala 100 % — o “ajustar à página” redimensiona sem avisar. Uma boa impressora caseira com papel " +
+          "fotográfico dá conta da maioria dos documentos; onde é preciso um estúdio, isso está na página dele.",
       },
       {
         q: "Meu pedido vai ser aceito?",

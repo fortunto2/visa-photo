@@ -151,6 +151,8 @@ const tr: Dict = {
       "Arka planı kaldırmak da fotoğrafı düzenlemek sayılır ve bu kurum düzenlenmiş fotoğrafları reddeder. " +
       "Bu aracı, çerçevelemenin işe yarayıp yaramadığını görmek için kullanın; teslim edeceğiniz dosya için değil.",
     noHomePrint: "Evde basılan fotoğraflar kabul edilmiyor — profesyonel baskı hizmeti kullanın.",
+    studioOnly:
+      "Bu kurum fotoğrafın ticari bir stüdyoda çekilmesini istiyor; stüdyo arkasına adını ve tarihi yazar. Buradaki araçla çerçevelemeyi ve ölçüleri görebilirsiniz, ama fotoğrafın kendisi stüdyodan gelmeli.",
     proceedAnyway: "Yine de kaldırın",
   },
 
@@ -258,7 +260,8 @@ const tr: Dict = {
         q: "Evde basabilir miyim?",
         a:
           "Evet. Her belge sayfası, doğru sayıda kopyayı doğru ölçüde içeren bir A4 sayfasını PNG ve " +
-          "PDF olarak verir. %100 ölçekte yazdırın — “sayfaya sığdır” ölçüyü sessizce değiştirir.",
+          "PDF olarak verir. %100 ölçekte yazdırın — “sayfaya sığdır” ölçüyü sessizce değiştirir. İyi bir ev yazıcısı ve fotoğraf kâğıdı " +
+          "belgelerin çoğu için yeterli; stüdyo şart olan belgelerde bu, o belgenin sayfasında yazar.",
       },
       {
         q: "Başvurum kabul edilecek mi?",
