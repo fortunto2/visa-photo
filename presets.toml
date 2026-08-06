@@ -417,3 +417,50 @@ background = "white"
 photo_count = 1
 format = "jpeg"
 notes = "35x45mm on the current MOFA form, head 34mm plus or minus 2 from chin to crown, white or plain background, taken within six months. Printed and glued to the form. Some posts still use the older 45x45mm form, and the eVISA is digital with no size at all."
+
+# China states the visa photo twice and differently. The paper photo glued to the form is
+# 33x48mm with a 28-33mm head; the photo uploaded into the online form is 3:4 — a different
+# shape — and is described in pixel landmarks rather than proportions. Since the form is filed
+# online, the digital rule governs here and the paper size stays in the note.
+# Two official sources disagree on the range: the MFA poster says 354x472 to 420x560, the visa
+# centres' FAQ says it "cannot exceed 354x472". The poster is the higher authority.
+# The 63 % head is the midpoint of the only chin-to-crown figure China publishes, the paper
+# one, and it satisfies their digital constraint that the eye line sit above 256 px of 472.
+[cn_visa]
+name = "China Visa"
+digital_width = 354
+digital_height = 472
+digital_max_width = 420
+digital_max_height = 560
+min_file_size_kb = 40
+max_file_size_kb = 120
+face_height_percent = 63.0
+face_top_margin_percent = 8.0
+eye_line_from_bottom_percent = 63.5
+background = "white"
+photo_count = 1
+format = "jpeg"
+format_official = true
+notes = "Uploaded into the online form: 354x472 to 420x560 px, JPEG 40-120 KB, background white or close to white with no border, taken within six months. The printed copy attached to the form is 33x48mm with a 28-33mm head — a different shape, not a resize of this file."
+
+# The UAE publishes less than any other authority here. Its photo standard gives a width of
+# 35-40mm and no height at all, and the services guide says "size 4/6" without naming a unit.
+# 40x60mm is the only reading that fits both, and the page says it is a reading. Pixel size,
+# file format, weight and dpi are not published anywhere: the numbers photo services quote for
+# the UAE appear in no official document.
+# Their own sources also disagree on the background: the photo standard says "plain
+# light-coloured", every service page says white. White is what the services ask for.
+[ae_visa]
+name = "UAE Visa"
+digital_width = 945
+digital_height = 1417
+max_file_size_kb = 5000
+print_width_mm = 40
+print_height_mm = 60
+face_height_percent = 75.0
+face_top_margin_percent = 6.0
+eye_line_from_bottom_percent = 60.0
+background = "white"
+photo_count = 1
+format = "jpeg"
+notes = "White background, face 70-80% of the frame, taken within six months. The UAE states a width of 35-40mm and no height; 40x60mm follows its own services guide, which writes the size as 4/6 without a unit. No pixel size, file format or weight is published anywhere official."
