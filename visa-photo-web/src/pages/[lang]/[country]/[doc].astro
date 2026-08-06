@@ -2,7 +2,7 @@
 import Page from "../../../layouts/Page.astro";
 import PhotoTool from "../../../components/PhotoTool.tsx";
 import {
-  CATALOG, KIND_ICON, presetOf, dpiOf, sameCountry, sameFormat, type CatalogEntry,
+  CATALOG, KIND_ICON, presetOf, dpiOf, sameCountry, type CatalogEntry,
 } from "../../../data/catalog";
 import { docView } from "../../../data/docView";
 import { agentCard, agentPrompt } from "../../../data/agentCard";
@@ -49,7 +49,9 @@ const segments = [entry.country, entry.doc];
 const bgName = view.background;
 const format = view.format;
 
-const related = [...new Set([...sameCountry(entry), ...sameFormat(entry)])];
+// Only the other documents of the same country. Matching by format put Ireland under Japan
+// because both print 35x45, which is a fact about paper, not a reason to click.
+const related = sameCountry(entry);
 const card = agentCard(entry, view);
 // Not lower-cased: the title carries proper nouns ("Turkish", "ВНЖ Турции") that must survive.
 const prompt = agentPrompt(entry, view, lang, {
@@ -115,12 +117,6 @@ const schema = [
       <svg width="17" height="17" aria-hidden="true"><use href={`#${kindIcon}`} /></svg>
       {t.docShort[key]}
     </span>
-    {entry.form && (
-      <span class="doc-pill">
-        <svg width="16" height="16" aria-hidden="true"><use href="#ic-file" /></svg>
-        {entry.form.name}
-      </span>
-    )}
   </p>
 
   <h1>{t.countryPage.docHeadline({ title: docTitle, size: headlineSize })}</h1>
@@ -161,6 +157,16 @@ const schema = [
   <p class="submission-note">
     <svg width="16" height="16" aria-hidden="true"><use href={entry.submission === "upload" ? "#ic-upload" : entry.submission === "print" ? "#ic-print" : "#ic-camera"} /></svg>
     {t.submission[entry.submission]}
+    {entry.form && (
+      <>
+        <span class="sep">·</span>
+        {entry.form.url ? (
+          <a href={entry.form.url} rel="nofollow noopener">{entry.form.name}</a>
+        ) : (
+          <span>{entry.form.name}</span>
+        )}
+      </>
+    )}
   </p>
 
   <ModeTabs client:load makeLabel={t.check.makeTab} checkLabel={t.check.tab}>

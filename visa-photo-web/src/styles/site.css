@@ -92,14 +92,32 @@ a { color: var(--teal); }
 .nav-links { display: flex; gap: 20px; flex-wrap: wrap; }
 .nav-links a { font-size: 16px; color: var(--ink-soft); text-decoration: none; font-weight: 500; }
 .nav-links a:hover { color: var(--teal); }
-.lang { margin-inline-start: auto; display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
-.lang a, .lang b {
-  font-size: 14px; font-weight: 600; text-decoration: none;
-  border-radius: var(--r-pill); padding: 6px 13px;
+/* language switcher: a disclosure, because nine of them will not sit in a row */
+.lang { margin-inline-start: auto; position: relative; }
+.lang > summary {
+  display: flex; align-items: center; gap: 7px; cursor: pointer; list-style: none;
+  font-size: 14px; font-weight: 600; color: var(--ink-soft);
+  background: var(--surface-2); border-radius: var(--r-pill); padding: 7px 14px;
 }
-.lang b { background: var(--teal); color: var(--on-teal); }
-.lang a { color: var(--ink-soft); background: var(--surface-2); }
-.lang a:hover { color: var(--teal); }
+.lang > summary::-webkit-details-marker { display: none; }
+.lang > summary::after {
+  content: ""; width: 6px; height: 6px; margin-inline-start: 1px;
+  border-inline-end: 2px solid currentColor; border-block-end: 2px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+}
+.lang[open] > summary::after { transform: translateY(1px) rotate(-135deg); }
+.lang > summary:hover { color: var(--teal); }
+.lang > ul {
+  position: absolute; z-index: 30; inset-inline-end: 0; margin-block-start: 6px;
+  min-width: 160px; padding: 6px; list-style: none;
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r-md); box-shadow: 0 10px 30px rgb(0 0 0 / 12%);
+}
+.lang > ul a {
+  display: block; padding: 8px 12px; border-radius: var(--r-sm);
+  font-size: 14px; font-weight: 600; color: var(--ink-soft); text-decoration: none;
+}
+.lang > ul a:hover { background: var(--surface-2); color: var(--teal); }
 
 /* ── answer block ───────────────────────────────────────── */
 
@@ -156,6 +174,9 @@ h1 {
   border-radius: var(--r-pill); padding: 7px 16px 7px 12px;
 }
 .submission-note svg { color: var(--teal); }
+.submission-note .sep { color: var(--ink-faint); }
+.submission-note a { color: var(--teal); text-decoration: none; font-weight: 650; }
+.submission-note a:hover { text-decoration: underline; }
 
 /* ── tool ───────────────────────────────────────────────── */
 

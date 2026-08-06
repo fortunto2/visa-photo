@@ -39,7 +39,15 @@ export interface CatalogEntry {
    * on paper in person, so generating "why does DS-11 reject your upload" invented a rule that
    * does not exist and published it as FAQ structured data.
    */
-  form?: { name: string; online: boolean };
+  form?: {
+    name: string;
+    online: boolean;
+    /**
+     * Where the form actually lives. Absent for paper forms, and for the two US routes whose
+     * portal is reached through a chooser rather than a stable URL.
+     */
+    url?: string;
+  };
 
   /**
    * How the photo reaches the application. Worth stating before anything else: for a UK visa
@@ -105,7 +113,7 @@ export const CATALOG: CatalogEntry[] = [
     doc: "residence-permit",
     kind: "permit",
     flag: "tr",
-    form: { name: "e-ikamet", online: true },
+    form: { name: "e-ikamet", online: true, url: "https://e-ikamet.goc.gov.tr/" },
     source: { label: "Göç İdaresi", url: "https://www.goc.gov.tr/" },
     checked: "2026-08-05",
   },
@@ -127,7 +135,7 @@ export const CATALOG: CatalogEntry[] = [
     kind: "visa",
     flag: "us",
     native: { w: 2, h: 2, unit: "in" },
-    form: { name: "DS-160", online: true },
+    form: { name: "DS-160", online: true, url: "https://ceac.state.gov/genniv/" },
     source: { label: "U.S. Department of State", url: "https://travel.state.gov/" },
     checked: "2026-08-05",
   },
@@ -202,7 +210,7 @@ export const CATALOG: CatalogEntry[] = [
     kind: "visa",
     flag: "us",
     native: { w: 2, h: 2, unit: "in" },
-    form: { name: "DV Entry Form", online: true },
+    form: { name: "DV Entry Form", online: true, url: "https://dvprogram.state.gov/" },
     source: { label: "U.S. Department of State — DV programme", url: "https://travel.state.gov/content/travel/en/us-visas/immigrate/diversity-visa-program-entry.html" },
     checked: "2026-08-05",
   },
@@ -214,7 +222,7 @@ export const CATALOG: CatalogEntry[] = [
     kind: "visa",
     flag: "in",
     native: { w: 2, h: 2, unit: "in" },
-    form: { name: "indianvisaonline.gov.in", online: true },
+    form: { name: "indianvisaonline.gov.in", online: true, url: "https://indianvisaonline.gov.in/" },
     source: { label: "Indian Visa Online", url: "https://indianvisaonline.gov.in/" },
     checked: "2026-08-05",
   },
@@ -289,7 +297,7 @@ export const CATALOG: CatalogEntry[] = [
     doc: "evisa",
     kind: "visa",
     flag: "th",
-    form: { name: "thaievisa.go.th", online: true },
+    form: { name: "thaievisa.go.th", online: true, url: "https://www.thaievisa.go.th/" },
     source: { label: "Thai e-Visa portal", url: "https://www.thaievisa.go.th/" },
     checked: "2026-08-06",
   },
@@ -300,7 +308,7 @@ export const CATALOG: CatalogEntry[] = [
     doc: "evisa",
     kind: "visa",
     flag: "sa",
-    form: { name: "visa.visitsaudi.com", online: true },
+    form: { name: "visa.visitsaudi.com", online: true, url: "https://visa.visitsaudi.com/" },
     source: { label: "Saudi tourist e-visa portal", url: "https://visa.visitsaudi.com/Home/PhotoSpecifications" },
     checked: "2026-08-06",
   },
@@ -311,7 +319,7 @@ export const CATALOG: CatalogEntry[] = [
     doc: "evisa",
     kind: "visa",
     flag: "vn",
-    form: { name: "evisa.gov.vn", online: true },
+    form: { name: "evisa.gov.vn", online: true, url: "https://evisa.gov.vn/" },
     source: { label: "Vietnam National E-Visa portal", url: "https://evisa.gov.vn/instruction" },
     checked: "2026-08-06",
   },

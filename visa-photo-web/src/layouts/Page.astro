@@ -83,17 +83,24 @@ const graph = [
         <span class="nav-links">
           <a href={path(lang)}>{t.nav.countries}</a>
         </span>
-        <span class="lang">
-          {LANGS.map((other) =>
-            other === lang ? (
-              <b>{LANG_LABEL[other]}</b>
-            ) : (
-              <a href={path(other, ...segments)} hreflang={LANG_TAG[other]}>
-                {LANG_LABEL[other]}
-              </a>
-            ),
-          )}
-        </span>
+        {/* A disclosure rather than a row: nine languages do not fit a header, and this needs
+            no JavaScript and stays keyboard-reachable. The links are still real links, so a
+            crawler that ignores the summary still follows them. */}
+        <details class="lang">
+          <summary>
+            <svg width="16" height="16" aria-hidden="true"><use href="#ic-globe" /></svg>
+            {LANG_LABEL[lang]}
+          </summary>
+          <ul>
+            {LANGS.filter((other) => other !== lang).map((other) => (
+              <li>
+                <a href={path(other, ...segments)} hreflang={LANG_TAG[other]} lang={LANG_TAG[other]}>
+                  {LANG_LABEL[other]}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </details>
       </nav>
     </header>
 
