@@ -6,6 +6,15 @@ const en: Dict = {
   dateLocale: "en-GB",
   readHere: "Read this in English",
 
+  kindName: { visa: "Visa", passport: "Passport", permit: "Residence permit" },
+  gen: {
+    docTitle: ({ country, doc }) => `${country} ${doc.toLowerCase()} photo`,
+    pageTitle: ({ country, doc, size }) =>
+      `${country} ${doc} Photo Size — ${size}, requirements & free tool`,
+    docNotes: ({ background, size, headMm, mm }) =>
+      `A ${background} background, ${size}, head about ${headMm} ${mm} from chin to crown.`,
+  },
+
   answer: ({ w, h, kb, format, bg }) =>
     `You need a ${w} × ${h} pixel photo on a ${bg} background, ${format} under ${kb} KB. ` +
     `Make it right here. Your photo is processed in the browser and never uploaded.`,
@@ -316,24 +325,8 @@ const en: Dict = {
   },
 
   country: {
-    es_tie: "Spain",
-    ie_passport: "Ireland",
-    nz_passport: "New Zealand",
-    in_visa: "India",
-    us_dv: "United States",
     turkey: "Turkey",
     eu_schengen: "Schengen area",
-    us_visa: "United States",
-    us_passport: "United States",
-    uk_passport: "United Kingdom",
-    ca_passport: "Canada",
-    ca_visa: "Canada",
-    cn_passport: "China",
-    in_passport: "India",
-    jp_passport: "Japan",
-    kr_passport: "South Korea",
-    au_passport: "Australia",
-    ru_passport: "Russia",
   },
 
   docTitle: {

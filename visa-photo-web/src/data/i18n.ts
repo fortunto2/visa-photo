@@ -1,3 +1,4 @@
+import type { DocKind } from "./catalog";
 /**
  * Locale order follows visa application volume, not convenience.
  *
@@ -337,7 +338,27 @@ export interface Dict {
    */
   readHere: string;
 
-  /** names, keyed by catalog preset */
+  /**
+   * One label per document kind, which is what most `docShort` entries were repeating: there
+   * are three kinds and eighteen documents. A document with a label of its own still wins.
+   */
+  kindName: Record<DocKind, string>;
+
+  /**
+   * Templates for the per-document text a locale has not written itself. Functions, not
+   * interpolated strings, because languages decline: the same slot that reads "White
+   * background" in English has to read "белом фоне" in one sentence and "Белый" in another.
+   */
+  gen: {
+    docTitle: (v: { country: string; doc: string; kind: DocKind }) => string;
+    pageTitle: (v: { country: string; doc: string; kind: DocKind; size: string; px: string }) => string;
+    docNotes: (v: { background: string; size: string; headMm: number; mm: string }) => string;
+  };
+
+  /**
+   * Per-document text, keyed by catalog preset. Every one of these is an OVERRIDE: whatever a
+   * locale leaves out is generated in ./docText.ts from the catalogue and presets.toml.
+   */
   country: Record<string, string>;
   docTitle: Record<string, string>;
   docShort: Record<string, string>;

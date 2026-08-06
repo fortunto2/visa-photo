@@ -10,10 +10,11 @@
     "check": "astro check",
     "predev": "npm run sync-ort",
     "dev": "astro dev",
-    "prebuild": "npm run sync-ort && npm run check",
+    "prebuild": "npm run sync-ort && npm run check-locales && npm run check",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "check-locales": "node scripts/check-locales.mjs"
   },
   "dependencies": {
     "@astrojs/preact": "^5.1.1",

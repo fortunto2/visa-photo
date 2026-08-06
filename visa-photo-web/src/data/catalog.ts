@@ -61,6 +61,31 @@ export interface CatalogEntry {
   checkerVerified?: string;
 }
 
+/**
+ * ISO 3166 codes, so a country's name in any language comes from ICU rather than from a
+ * translator. `Intl.DisplayNames` knows all nine planned locales, which turns eighteen strings
+ * per language into a handful of overrides — and the ones that stay are search decisions, not
+ * translation ones: people type "США", not "Соединенные Штаты", and "Turkey", not "Türkiye".
+ *
+ * Null where no country exists to name.
+ */
+export const REGION: Record<string, string | null> = {
+  turkey: "TR",
+  schengen: null,
+  "united-states": "US",
+  "united-kingdom": "GB",
+  canada: "CA",
+  china: "CN",
+  india: "IN",
+  japan: "JP",
+  "south-korea": "KR",
+  "new-zealand": "NZ",
+  ireland: "IE",
+  spain: "ES",
+  australia: "AU",
+  russia: "RU",
+};
+
 /** Which sprite symbol stands for a document kind. Was copy-pasted into four page templates. */
 export const KIND_ICON: Record<DocKind, string> = {
   visa: "ic-visa",

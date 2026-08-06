@@ -1,10 +1,29 @@
 import type { Dict } from "../i18n";
 
+/** Винительный падеж для «фото на …». Отдельно, потому что общий шаблон склонять не умеет. */
+const ACCUSATIVE: Record<"visa" | "passport" | "permit", string> = {
+  visa: "визу",
+  passport: "паспорт",
+  permit: "ВНЖ",
+};
+
 const ru: Dict = {
   nav: { countries: "Все страны", models: "Модели фона" },
   unit: { mm: "мм", cm: "см", in: "дюйма", px: "px", kb: "КБ", mb: "МБ" },
   dateLocale: "ru-RU",
   readHere: "Читать по-русски",
+
+  kindName: { visa: "Виза", passport: "Паспорт", permit: "ВНЖ" },
+  gen: {
+    // Русскому нужен винительный падеж, и «ВНЖ» не склоняется и не строчная. Поэтому
+    // склонение делает сам язык, а не общий шаблон: `doc.toLowerCase()` выдавал
+    // «фото на виза» и «внж».
+    docTitle: ({ country, kind }) => `Фото на ${ACCUSATIVE[kind]} — ${country}`,
+    pageTitle: ({ country, kind, size }) =>
+      `${country}: фото на ${ACCUSATIVE[kind]} — ${size}, требования и бесплатный инструмент`,
+    docNotes: ({ background, size, headMm, mm }) =>
+      `Снимок на ${background} фоне, ${size}, голова примерно ${headMm} ${mm} от подбородка до макушки.`,
+  },
 
   answer: ({ w, h, kb, format, bg }) =>
     `Нужен снимок ${w} × ${h} пикселей на ${bg} фоне, ${format} до ${kb} КБ. ` +
@@ -318,24 +337,11 @@ const ru: Dict = {
   },
 
   country: {
-    es_tie: "Испания",
-    ie_passport: "Ирландия",
-    nz_passport: "Новая Зеландия",
-    in_visa: "Индия",
     us_dv: "США",
-    turkey: "Турция",
     eu_schengen: "Шенген",
     us_visa: "США",
     us_passport: "США",
-    uk_passport: "Великобритания",
-    ca_passport: "Канада",
-    ca_visa: "Канада",
-    cn_passport: "Китай",
-    in_passport: "Индия",
-    jp_passport: "Япония",
     kr_passport: "Южная Корея",
-    au_passport: "Австралия",
-    ru_passport: "Россия",
   },
 
   docTitle: {
