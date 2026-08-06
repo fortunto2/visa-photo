@@ -216,6 +216,8 @@ const es: Dict = {
     checkingFace: "Midiendo la cara…",
     faceHint: "Altura de la cabeza, línea de los ojos e inclinación. Descarga un modelo de 15 MB una sola vez.",
     noFace: "No se encontró ninguna cara en esta foto",
+    legendGot: "dónde está tu cara",
+    legendWant: "dónde la quiere este documento",
     labels: {
       dimensions: "Tamaño en píxeles",
       ratio: "Proporción",

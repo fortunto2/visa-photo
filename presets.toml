@@ -150,6 +150,7 @@ eye_line_from_bottom_percent = 60.0
 background = "white"
 photo_count = 4
 format = "jpeg"
+format_official = true
 notes = "White bg, 33x48mm, face 28-33mm"
 
 # NOT verified against an official source, unlike the rest: the Passport Seva specification is
@@ -171,6 +172,7 @@ eye_line_from_bottom_percent = 58.5
 background = "white"
 photo_count = 4
 format = "jpeg"
+format_official = true
 notes = "Pure white bg, 35x45mm. Portal wants exactly 630x810 px under 250 KB, face 80-85% of the height."
 
 [jp_passport]
@@ -357,6 +359,7 @@ eye_line_from_bottom_percent = 60.0
 background = "white"
 photo_count = 1
 format = "jpeg"
+format_official = true
 notes = "Uploaded only, no printed size exists. JPEG under 3 MB, at least 160 px tall, light plain background, head 70-80% of the height, taken within six months."
 
 # Saudi Arabia states one fixed pixel size and a genuine file-size corridor, and no millimetres.
@@ -394,6 +397,7 @@ eye_line_from_bottom_percent = 58.0
 background = "white"
 photo_count = 1
 format = "jpeg"
+format_official = true
 notes = "Uploaded to evisa.gov.vn as JPEG under 2 MB, 4x6 cm, white background, no hat and no glasses. Vietnam publishes no head height, so the framing here follows the usual proportion for this size."
 
 # Japan's current MOFA form says 35x45; the 45x45 everyone quotes is the 2012 form, which some

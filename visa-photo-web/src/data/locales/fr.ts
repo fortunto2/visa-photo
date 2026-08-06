@@ -217,6 +217,8 @@ const fr: Dict = {
     checkingFace: "Mesure du visage…",
     faceHint: "Hauteur du visage, ligne des yeux et inclinaison. Un modèle de 15 Mo se télécharge une seule fois.",
     noFace: "Aucun visage trouvé sur cette photo",
+    legendGot: "où est votre visage",
+    legendWant: "où ce document le veut",
     labels: {
       dimensions: "Taille en pixels",
       ratio: "Proportions",

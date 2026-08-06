@@ -137,38 +137,6 @@ const schema = [
     </div>
   )}
 
-  <p class="verified">
-    <svg width="16" height="16" aria-hidden="true"><use href="#ic-check" /></svg>
-    <a href={entry.source.url} rel="nofollow noopener">
-      {t.verified({ date: checkedOn, source: entry.source.label })}
-    </a>
-  </p>
-
-  {entry.checkerVerified && (
-    <p class="verified" data-testid="checker-verified">
-      <svg width="16" height="16" aria-hidden="true"><use href="#ic-shield" /></svg>
-      {t.checkerVerified({
-        date: new Intl.DateTimeFormat(t.dateLocale, { day: "numeric", month: "long", year: "numeric" })
-          .format(new Date(entry.checkerVerified)),
-      })}
-    </p>
-  )}
-
-  <p class="submission-note">
-    <svg width="16" height="16" aria-hidden="true"><use href={entry.submission === "upload" ? "#ic-upload" : entry.submission === "print" ? "#ic-print" : "#ic-camera"} /></svg>
-    {t.submission[entry.submission]}
-    {entry.form && (
-      <>
-        <span class="sep">·</span>
-        {entry.form.url ? (
-          <a href={entry.form.url} rel="nofollow noopener">{entry.form.name}</a>
-        ) : (
-          <span>{entry.form.name}</span>
-        )}
-      </>
-    )}
-  </p>
-
   <ModeTabs client:load makeLabel={t.check.makeTab} checkLabel={t.check.tab}>
     <div slot="check">
       <p class="answer" style="margin-bottom:16px">{t.check.lead}</p>
@@ -193,6 +161,8 @@ const schema = [
           checkingFace: t.check.checkingFace,
           faceHint: t.check.faceHint,
           noFace: t.check.noFace,
+          legendGot: t.check.legendGot,
+          legendWant: t.check.legendWant,
         }}
       />
     </div>
@@ -311,6 +281,41 @@ const schema = [
   </div>
 
   </ModeTabs>
+
+  <div class="provenance">
+  <p class="verified">
+    <svg width="16" height="16" aria-hidden="true"><use href="#ic-check" /></svg>
+    <a href={entry.source.url} rel="nofollow noopener">
+      {t.verified({ date: checkedOn, source: entry.source.label })}
+    </a>
+  </p>
+
+  {entry.checkerVerified && (
+    <p class="verified" data-testid="checker-verified">
+      <svg width="16" height="16" aria-hidden="true"><use href="#ic-shield" /></svg>
+      {t.checkerVerified({
+        date: new Intl.DateTimeFormat(t.dateLocale, { day: "numeric", month: "long", year: "numeric" })
+          .format(new Date(entry.checkerVerified)),
+      })}
+    </p>
+  )}
+
+  <p class="submission-note">
+    <svg width="16" height="16" aria-hidden="true"><use href={entry.submission === "upload" ? "#ic-upload" : entry.submission === "print" ? "#ic-print" : "#ic-camera"} /></svg>
+    {t.submission[entry.submission]}
+    {entry.form && (
+      <>
+        <span class="sep">·</span>
+        {entry.form.url ? (
+          <a href={entry.form.url} rel="nofollow noopener">{entry.form.name}</a>
+        ) : (
+          <span>{entry.form.name}</span>
+        )}
+      </>
+    )}
+  </p>
+  </div>
+
 
   <ul class="trust">
     <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-shield" /></svg>{t.trust.inBrowser}</li>

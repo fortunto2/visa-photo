@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import type { Preset } from "../lib/presets";
 import { inspectPhoto, type Report, type Finding } from "../lib/inspect";
-import { findFace, isFaceModelCached, prefetchFaceModel } from "../lib/face";
+import { findFace, isFaceModelCached, prefetchFaceModel, type FacePlacement } from "../lib/face";
 import { measureAgainst } from "../lib/autocrop";
 import { onHandOff, takePending } from "../lib/handoff";
 import { track } from "../lib/analytics";
@@ -24,6 +24,8 @@ export interface CheckStrings {
   checkingFace: string;
   faceHint: string;
   noFace: string;
+  legendGot: string;
+  legendWant: string;
 }
 
 interface Props {
@@ -47,6 +49,12 @@ export default function PhotoChecker({ preset, strings, ctx }: Props) {
   const [facePass, setFacePass] = useState(false);
   const [faceBusy, setFaceBusy] = useState(false);
   const [faceMsg, setFaceMsg] = useState<string | null>(null);
+  /**
+   * Where the face actually sits, kept so the lines can be drawn on the photo. A table saying
+   * "44.3 % against 56.7 %" is a number to trust or doubt; two lines on your own face are a
+   * thing to see.
+   */
+  const [face, setFace] = useState<FacePlacement | null>(null);
   const urlRef = useRef<string | null>(null);
   const imgRef = useRef<HTMLImageElement | null>(null);
 
@@ -111,6 +119,7 @@ export default function PhotoChecker({ preset, strings, ctx }: Props) {
         setFaceMsg(strings.noFace);
         return;
       }
+      setFace(face);
       const m = measureAgainst(face, preset);
       const within = (a: number, b: number, tol: number) => Math.abs(a - b) <= tol;
       const rows: Finding[] = [
@@ -179,7 +188,28 @@ export default function PhotoChecker({ preset, strings, ctx }: Props) {
         {headline}
       </div>
 
-      {preview && <img class="check-preview" src={preview} alt="" />}
+      {preview && (
+        <div class="check-shot">
+          <img class="check-preview" src={preview} alt="" />
+          {face && (
+            <div class="guides" aria-hidden="true">
+              {/* dashed: where this document wants them. solid: where they are. */}
+              <span class="want" style={{ top: `${preset.face_top_margin_percent}%` }} />
+              <span class="want" style={{ top: `${preset.face_top_margin_percent + preset.face_height_percent}%` }} />
+              <span class="want eyes" style={{ top: `${100 - preset.eye_line_from_bottom_percent}%` }} />
+              <span class="got" style={{ top: `${face.skullTopY * 100}%` }} />
+              <span class="got" style={{ top: `${face.chinY * 100}%` }} />
+              <span class="got eyes" style={{ top: `${face.eyeY * 100}%` }} />
+            </div>
+          )}
+        </div>
+      )}
+      {face && (
+        <p class="check-legend">
+          <span><i class="k-got" />{strings.legendGot}</span>
+          <span><i class="k-want" />{strings.legendWant}</span>
+        </p>
+      )}
 
       <table class="check-table">
         <thead>
@@ -234,8 +264,8 @@ export default function PhotoChecker({ preset, strings, ctx }: Props) {
       )}
 
       <div class="check-actions">
-        <button class="btn-reset" type="button" data-testid="check-again"
-          onClick={() => { setReport(null); setPreview(null); }}>
+        <button class="btn-dl wide" type="button" data-testid="check-again"
+          onClick={() => { setReport(null); setPreview(null); setFaceRows(null); setFace(null); }}>
           {strings.again}
         </button>
       </div>

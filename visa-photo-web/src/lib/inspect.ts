@@ -49,6 +49,10 @@ function sampleBackground(img: HTMLImageElement): BackgroundStats {
   canvas.width = w;
   canvas.height = h;
   const ctx = canvas.getContext("2d", { willReadFrequently: true })!;
+  // White first. A transparent PNG otherwise samples as black — brightness 0 %, spread 0 —
+  // and white is what the form or the paper will put behind it anyway.
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(0, 0, w, h);
   ctx.drawImage(img, 0, 0, w, h);
   const { data } = ctx.getImageData(0, 0, w, h);
 
@@ -123,7 +127,17 @@ export function inspectPhoto({ img, fileSizeKb, mimeType, preset }: InspectInput
   );
 
   const format = mimeType.replace("image/", "").replace("jpg", "jpeg");
-  add("format", format === preset.format ? "pass" : "fail", format, preset.format);
+  /**
+   * Only a hard failure where the authority actually names a format. Turkey and Saudi Arabia
+   * publish none, and failing someone's PNG against a rule we assumed is the same invention
+   * this checker exists to catch.
+   */
+  add(
+    "format",
+    format === preset.format ? "pass" : preset.format_official ? "fail" : "warn",
+    format,
+    preset.format,
+  );
 
   const bg = sampleBackground(img);
   const wantsWhite = preset.background === "white";

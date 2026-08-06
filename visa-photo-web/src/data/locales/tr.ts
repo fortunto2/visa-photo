@@ -215,6 +215,8 @@ const tr: Dict = {
     checkingFace: "Yüz ölçülüyor…",
     faceHint: "Baş yüksekliği, göz hizası ve eğiklik. 15 MB'lık model bir kez indirilir.",
     noFace: "Bu fotoğrafta yüz bulunamadı",
+    legendGot: "yüzünüz nerede",
+    legendWant: "bu belge nerede istiyor",
     labels: {
       dimensions: "Piksel ölçüsü",
       ratio: "En-boy oranı",

@@ -206,6 +206,8 @@ const zh: Dict = {
     checkingFace: "正在测量人脸…",
     faceHint: "头部高度、眼睛位置和倾斜角度。只需下载一次 15 MB 的模型。",
     noFace: "这张照片里没有检测到人脸",
+    legendGot: "你的脸在哪里",
+    legendWant: "证件要求的位置",
     labels: {
       dimensions: "像素尺寸",
       ratio: "宽高比",

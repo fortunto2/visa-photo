@@ -307,6 +307,9 @@ export interface Dict {
     checkingFace: string;
     faceHint: string;
     noFace: string;
+    /** the two lines drawn on the photo */
+    legendGot: string;
+    legendWant: string;
     labels: Record<string, string>;
   };
 

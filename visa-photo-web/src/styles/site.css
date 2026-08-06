@@ -349,6 +349,32 @@ h1 {
 }
 .lang-offer-close:hover { color: var(--ink); }
 
+
+/* checker: the measurement, drawn on the photo it came from */
+.check-shot {
+  position: relative; line-height: 0;
+  /* Both of these: the wrapper is a flex item, so it stretches to the row width unless told
+     otherwise, and then the lines run off across the table beside the photo. */
+  align-self: flex-start; width: fit-content; max-width: 260px;
+}
+.check-shot .check-preview { display: block; align-self: auto; }
+.check-shot .guides { position: absolute; inset: 0; pointer-events: none; }
+.check-shot .guides span { position: absolute; left: 0; right: 0; height: 0; }
+/* solid amber is where the face is; dashed white-on-dark is where the document wants it */
+.check-shot .guides .got { border-top: 2px solid var(--amber); }
+.check-shot .guides .want {
+  border-top: 2px dashed #fff;
+  box-shadow: 0 1px 0 rgb(0 0 0 / 55%), 0 -1px 0 rgb(0 0 0 / 55%);
+}
+.check-legend {
+  display: flex; gap: 16px; flex-wrap: wrap; margin: 8px 0 0;
+  font-size: 13px; color: var(--ink-faint);
+}
+.check-legend span { display: inline-flex; align-items: center; gap: 7px; }
+.check-legend i { width: 18px; height: 0; display: inline-block; }
+.check-legend .k-got { border-top: 2px solid var(--amber); }
+.check-legend .k-want { border-top: 2px dashed var(--ink-faint); }
+
 /* backdrop picker, shown once the subject has been cut out */
 .backdrops { display: flex; flex-direction: column; gap: 10px; }
 .swatches { display: flex; gap: 10px; flex-wrap: wrap; }
@@ -445,7 +471,7 @@ h1 {
 .check-headline.is-warn { background: var(--amber-soft); color: var(--amber); }
 .check-headline.is-fail { background: var(--amber-soft); color: var(--amber); }
 .check-preview {
-  max-width: 200px; border-radius: var(--r-sm); border: 1px solid var(--line); align-self: flex-start;
+  max-width: 260px; border-radius: var(--r-sm); border: 1px solid var(--line); align-self: flex-start;
 }
 .check-table { border-collapse: collapse; width: 100%; font-size: 15.5px; }
 .check-table th {
@@ -610,3 +636,17 @@ h1 {
 .site-foot a { color: var(--ink-soft); white-space: nowrap; }
 .site-foot a:hover { color: var(--teal); }
 
+
+/* Where the numbers came from and how the photo is filed: provenance, not chrome. It sat
+   above the fold on one line with the mode tabs, which made five unrelated things compete. */
+.provenance {
+  display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+  margin: 22px 0 0; padding-top: 18px; border-top: 1px solid var(--line-soft);
+}
+.provenance .verified, .provenance .submission-note { margin: 0; }
+
+/* The two modes are the page's main fork, so they read as a choice rather than as chips. */
+.mode-tabs { gap: 10px; margin-bottom: 20px; }
+.mode-tabs button {
+  font-size: 16.5px; font-weight: 700; padding: 12px 22px;
+}

@@ -215,6 +215,8 @@ const pt: Dict = {
     checkingFace: "Medindo o rosto…",
     faceHint: "Altura da cabeça, linha dos olhos e inclinação. Baixa um modelo de 15 MB uma única vez.",
     noFace: "Nenhum rosto encontrado nesta foto",
+    legendGot: "onde está o seu rosto",
+    legendWant: "onde este documento o quer",
     labels: {
       dimensions: "Tamanho em pixels",
       ratio: "Proporção",

@@ -236,6 +236,8 @@ const en: Dict = {
     checkingFace: "Measuring the face…",
     faceHint: "Head height, eye line and tilt. Downloads a 15 MB model once.",
     noFace: "No face found in this photo",
+    legendGot: "where your face is",
+    legendWant: "where this document wants it",
     labels: {
       dimensions: "Pixel size",
       ratio: "Aspect ratio",

@@ -27,7 +27,14 @@ export interface Preset {
    * for a field that is never actually absent.
    */
   background: "white" | "light-grey";
+  /** what the tool exports; see format_official for whether the authority insists on it */
   format: "jpeg" | "png";
+  /**
+   * True only where the authority names the format itself. Thailand says "JPG/JPEG only" and
+   * India rejects everything else; Turkey and Saudi Arabia say nothing at all, and a checker
+   * that fails a PNG for them is stating our assumption as their rule.
+   */
+  format_official?: boolean;
 
   /**
    * Optional, because requirements are not all the same shape.
