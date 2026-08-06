@@ -450,6 +450,8 @@ notes = "Uploaded into the online form: 354x472 to 420x560 px, JPEG 40-120 KB, b
 # the UAE appear in no official document.
 # Their own sources also disagree on the background: the photo standard says "plain
 # light-coloured", every service page says white. White is what the services ask for.
+# Applicants report other sizes again — 43x55mm turns up for the remote-work visa — which is
+# further evidence that no single size is published rather than evidence against this one.
 [ae_visa]
 name = "UAE Visa"
 digital_width = 945
@@ -463,4 +465,4 @@ eye_line_from_bottom_percent = 60.0
 background = "white"
 photo_count = 1
 format = "jpeg"
-notes = "White background, face 70-80% of the frame, taken within six months. The UAE states a width of 35-40mm and no height; 40x60mm follows its own services guide, which writes the size as 4/6 without a unit. No pixel size, file format or weight is published anywhere official."
+notes = "White background, face 70-80% of the frame, taken within six months. The UAE states a width of 35-40mm and no height; 40x60mm follows its own services guide, which writes the size as 4/6 without a unit. No pixel size, file format or weight is published anywhere official, and applicants are asked for other sizes again — 43x55mm among them."

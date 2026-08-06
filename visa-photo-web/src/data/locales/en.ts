@@ -365,7 +365,7 @@ const en: Dict = {
 
     cn_visa: "White or close to white, no border. Uploaded at 354 × 472 to 420 × 560 px, JPEG 40–120 KB. The printed copy attached to the form is 33 × 48 mm with a 28–33 mm head — a different shape, not a resize of this file.",
 
-    ae_visa: "White background, face 70–80 % of the frame. The UAE publishes a width of 35–40 mm and no height; 40 × 60 mm follows its own services guide, which writes the size as “4/6” without a unit. No pixel size, file format or weight is published anywhere official.",
+    ae_visa: "White background, face 70–80 % of the frame. The UAE publishes a width of 35–40 mm and no height; 40 × 60 mm follows its own services guide, which writes the size as “4/6” without a unit. No pixel size, file format or weight is published anywhere official, and applicants report being asked for other sizes again — 43 × 55 mm among them. Check the size on the service you are applying through.",
     es_tie: "White background, 26×32 mm — smaller than the 35×45 everything else uses. Head 70–80 % of the height. Handed in on photographic paper; a file is not accepted.",
     ie_passport: "At least 715 × 951 px, JPEG, not a scan of a printed photo, taken in the last six months.",
     nz_passport: "3:4 portrait, at least 900 × 1200 px, file between 250 KB and 5 MB. Selfies are rejected.",
