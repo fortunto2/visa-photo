@@ -5,6 +5,10 @@ import ru from "./ru";
 import hi from "./hi";
 import zh from "./zh";
 import ar from "./ar";
+import es from "./es";
+import tr from "./tr";
+import pt from "./pt";
+import fr from "./fr";
 
 /**
  * The registry decides which locales exist. Adding a language means adding one import here;
@@ -14,7 +18,7 @@ import ar from "./ar";
  * an /hi/ URL is a duplicate competing with the real English page, and hreflang pointing at
  * it tells Google we translated something we did not.
  */
-export const DICTS = { en, hi, zh, ar, ru } satisfies Partial<Record<Lang, Dict>>;
+export const DICTS = { en, hi, zh, ar, es, ru, tr, pt, fr } satisfies Partial<Record<Lang, Dict>>;
 
 export type ActiveLang = keyof typeof DICTS;
 
