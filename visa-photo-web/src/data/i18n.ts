@@ -324,7 +324,11 @@ export interface Dict {
   skills?: {
     title: string;
     h1: string;
-    lead: string;
+    /**
+     * Takes the counts rather than stating them: the sentence said "12 documents" while the
+     * catalogue held 18, because a number typed into prose has no reason to follow the data.
+     */
+    lead: (v: { docs: number; countries: number }) => string;
     install: string;
     installBody: string;
     whatItDoes: string;

@@ -17,17 +17,17 @@ const tr: Dict = {
   gen: {
     docTitle: ({ country, doc }) => `${country} ${doc.toLocaleLowerCase("tr")} fotoğrafı`,
     pageTitle: ({ country, doc, size }) =>
-      `${country} ${doc.toLocaleLowerCase("tr")} fotoğrafı ölçüsü — ${size}, şartlar ve ücretsiz araç`,
+      `${country} ${doc.toLocaleLowerCase("tr")} fotoğrafı ölçüleri — ${size}, şartlar ve ücretsiz araç`,
     docNotes: ({ background, size, headMm, mm }) =>
       `${background} arka plan, ${size}, çeneden tepeye baş yüksekliği yaklaşık ${headMm} ${mm}.`,
   },
 
   answer: ({ w, h, kb, format, bg }) =>
-    `${bg} arka plan üzerinde ${w} × ${h} piksel, ${format} biçiminde ve ${kb} KB altında bir fotoğraf gerekiyor. ` +
-    `Hemen burada hazırlayın. Fotoğraf tarayıcınızda işlenir, hiçbir yere yüklenmez.`,
+    `${bg} arka plan üzerinde, ${format} biçiminde ve en çok ${kb} KB olan ${w} × ${h} piksellik bir fotoğraf gerekiyor. ` +
+    `Hemen burada hazırlayın. Fotoğrafınız tarayıcınızda işlenir, hiçbir yere yüklenmez.`,
   verified: ({ date, source }) => `${date} tarihinde doğrulandı · ${source}`,
   checkerVerified: ({ date }) =>
-    `Bu sayfadan çıkan bir fotoğraf ${date} tarihinde kurumun resmî fotoğraf denetiminden geçti`,
+    `Bu sayfadan çıkan bir fotoğraf, ${date} tarihinde kurumun resmî fotoğraf denetiminden geçti`,
   backgroundIn: { white: "beyaz", "light-grey": "açık gri" },
   backgroundName: { white: "Beyaz", "light-grey": "Açık gri" },
 
@@ -46,57 +46,58 @@ const tr: Dict = {
 
   tool: {
     dropTitle: "Fotoğrafınızı buraya bırakın",
-    dropSub: (doc) => `${doc} şartnamesine göre kırpar, yüzü düzeltir ve arka planı tek adımda temizleriz`,
+    dropSub: (doc) =>
+      `Fotoğrafınız ${doc} şartnamesine göre kırpılır, yüz hizalanır, arka plan temizlenir — hepsi tek adımda`,
     choose: "Dosya seçin",
-    camera: "ya da kamerayı kullanın",
+    camera: "ya da kameranızı kullanın",
     working: "İşleniyor…",
     framedTo: (size) => `${size} ölçüsüne çerçevelendi`,
-    downloadJpeg: "JPEG indir",
+    downloadJpeg: "JPEG indirin",
     downloadPng: "PNG, sıkıştırmasız",
-    downloadSheet: (n) => `A4 sayfa · ${n} fotoğraf`,
+    downloadSheet: (n) => `A4 sayfası · ${n} fotoğraf`,
     guideCrown: "tepe",
     guideEyes: (pct) => `gözler %${pct}`,
     guideChin: "çene",
-    reset: "Baştan başla",
-    checkResult: "Bu sonucu denetle",
+    reset: "Baştan başlayın",
+    checkResult: "Bu sonucu denetleyin",
     tip: "Taşımak için sürükleyin · yakınlaştırmak için kaydırın",
 
-    removeBg: "Arka planı beyaz yap",
-    removeBgHint: "{mb} MB'lık model bir kez iner, sonrası internetsiz çalışır",
+    removeBg: "Arka planı beyaz yapın",
+    removeBgHint: "{mb} MB'lık model bir kez indirilir, sonrasında internetsiz çalışır",
     bgDone: "Arka plan değiştirildi",
-    bgUndo: "Aslını geri getir",
+    bgUndo: "Aslını geri getirin",
     tryBetterHint: "Daha ağır bir model deneyin. Saç ve gözlük, hafif modelin pes ettiği yerdir.",
     modelCaveat:
-      "Tek bir model her fotoğrafın altından kalkmaz. Kenarlar tırtıklı çıktıysa büyüğü genelde " +
-      "düzeltir — ve arkanızdaki düz bir duvar her modeli geçer.",
+      "Tek bir model her fotoğrafın altından kalkmaz. Kenarlar tırtıklı çıktıysa daha büyük bir " +
+      "model bunu genelde düzeltir — arkanızdaki düz bir duvar ise her modelden iyi sonuç verir.",
     cached: "Zaten indirildi",
 
-    alignFace: "Yüze göre hizala",
+    alignFace: "Yüze göre hizalayın",
     aligning: "Yüz aranıyor…",
-    alignHint: "Başı ve göz hizasını bu belgenin istediği yere koyar. 15 MB'lık model bir kez iner.",
+    alignHint: "Başı ve göz hizasını bu belgenin istediği yere yerleştirir. 15 MB'lık model bir kez indirilir.",
     alignFailed: "Yüz bulunamadı — kırpmayı elle ayarlayın",
-    tooTight: "Çok yakından çekilmiş: başın çevresinde bu belgeye kırpacak yer kalmamış. Biraz geri çekilip yeniden çekin.",
+    tooTight: "Çok yakından çekilmiş: başınızın çevresinde bu belgeye göre kırpmaya yetecek boşluk yok. Biraz geri çekilip yeniden çekin.",
     aligned: "Yüze göre hizalandı",
-    rotateLeft: "Sola çevir",
-    rotateRight: "Sağa çevir",
+    rotateLeft: "Sola çevirin",
+    rotateRight: "Sağa çevirin",
     autoLevels: "Otomatik seviyeler",
     zoom: "Yakınlaştırma",
 
-    undoLevels: "Ayarları geri al",
-    changeModel: "Model değiştir",
+    undoLevels: "Ayarları geri alın",
+    changeModel: "Modeli değiştirin",
     changeModelWhen: "Arka plan hâlâ beyaz olmadı mı, kenarlar tırtıklı mı?",
     modelsPageLink: "Modeller arasındaki fark",
     modelDefault: "Varsayılan",
 
-    advanced: "Daha fazla denetim",
-    advancedHint: "Fotoğrafların çoğunda bunlara gerek olmaz.",
+    advanced: "Daha fazla ayar",
+    advancedHint: "Çoğu fotoğrafta bunlara gerek kalmaz.",
     brightness: "Parlaklık",
-    contrast: "Karşıtlık",
+    contrast: "Kontrast",
     shadows: "Gölgeler",
-    resetLevels: "Sıfırla",
+    resetLevels: "Sıfırlayın",
     transparentBg: "Saydam arka plan (PNG)",
     transparentHint: "Arka planı kendisi ekleyen formlar için. Başvuruların çoğu beyaz ister.",
-    faceOval: "Yüz ovalini göster",
+    faceOval: "Yüz ovalini gösterin",
     fileName: "Dosya adı",
     fileNamePlaceholder: "örneğin soyadınız",
     backdropLabel: "Arka plan rengi",
@@ -108,8 +109,8 @@ const tr: Dict = {
       "pale-blue": "Soluk mavi",
     },
     backdropRequired:
-      "Bu belge {colour} istiyor. Diğerleri burada, çünkü bazı kurallar yalnızca «düz açık renk» " +
-      "diyor ve gri, açık renk saçın beyaza karışmasını önlüyor.",
+      "Bu belge {colour} istiyor. Diğer renkler ise bazı kurallar yalnızca “düz, açık renk” dediği " +
+      "için burada; gri de açık renk saçın beyaz arka planda kaybolmasını önlüyor.",
   },
 
   trust: {
@@ -124,19 +125,19 @@ const tr: Dict = {
     requirementsIntro: (doc) => `Kabul edilen bir ${doc.toLocaleLowerCase("tr")} fotoğrafının karşılaması gereken her şey.`,
     howToShoot: "Evde nasıl çekilir",
     howToShootBody:
-      "Işık yüzünüze eşit düşsün diye pencereye dönük durun, düz bir duvardan yaklaşık iki metre " +
-      "uzakta. Biri makineyi aşağıdan değil göz hizasında tutsun. Nötr ifade, ağız kapalı, iki " +
-      "kulak ve çene hattı görünür, başın arkasında gölge yok.",
+      "Düz bir duvardan yaklaşık iki metre uzakta, ışık yüzünüze eşit düşecek şekilde pencereye " +
+      "dönük durun. Fotoğrafı çeken kişi makineyi aşağıdan değil göz hizasında tutsun. Nötr ifade, " +
+      "ağız kapalı, iki kulak ve çene hattı görünür, başınızın arkasında gölge yok.",
     printing: "Baskı: sayfa başına kaç fotoğraf",
     printingBody: ({ n, w, h, dpi }) =>
-      `${w} × ${h} mm ölçüsündeki ${n} fotoğraf, ${dpi} dpi ile tek bir A4 sayfaya sığar. ` +
-      `%100 ölçekte yazdırın. «Sayfaya sığdır» ölçüyü sessizce değiştirir ve fotoğraf şartnameye uymaz olur.`,
+      `${w} × ${h} mm ölçüsündeki ${n} fotoğraf, ${dpi} dpi ile tek bir A4 sayfasına sığar. ` +
+      `%100 ölçekte yazdırın. “Sayfaya sığdır” seçeneği ölçüyü sessizce değiştirir, fotoğraf da şartnameye uymaz hâle gelir.`,
     faq: "Sık sorulanlar",
     sources: "Kaynaklar",
     disclaimer:
-      "Burası bağımsız bir site, resmî bir kurum değil. Şartlar değişir, bu yüzden başvurudan önce " +
-      "resmî kaynakla karşılaştırın. Yayımlanmış şartnameye uyan bir fotoğrafın sözünü veriyoruz. " +
-      "Başvurunun kabul edileceğinin sözünü asla vermiyoruz.",
+      "Burası bağımsız bir site, resmî bir kurum değil. Şartlar değişir; bu yüzden başvurudan önce " +
+      "şartları resmî kaynaktan doğrulayın. Söz verdiğimiz şey, yayımlanmış şartnameye uyan bir " +
+      "fotoğraftır. Başvurunun kabul edileceğine dair asla söz vermiyoruz.",
     disclaimerShort: "Bağımsız site, resmî kurum değil. Şartları resmî kaynaktan doğrulayın.",
     related: "İlgili sayfalar",
   },
@@ -144,17 +145,17 @@ const tr: Dict = {
   warn: {
     noEditing:
       "Bu kurum düzenleme yazılımı, filtre veya yapay zekâ araçlarıyla değiştirilmiş fotoğrafları " +
-      "kabul etmiyor. Buradaki araçla çerçevelemeyi kontrol edin, başvuruya düzenlenmemiş bir " +
-      "fotoğraf verin.",
+      "kabul etmiyor. Buradaki araçla çerçevelemeyi kontrol edin, başvuruda düzenlenmemiş bir " +
+      "fotoğraf teslim edin.",
     noEditingAtAction:
-      "Arka planı kaldırmak da fotoğrafı düzenlemektir ve bu kurum düzenlenmiş fotoğrafı reddeder. " +
-      "Bunu çerçevelemenin tutup tutmadığını görmek için kullanın, teslim edeceğiniz dosya için değil.",
+      "Arka planı kaldırmak da fotoğrafı düzenlemek sayılır ve bu kurum düzenlenmiş fotoğrafları reddeder. " +
+      "Bu aracı, çerçevelemenin işe yarayıp yaramadığını görmek için kullanın; teslim edeceğiniz dosya için değil.",
     noHomePrint: "Evde basılan fotoğraflar kabul edilmiyor — profesyonel baskı hizmeti kullanın.",
-    proceedAnyway: "Yine de kaldır",
+    proceedAnyway: "Yine de kaldırın",
   },
 
   submission: {
-    upload: "Dosya olarak verilir",
+    upload: "Dosya olarak gönderilir",
     print: "Basılı olarak teslim edilir",
     captured: "Randevuda sizin için çekilir",
   },
@@ -162,14 +163,14 @@ const tr: Dict = {
   countryPage: {
     faqDocs: (country) => `${country} hangi belgeler için fotoğraf istiyor?`,
     faqDocsA: ({ country, list }) =>
-      `${country}: ${list}. Her sayfa tam ölçüyü yazar ve o ölçüye kırpan bir araç taşır.`,
-    faqSame: (country) => `${country} belgelerinin hepsinde tek fotoğraf işe yarar mı?`,
+      `${country}: ${list}. Her sayfada tam ölçü ve o ölçüye kırpan bir araç var.`,
+    faqSame: (country) => `${country} için bütün belgelerde tek bir fotoğraf işe yarar mı?`,
     faqSameYes: ({ size }) => `Evet — hepsi ${size} kullanıyor, tek bir dışa aktarma hepsine yeter.`,
-    faqSameNo: "Hayır — ölçüler farklı, her biri kendi dışa aktarmasını istiyor.",
+    faqSameNo: "Hayır — ölçüler farklı, her biri için ayrı bir dışa aktarma gerekiyor.",
     h1: (country) => `${country}: fotoğraf şartları`,
     lead: ({ country, n }) =>
-      `${country} için ${n} belge; her biri tam ölçüsü ve o ölçüye kırpan aracıyla.`,
-    title: (country) => `${country} fotoğraf ölçüsü ve şartları — ücretsiz araç`,
+      `${country} için ${n} belge; her biri tam ölçüsü ve o ölçüye kırpan aracıyla birlikte.`,
+    title: (country) => `${country} fotoğraf ölçüleri ve şartları — ücretsiz araç`,
     docHeadline: ({ title, size }) => `${title}: ${size}`,
   },
 
@@ -177,40 +178,40 @@ const tr: Dict = {
     heading: "Bunu bir yapay zekâ asistanına verin",
     lead:
       "Metni herhangi bir yapay zekâ asistanına yapıştırın; gereken her şey elinde olur: kesin " +
-      "sayılar, geldikleri sayfa ve karşılaştırıldıkları kaynak. Tam şartname ise daha uzun olan " +
-      "başvuru sürümüdür.",
+      "sayılar, geldikleri sayfa ve doğrulandıkları kaynak. Tam şartname ise aynı bilginin daha " +
+      "uzun, ayrıntılı sürümüdür.",
     copyPrompt: "Asistanınız için metni kopyalayın",
     copySpec: "Tam şartnameyi kopyalayın",
     copied: "Kopyalandı",
     openSkills: "Asistan becerileri",
     disclaimer:
-      "Başvuru rehberliği değil, başvuru bilgisi. Başvuruyu başvuran doldurur ve imzalar.",
+      "Göçmenlik danışmanlığı değil, bilgilendirme amaçlı kaynaktır. Başvuruyu başvuran doldurur ve imzalar.",
   },
 
   check: {
-    tab: "Fotoğraf denetle",
-    makeTab: "Fotoğraf hazırla",
+    tab: "Fotoğraf denetleme",
+    makeTab: "Fotoğraf hazırlama",
     title: "Elinizdeki fotoğrafı denetleyin",
     lead:
-      "Dosya zaten var mı? Buraya bırakın, hangi şartları karşıladığını görün. Hiçbir şey " +
+      "Elinizde hazır bir dosya mı var? Buraya bırakın, hangi şartları karşıladığını görün. Hiçbir şey " +
       "yüklenmiyor — denetimler tarayıcınızda çalışıyor.",
-    drop: "Denetlemek istediğiniz fotoğrafı bırakın",
+    drop: "Denetlemek istediğiniz fotoğrafı buraya bırakın",
     choose: "Dosya seçin",
     allPass: "Ölçülebilen her şey uyuyor",
-    someFail: "{n} denetim geçmedi",
+    someFail: "{n} denetim başarısız oldu",
     someWarn: "Her şey uyuyor, bakılması gereken bir nokta var",
     measured: "Ölçülen",
     expected: "İstenen",
-    notChecked: "Bunun söyleyemeyecekleri",
+    notChecked: "Bu denetimin söyleyemedikleri",
     notCheckedBody:
-      "Başın boyu ve yeri, yüz ifadesi, gözlerin açık olup olmadığı, gözlük, başörtüsü, başın " +
-      "arkasındaki gölge ve fotoğrafın ne kadar yeni olduğu. Buradan geçmek, dosyanın yeterince " +
-      "düz bir arka plan üzerinde doğru biçim ve ağırlıkta olduğu anlamına gelir — başvurunun " +
-      "kabul edileceği anlamına değil.",
+      "Yüz ifadesi, gözlerin açık olup olmadığı, gözlük, şapka veya " +
+      "başörtüsü, başın arkasındaki gölge ve fotoğrafın ne kadar yeni olduğu. Buradan geçmesi, " +
+      "dosyanın yeterince düz bir arka plan üzerinde doğru biçimde ve doğru boyutta olduğu " +
+      "anlamına gelir; başvurunuzun kabul edileceği anlamına gelmez.",
     fixIt: "Burada düzeltin",
-    checkFace: "Yüzü de denetle",
+    checkFace: "Yüzü de denetleyin",
     checkingFace: "Yüz ölçülüyor…",
-    faceHint: "Baş yüksekliği, göz hizası ve eğiklik. 4 MB'lık model bir kez iner.",
+    faceHint: "Baş yüksekliği, göz hizası ve eğiklik. 15 MB'lık model bir kez indirilir.",
     noFace: "Bu fotoğrafta yüz bulunamadı",
     labels: {
       dimensions: "Piksel ölçüsü",
@@ -235,15 +236,15 @@ const tr: Dict = {
       {
         q: "Gerçekten ücretsiz mi?",
         a:
-          "Evet, filigran da yok kayıt da. Başka siteler ücretsiz önizleme gösterip temiz dosyayı " +
+          "Evet. Filigran da yok, kayıt da. Başka siteler ücretsiz önizleme gösterip temiz dosyayı " +
           "indirmek için para ister; burada indirmenin kendisi ücretsiz olan kısım.",
       },
       {
         q: "Fotoğrafım bir yere yükleniyor mu?",
         a:
-          "Hayır. Kırpma ve arka plan silme, tarayıcınızın içinde WebAssembly ile çalışır. İnen tek " +
-          "şey arka plan modelidir, fotoğraf cihazdan hiç çıkmaz. Kaynak kod açık, yani buna " +
-          "inanmak yerine bakıp doğrulayabilirsiniz.",
+          "Hayır. Kırpma ve arka plan kaldırma, tarayıcınızın içinde WebAssembly ile çalışır. " +
+          "İndirilen tek şey arka plan modelidir, fotoğraf cihazdan hiç çıkmaz. Kaynak kod açık, " +
+          "yani buna inanmak yerine bakıp doğrulayabilirsiniz.",
       },
       {
         q: "Fotoğrafta konumum ve telefon modelim kalıyor mu?",
@@ -256,8 +257,8 @@ const tr: Dict = {
       {
         q: "Evde basabilir miyim?",
         a:
-          "Evet. Her belge sayfası, doğru sayıda kopyayı doğru ölçüde taşıyan bir A4 sayfayı PNG ve " +
-          "PDF olarak verir. %100 ölçekte yazdırın — «sayfaya sığdır» ölçüyü sessizce değiştirir.",
+          "Evet. Her belge sayfası, doğru sayıda kopyayı doğru ölçüde içeren bir A4 sayfasını PNG ve " +
+          "PDF olarak verir. %100 ölçekte yazdırın — “sayfaya sığdır” ölçüyü sessizce değiştirir.",
       },
       {
         q: "Başvurum kabul edilecek mi?",
@@ -270,27 +271,27 @@ const tr: Dict = {
   },
 
   autoFaq: {
-    size: ({ doc }) => `${doc} fotoğrafı santimetre ve inç olarak kaç?`,
+    size: ({ doc }) => `${doc}: kaç santimetre, kaç inç?`,
     sizeA: ({ mm, cm, inch }) =>
       `${mm} mm, yani ${cm} cm ya da ${inch} inç. Bunlar aynı fotoğrafın üç ayrı söylenişi; ` +
       `önünüzdeki form hangi birimi istiyorsa onu kullanın.`,
-    pixels: ({ doc }) => `${doc} fotoğrafı piksel olarak kaç?`,
+    pixels: ({ doc }) => `${doc}: kaç piksel olmalı?`,
     pixelsA: ({ px, dpi }) =>
-      `${px} piksel; baskı ölçüsünde bu ${dpi} dpi eder. Daha küçüğü baskıda yumuşak görünür.`,
-    perSheet: ({ doc }) => `Bir sayfaya kaç adet ${doc} fotoğrafı sığar?`,
+      `${px} piksel; baskı ölçüsünde bu ${dpi} dpi eder. Daha küçüğü baskıda bulanık çıkar.`,
+    perSheet: ({ doc }) => `${doc}: bir sayfaya kaç adet sığar?`,
     perSheetA: ({ n, size }) =>
-      `A4 sayfaya ${size} ölçüsünde ${n} fotoğraf. %100 ölçekte yazdırın, asla «sayfaya sığdır» ile değil.`,
-    background: ({ doc }) => `${doc} fotoğrafı hangi arka plan rengini istiyor?`,
+      `Bir A4 sayfasına ${size} ölçüsünde ${n} fotoğraf sığar. %100 ölçekte yazdırın, asla “sayfaya sığdır” seçeneğiyle değil.`,
+    background: ({ doc }) => `${doc}: arka plan rengi ne olmalı?`,
     backgroundA: ({ bg }) =>
-      `${bg}, düz ve eşit aydınlatılmış, başın arkasında gölge yok. Arkanızdaki duvar uygun ` +
+      `${bg}, düz ve eşit aydınlatılmış, başınızın arkasında gölge yok. Arkanızdaki duvar uygun ` +
       `değilse araç arka planı sizin için değiştirebilir.`,
-    fileSize: ({ doc }) => `${doc} fotoğrafı hangi biçim ve boyutta olmalı?`,
+    fileSize: ({ doc }) => `${doc}: hangi biçim ve boyutta olmalı?`,
     fileSizeA: ({ format, kb }) =>
       `${format}, en çok ${kb} KB. Buradaki dışa aktarma, gereken çözünürlüğün altına düşmeden ` +
       `bu sınırın içinde kalacak şekilde sıkıştırır.`,
     uploadFails: ({ form }) => `${form} fotoğrafı neden reddediyor?`,
     uploadFailsA: ({ form, format, kb, px }) =>
-      `${form}, ${format} olmayan her şeyi, ${kb} KB üstündeki her şeyi ve ${px} pikselden küçük ` +
+      `${form}, ${format} olmayan her şeyi, ${kb} KB üzerindeki her şeyi ve ${px} pikselden küçük ` +
       `her şeyi geri çevirir. Buradan dışa aktarmak üçünü de sınırın içinde tutar. Dosya şartnameye ` +
       `uyuyorsa ve site yine hata veriyorsa, sorun onların hizmetinde, sizin fotoğrafınızda değil.`,
   },

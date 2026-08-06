@@ -20,15 +20,15 @@ const pt: Dict = {
     pageTitle: ({ country, doc, size }) =>
       `${country}: tamanho da foto para ${doc.toLowerCase()} — ${size}, requisitos e ferramenta grátis`,
     docNotes: ({ background, size, headMm, mm }) =>
-      `Fundo ${background}, ${size}, cabeça de cerca de ${headMm} ${mm} do queixo ao topo.`,
+      `Fundo ${background}, ${size}, cabeça com cerca de ${headMm} ${mm} do queixo ao topo.`,
   },
 
   answer: ({ w, h, kb, format, bg }) =>
-    `Você precisa de uma foto de ${w} × ${h} pixels em fundo ${bg}, em ${format} e abaixo de ${kb} KB. ` +
-    `Faça aqui mesmo. A foto é processada no seu navegador e não é enviada para lugar nenhum.`,
+    `Você precisa de uma foto de ${w} × ${h} pixels com fundo ${bg}, em ${format} e com menos de ${kb} KB. ` +
+    `Faça a sua aqui mesmo. A foto é processada no seu navegador e não é enviada para lugar nenhum.`,
   verified: ({ date, source }) => `Conferido em ${date} · ${source}`,
   checkerVerified: ({ date }) =>
-    `Uma foto desta página passou no verificador oficial do órgão em ${date}`,
+    `Uma foto desta página passou no verificador oficial de fotos do governo em ${date}`,
   backgroundIn: { white: "branco", "light-grey": "cinza-claro" },
   backgroundName: { white: "Branco", "light-grey": "Cinza-claro" },
 
@@ -41,13 +41,13 @@ const pt: Dict = {
     eyeLine: "Linha dos olhos",
     file: "Arquivo",
     perSheet: "Por folha",
-    fromBottom: "de baixo",
+    fromBottom: "a partir da base",
     pieces: "fotos",
   },
 
   tool: {
     dropTitle: "Solte sua foto aqui",
-    dropSub: (doc) => `Cortamos na especificação de ${doc}, alinhamos o rosto e limpamos o fundo em uma etapa só`,
+    dropSub: (doc) => `Cortamos no tamanho exigido para ${doc}, alinhamos o rosto e limpamos o fundo em uma etapa só`,
     choose: "Escolher um arquivo",
     camera: "ou use a câmera",
     working: "Processando…",
@@ -63,20 +63,20 @@ const pt: Dict = {
     tip: "Arraste para mover · role para ampliar",
 
     removeBg: "Deixar o fundo branco",
-    removeBgHint: "Baixa uma vez um modelo de {mb} MB e depois funciona sem internet",
+    removeBgHint: "Baixa um modelo de {mb} MB uma única vez; depois funciona sem internet",
     bgDone: "Fundo substituído",
-    bgUndo: "Trazer a original de volta",
-    tryBetterHint: "Tente um modelo mais pesado. Cabelo e óculos são onde o leve desiste.",
+    bgUndo: "Restaurar a foto original",
+    tryBetterHint: "Tente um modelo mais pesado. É no cabelo e nos óculos que o leve desiste.",
     modelCaveat:
       "Nenhum modelo dá conta de todas as fotos. Se o contorno sair irregular, um maior costuma " +
-      "resolver — e uma parede lisa atrás de você ganha de qualquer modelo.",
+      "resolver — e uma parede lisa atrás de você vale mais que qualquer modelo.",
     cached: "Já baixado",
 
     alignFace: "Alinhar pelo rosto",
     aligning: "Procurando o rosto…",
-    alignHint: "Coloca a cabeça e a linha dos olhos onde este documento exige. Baixa uma vez um modelo de 15 MB.",
+    alignHint: "Coloca a cabeça e a linha dos olhos na posição que este documento exige. Baixa um modelo de 15 MB uma única vez.",
     alignFailed: "Nenhum rosto encontrado — ajuste o corte à mão",
-    tooTight: "Tirada perto demais: não há espaço em volta da cabeça para cortar neste documento. Afaste-se e tire de novo.",
+    tooTight: "Tirada de perto demais: não sobra espaço em volta da cabeça para cortar no tamanho deste documento. Afaste-se e tire outra.",
     aligned: "Alinhada pelo rosto",
     rotateLeft: "Girar à esquerda",
     rotateRight: "Girar à direita",
@@ -86,7 +86,7 @@ const pt: Dict = {
     undoLevels: "Desfazer os ajustes",
     changeModel: "Trocar de modelo",
     changeModelWhen: "O fundo ainda não ficou branco, ou as bordas saíram irregulares?",
-    modelsPageLink: "Em que os modelos diferem",
+    modelsPageLink: "Qual é a diferença entre os modelos",
     modelDefault: "Padrão",
 
     advanced: "Mais controles",
@@ -96,10 +96,10 @@ const pt: Dict = {
     shadows: "Sombras",
     resetLevels: "Redefinir",
     transparentBg: "Fundo transparente (PNG)",
-    transparentHint: "Para formulários que compõem o fundo sozinhos. A maioria dos pedidos quer branco.",
+    transparentHint: "Para formulários que montam o fundo por conta própria. A maioria dos pedidos exige branco.",
     faceOval: "Mostrar o oval do rosto",
     fileName: "Nome do arquivo",
-    fileNamePlaceholder: "por exemplo, seu sobrenome",
+    fileNamePlaceholder: "ex.: seu sobrenome",
     backdropLabel: "Cor do fundo",
     backdropNames: {
       white: "Branco",
@@ -110,12 +110,12 @@ const pt: Dict = {
     },
     backdropRequired:
       "Este documento pede {colour}. Os outros estão aqui porque algumas regras dizem apenas " +
-      "«fundo claro e liso», e um cinza impede que cabelo claro se dissolva no branco.",
+      "“fundo claro e liso”, e um cinza evita que o cabelo claro se dissolva no branco.",
   },
 
   trust: {
     inBrowser: "Processada no seu navegador",
-    noServer: "Nunca enviada a um servidor",
+    noServer: "Nunca enviada para um servidor",
     noWatermark: "Sem marca d'água",
     noSignup: "Sem cadastro",
   },
@@ -126,18 +126,18 @@ const pt: Dict = {
     howToShoot: "Como tirar em casa",
     howToShootBody:
       "Fique de frente para uma janela, para a luz cair por igual no rosto, a uns dois metros de " +
-      "uma parede lisa. Peça a alguém que segure a câmera na altura dos olhos, não de baixo. " +
+      "uma parede lisa. Peça para alguém segurar a câmera na altura dos olhos, e não de baixo. " +
       "Expressão neutra, boca fechada, as duas orelhas e a linha do queixo visíveis, sem sombra " +
       "atrás da cabeça.",
     printing: "Impressão: quantas fotos por folha",
     printingBody: ({ n, w, h, dpi }) =>
       `${n} fotos de ${w} × ${h} mm cabem em uma folha A4 a ${dpi} dpi. ` +
-      `Imprima em escala 100 %. «Ajustar à página» muda o tamanho sem avisar e a foto deixa de cumprir a norma.`,
+      `Imprima em escala 100 %. O “ajustar à página” muda o tamanho sem avisar e a foto deixa de atender à especificação.`,
     faq: "Perguntas frequentes",
     sources: "Fontes",
     disclaimer:
       "Este é um site independente, não um órgão do governo. Os requisitos mudam, então confira na " +
-      "fonte oficial antes de dar entrada. Prometemos uma foto que atende à especificação publicada. " +
+      "fonte oficial antes de dar entrada no pedido. Prometemos uma foto que atende à especificação publicada. " +
       "Nunca prometemos que um pedido será aprovado.",
     disclaimerShort: "Site independente, não governamental. Confira os requisitos na fonte oficial.",
     related: "Páginas relacionadas",
@@ -149,7 +149,7 @@ const pt: Dict = {
       "Use a ferramenta daqui para conferir o enquadramento e entregue uma foto sem edição.",
     noEditingAtAction:
       "Remover o fundo é editar a foto, e este órgão rejeita fotos editadas. " +
-      "Use isto para ver se o enquadramento funciona, não para o arquivo que você vai entregar.",
+      "Use só para conferir se o enquadramento funciona; não use no arquivo que você vai entregar.",
     noHomePrint: "Fotos impressas em casa não são aceitas — use um serviço de impressão profissional.",
     proceedAnyway: "Remover mesmo assim",
   },
@@ -163,22 +163,22 @@ const pt: Dict = {
   countryPage: {
     faqDocs: (country) => `Para quais documentos ${country} exige foto?`,
     faqDocsA: ({ country, list }) =>
-      `${country}: ${list}. Cada página traz o tamanho exato e uma ferramenta que corta nele.`,
+      `${country}: ${list}. Cada página traz o tamanho exato e uma ferramenta que corta nessa medida.`,
     faqSame: (country) => `Uma foto só serve para todos os documentos de ${country}?`,
     faqSameYes: ({ size }) => `Sim — todos usam ${size}, então uma exportação vale para todos.`,
-    faqSameNo: "Não — os tamanhos são diferentes, cada um precisa da sua própria exportação.",
+    faqSameNo: "Não — os tamanhos são diferentes, então cada um precisa da própria exportação.",
     h1: (country) => `${country}: requisitos da foto`,
     lead: ({ country, n }) =>
-      `${n} documentos de ${country}, cada um com seu tamanho exato e uma ferramenta que corta nele.`,
+      `${n} documentos de ${country}, cada um com seu tamanho exato e uma ferramenta que corta nessa medida.`,
     title: (country) => `Tamanho e requisitos das fotos de ${country} — ferramenta grátis`,
     docHeadline: ({ title, size }) => `${title}: ${size}`,
   },
 
   agent: {
-    heading: "Entregue isto a um assistente de IA",
+    heading: "Entregue isto para um assistente de IA",
     lead:
       "Cole o texto em qualquer assistente de IA e ele terá tudo o que precisa: os números exatos, " +
-      "a página de onde vieram e a fonte com que foram conferidos. A especificação completa é a " +
+      "a página de onde vieram e a fonte usada para conferi-los. A especificação completa é a " +
       "versão de referência, mais longa.",
     copyPrompt: "Copiar o texto para seu assistente",
     copySpec: "Copiar a especificação completa",
@@ -199,35 +199,35 @@ const pt: Dict = {
     choose: "Escolher um arquivo",
     allPass: "Tudo o que dá para medir está de acordo",
     someFail: "{n} verificações não passaram",
-    someWarn: "Tudo de acordo, com um ponto que vale olhar",
+    someWarn: "Tudo de acordo, com um ponto que vale conferir",
     measured: "Medido",
     expected: "Exigido",
     notChecked: "O que isto não consegue dizer",
     notCheckedBody:
-      "O tamanho e a posição da cabeça, a expressão, se os olhos estão abertos, óculos, cobertura " +
-      "de cabeça, sombras atrás da cabeça e há quanto tempo a foto foi tirada. Passar aqui quer " +
-      "dizer que o arquivo tem a forma e o peso certos sobre um fundo liso o bastante — não que o " +
+      "A expressão, se os olhos estão abertos, óculos, chapéus " +
+      "e véus, sombras atrás da cabeça e há quanto tempo a foto foi tirada. Passar aqui quer " +
+      "dizer que o arquivo tem a forma e o peso certos, com um fundo liso o bastante — não que o " +
       "pedido será aceito.",
     fixIt: "Corrigir aqui",
     checkFace: "Verificar também o rosto",
     checkingFace: "Medindo o rosto…",
-    faceHint: "Altura da cabeça, linha dos olhos e inclinação. Baixa uma vez um modelo de 4 MB.",
+    faceHint: "Altura da cabeça, linha dos olhos e inclinação. Baixa um modelo de 15 MB uma única vez.",
     noFace: "Nenhum rosto encontrado nesta foto",
     labels: {
       dimensions: "Tamanho em pixels",
       ratio: "Proporção",
       filesize: "Tamanho do arquivo",
       format: "Formato",
-      "bg-brightness": "Claridade do fundo",
+      "bg-brightness": "Luminosidade do fundo",
       "bg-even": "Uniformidade do fundo",
       "head-height": "Altura da cabeça",
-      "eye-line": "Linha dos olhos a partir de baixo",
+      "eye-line": "Linha dos olhos a partir da base",
       tilt: "Inclinação da cabeça",
     },
   },
 
   hub: {
-    h1: "Fotos de visto e de documentos, na especificação de cada país",
+    h1: "Fotos de visto e de documentos, no padrão de cada país",
     lead:
       "Escolha o documento. As medidas se preenchem sozinhas, o corte e o fundo saem em uma etapa, " +
       "e nada sai do seu navegador.",
@@ -236,7 +236,7 @@ const pt: Dict = {
       {
         q: "É grátis mesmo?",
         a:
-          "É, e sem marca d'água nem cadastro. Outros sites mostram uma prévia grátis e cobram para " +
+          "É sim, sem marca d'água e sem cadastro. Outros sites mostram uma prévia grátis e cobram para " +
           "baixar o arquivo limpo; aqui o download é justamente a parte grátis.",
       },
       {
@@ -244,13 +244,13 @@ const pt: Dict = {
         a:
           "Não. O corte e a remoção do fundo rodam dentro do seu navegador com WebAssembly. A única " +
           "coisa baixada é o modelo de fundo, e a foto nunca sai do aparelho. O código é público, " +
-          "então dá para conferir em vez de acreditar.",
+          "então dá para conferir em vez de confiar na nossa palavra.",
       },
       {
         q: "A foto ainda carrega minha localização e o modelo do celular?",
         a:
           "Não. Uma foto de celular guarda metadados EXIF — as coordenadas GPS de onde foi tirada, o " +
-          "modelo da câmera, a data e às vezes um nome de proprietário — e o consulado recebe tudo " +
+          "modelo da câmera, a data e às vezes até o nome do dono do aparelho — e o consulado recebe tudo " +
           "isso quando você manda o original. O arquivo que esta ferramenta gera é codificado do " +
           "zero, então nada disso sobrevive: só os pixels, um perfil de cor e a resolução de impressão.",
       },
@@ -258,37 +258,37 @@ const pt: Dict = {
         q: "Dá para imprimir em casa?",
         a:
           "Dá. Cada página de documento exporta uma folha A4 em PNG e PDF com o número certo de " +
-          "cópias no tamanho certo. Imprima em escala 100 % — «ajustar à página» redimensiona sem avisar.",
+          "cópias no tamanho certo. Imprima em escala 100 % — o “ajustar à página” redimensiona sem avisar.",
       },
       {
         q: "Meu pedido vai ser aceito?",
         a:
           "Isso não podemos prometer, e ninguém honesto vai prometer. O que a ferramenta garante é um " +
           "arquivo que atende à especificação publicada do documento que você escolheu. Os requisitos " +
-          "mudam, então confira a fonte oficial indicada em cada página antes de dar entrada.",
+          "mudam, então confira a fonte oficial indicada em cada página antes de dar entrada no pedido.",
       },
     ],
   },
 
   autoFaq: {
-    size: ({ doc }) => `Qual é o tamanho de uma foto de ${doc} em centímetros e polegadas?`,
+    size: ({ doc }) => `${doc}: qual é o tamanho em centímetros e polegadas?`,
     sizeA: ({ mm, cm, inch }) =>
-      `${mm} mm, ou seja ${cm} cm ou ${inch} polegadas. É a mesma foto dita de três jeitos; ` +
+      `${mm} mm, ou seja, ${cm} cm ou ${inch} polegadas. É a mesma foto dita de três jeitos; ` +
       `use a unidade que o formulário à sua frente pedir.`,
-    pixels: ({ doc }) => `Qual é o tamanho de uma foto de ${doc} em pixels?`,
+    pixels: ({ doc }) => `${doc}: qual é o tamanho em pixels?`,
     pixelsA: ({ px, dpi }) =>
       `${px} pixels, o que dá ${dpi} dpi no tamanho de impressão. Menos que isso sai borrado no papel.`,
-    perSheet: ({ doc }) => `Quantas cópias de uma foto de ${doc} cabem em uma folha?`,
+    perSheet: ({ doc }) => `${doc}: quantas cópias cabem em uma folha?`,
     perSheetA: ({ n, size }) =>
-      `${n} fotos de ${size} em uma folha A4. Imprima em escala 100 %, nunca «ajustar à página».`,
-    background: ({ doc }) => `Que cor de fundo uma foto de ${doc} precisa ter?`,
+      `${n} fotos de ${size} em uma folha A4. Imprima em escala 100 %, nunca no “ajustar à página”.`,
+    background: ({ doc }) => `${doc}: que cor de fundo precisa ter?`,
     backgroundA: ({ bg }) =>
       `${bg}, liso e com luz uniforme, sem sombra atrás da cabeça. Se a parede atrás de você não ` +
       `servir, a ferramenta pode trocar o fundo.`,
-    fileSize: ({ doc }) => `Que formato e tamanho de arquivo uma foto de ${doc} precisa ter?`,
+    fileSize: ({ doc }) => `${doc}: que formato e tamanho de arquivo precisa ter?`,
     fileSizeA: ({ format, kb }) =>
       `${format}, no máximo ${kb} KB. A exportação daqui comprime para ficar abaixo desse limite ` +
-      `sem cair da resolução exigida.`,
+      `sem perder a resolução exigida.`,
     uploadFails: ({ form }) => `Por que ${form} rejeita a foto?`,
     uploadFailsA: ({ form, format, kb, px }) =>
       `${form} recusa tudo o que não for ${format}, tudo acima de ${kb} KB e tudo menor que ${px} ` +

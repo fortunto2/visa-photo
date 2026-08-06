@@ -225,14 +225,14 @@ const en: Dict = {
     expected: "Required",
     notChecked: "What this cannot tell you",
     notCheckedBody:
-      "Head size and position, expression, whether the eyes are open, glasses, headwear, " +
-      "shadows behind the head, and how recent the photo is. A pass here means the file is the " +
+      "Expression, whether the eyes are open, glasses, headwear, shadows behind the head, and " +
+      "how recent the photo is. A pass here means the file is the " +
       "right shape and weight on a plain enough background — not that an application will be " +
       "accepted.",
     fixIt: "Fix it here",
     checkFace: "Also check the face",
     checkingFace: "Measuring the face…",
-    faceHint: "Head height, eye line and tilt. Downloads a 4 MB model once.",
+    faceHint: "Head height, eye line and tilt. Downloads a 15 MB model once.",
     noFace: "No face found in this photo",
     labels: {
       dimensions: "Pixel size",
@@ -269,7 +269,9 @@ const en: Dict = {
   skills: {
     title: "Agent skills — photo specs your assistant can use",
     h1: "Skills for AI agents",
-    lead: "Give your assistant the photo specifications for 12 documents, so it can size a photo correctly and tell you what a country requires — with the official source attached.",
+    lead: ({ docs, countries }) =>
+      `Give your assistant the photo specifications for ${docs} documents in ${countries} countries, so it ` +
+      `can size a photo correctly and tell you what a country requires — with the official source attached.`,
     install: "How to install",
     installBody:
       "Save the file below into your assistant's skills directory. For Claude Code that is " +
