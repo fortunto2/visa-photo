@@ -28,6 +28,8 @@ export interface Report {
 }
 
 interface BackgroundStats {
+  /** share of the sampled background that is a single exact colour */
+  flatShare: number;
   /** 0–255 average luminance of the sampled border */
   brightness: number;
   /** standard deviation of luminance across the border: high means patterned or shadowed */
@@ -60,8 +62,12 @@ function sampleBackground(img: HTMLImageElement): BackgroundStats {
   const push = (x: number, y: number) => {
     const i = (y * w + x) * 4;
     lum.push(0.2126 * data[i] + 0.7152 * data[i + 1] + 0.0722 * data[i + 2]);
+    // How much of the background is one exact colour, to the byte.
+    const key = `${data[i]},${data[i + 1]},${data[i + 2]}`;
+    tally.set(key, (tally.get(key) ?? 0) + 1);
   };
 
+  const tally = new Map<string, number>();
   const cornerW = Math.max(3, Math.round(w * 0.18));
   const cornerH = Math.max(3, Math.round(h * 0.14));
   for (let y = 0; y < cornerH; y++) {
@@ -69,9 +75,10 @@ function sampleBackground(img: HTMLImageElement): BackgroundStats {
     for (let x = w - cornerW; x < w; x++) push(x, y);
   }
 
+  const flattest = Math.max(...tally.values());
   const mean = lum.reduce((a, b) => a + b, 0) / lum.length;
   const variance = lum.reduce((a, b) => a + (b - mean) ** 2, 0) / lum.length;
-  return { brightness: mean, spread: Math.sqrt(variance) };
+  return { brightness: mean, spread: Math.sqrt(variance), flatShare: flattest / lum.length };
 }
 
 export interface InspectInput {
@@ -79,9 +86,11 @@ export interface InspectInput {
   fileSizeKb: number;
   mimeType: string;
   preset: Preset;
+  /** true where the authority refuses photos altered with software */
+  editingForbidden?: boolean;
 }
 
-export function inspectPhoto({ img, fileSizeKb, mimeType, preset }: InspectInput): Report {
+export function inspectPhoto({ img, fileSizeKb, mimeType, preset, editingForbidden = false }: InspectInput): Report {
   const findings: Finding[] = [];
   const add = (id: string, verdict: Verdict, value: string, expected: string) =>
     findings.push({ id, verdict, value, expected });
@@ -156,6 +165,27 @@ export function inspectPhoto({ img, fileSizeKb, mimeType, preset }: InspectInput
     bg.spread <= 12 ? "pass" : bg.spread <= 20 ? "warn" : "fail",
     bg.spread.toFixed(1),
     "≤ 12",
+  );
+
+  /**
+   * A background that software painted, not a camera.
+   *
+   * A sensor puts noise into everything it records: even a plain wall photographs with a
+   * couple of levels of variation, and no two of its pixels are byte-identical across
+   * thousands of samples. A filled background has a standard deviation of exactly zero and one
+   * colour throughout. Measured here: a phone photo scored 17.3 and 1.6 %, our own export with
+   * the background replaced scored 0.00 and 100 %.
+   *
+   * This is worth saying because several authorities refuse edited photos outright, and the
+   * feature that produces this signature is on the page next to the checker. Where editing is
+   * forbidden it is a failure; everywhere else it is simply a fact about the file.
+   */
+  const replaced = bg.spread < 0.5 && bg.flatShare > 0.95;
+  add(
+    "bg-synthetic",
+    replaced && editingForbidden ? "fail" : "pass",
+    replaced ? "replaced" : "photographed",
+    editingForbidden ? "photographed" : "",
   );
 
   return {

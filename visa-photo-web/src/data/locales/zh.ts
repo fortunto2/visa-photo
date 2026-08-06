@@ -212,6 +212,8 @@ const zh: Dict = {
     checkingFace: "正在测量人脸…",
     faceHint: "头部高度、眼睛位置和倾斜角度。只需下载一次 15 MB 的模型。",
     noFace: "这张照片里没有检测到人脸",
+    bgReplaced: "由软件替换",
+    bgPhotographed: "相机拍摄",
     legendGot: "你的脸在哪里",
     legendWant: "证件要求的位置",
     labels: {
@@ -221,6 +223,7 @@ const zh: Dict = {
       format: "格式",
       "bg-brightness": "背景亮度",
       "bg-even": "背景均匀度",
+      "bg-synthetic": "背景来源",
       "head-height": "头部高度",
       "eye-line": "眼睛距底边",
       tilt: "头部倾斜",

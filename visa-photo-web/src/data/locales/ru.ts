@@ -252,6 +252,8 @@ const ru: Dict = {
     checkingFace: "Меряем лицо…",
     faceHint: "Высота головы, линия глаз и наклон. Один раз скачает модель 15 МБ.",
     noFace: "Лицо на снимке не найдено",
+    bgReplaced: "заменён программой",
+    bgPhotographed: "снят камерой",
     legendGot: "где лицо на снимке",
     legendWant: "где его хочет документ",
     labels: {
@@ -261,6 +263,7 @@ const ru: Dict = {
       format: "Формат",
       "bg-brightness": "Яркость фона",
       "bg-even": "Однородность фона",
+      "bg-synthetic": "Происхождение фона",
       "head-height": "Высота головы",
       "eye-line": "Линия глаз снизу",
       tilt: "Наклон головы",

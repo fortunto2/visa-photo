@@ -153,6 +153,7 @@ const schema = [
       <PhotoChecker
         client:visible
         preset={p}
+        editingForbidden={entry.warnings?.includes("no-editing")}
         ctx={{ preset: key, country: entry.country, doc: entry.doc }}
         strings={{
           drop: t.check.drop,
@@ -171,6 +172,8 @@ const schema = [
           checkingFace: t.check.checkingFace,
           faceHint: t.check.faceHint,
           noFace: t.check.noFace,
+          bgReplaced: t.check.bgReplaced,
+          bgPhotographed: t.check.bgPhotographed,
           legendGot: t.check.legendGot,
           legendWant: t.check.legendWant,
         }}

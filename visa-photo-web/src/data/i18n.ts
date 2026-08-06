@@ -330,6 +330,9 @@ export interface Dict {
     checkingFace: string;
     faceHint: string;
     noFace: string;
+    /** the two states of the background-origin check */
+    bgReplaced: string;
+    bgPhotographed: string;
     /** the two lines drawn on the photo */
     legendGot: string;
     legendWant: string;

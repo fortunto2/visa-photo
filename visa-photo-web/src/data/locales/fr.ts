@@ -223,6 +223,8 @@ const fr: Dict = {
     checkingFace: "Mesure du visage…",
     faceHint: "Hauteur du visage, ligne des yeux et inclinaison. Un modèle de 15 Mo se télécharge une seule fois.",
     noFace: "Aucun visage trouvé sur cette photo",
+    bgReplaced: "remplacé par un logiciel",
+    bgPhotographed: "photographié",
     legendGot: "où est votre visage",
     legendWant: "où ce document le veut",
     labels: {
@@ -232,6 +234,7 @@ const fr: Dict = {
       format: "Format",
       "bg-brightness": "Clarté du fond",
       "bg-even": "Uniformité du fond",
+      "bg-synthetic": "Origine du fond",
       "head-height": "Hauteur du visage",
       "eye-line": "Ligne des yeux depuis le bas",
       tilt: "Inclinaison de la tête",

@@ -221,6 +221,8 @@ const tr: Dict = {
     checkingFace: "Yüz ölçülüyor…",
     faceHint: "Baş yüksekliği, göz hizası ve eğiklik. 15 MB'lık model bir kez indirilir.",
     noFace: "Bu fotoğrafta yüz bulunamadı",
+    bgReplaced: "yazılımla değiştirildi",
+    bgPhotographed: "kamerayla çekildi",
     legendGot: "yüzünüz nerede",
     legendWant: "bu belge nerede istiyor",
     labels: {
@@ -230,6 +232,7 @@ const tr: Dict = {
       format: "Biçim",
       "bg-brightness": "Arka plan parlaklığı",
       "bg-even": "Arka plan düzgünlüğü",
+      "bg-synthetic": "Arka planın kaynağı",
       "head-height": "Baş yüksekliği",
       "eye-line": "Alttan göz hizası",
       tilt: "Baş eğikliği",

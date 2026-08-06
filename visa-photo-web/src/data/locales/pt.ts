@@ -221,6 +221,8 @@ const pt: Dict = {
     checkingFace: "Medindo o rosto…",
     faceHint: "Altura da cabeça, linha dos olhos e inclinação. Baixa um modelo de 15 MB uma única vez.",
     noFace: "Nenhum rosto encontrado nesta foto",
+    bgReplaced: "substituído por software",
+    bgPhotographed: "fotografado",
     legendGot: "onde está o seu rosto",
     legendWant: "onde este documento o quer",
     labels: {
@@ -230,6 +232,7 @@ const pt: Dict = {
       format: "Formato",
       "bg-brightness": "Luminosidade do fundo",
       "bg-even": "Uniformidade do fundo",
+      "bg-synthetic": "Origem do fundo",
       "head-height": "Altura da cabeça",
       "eye-line": "Linha dos olhos a partir da base",
       tilt: "Inclinação da cabeça",

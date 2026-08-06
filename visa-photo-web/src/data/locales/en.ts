@@ -242,6 +242,8 @@ const en: Dict = {
     checkingFace: "Measuring the face…",
     faceHint: "Head height, eye line and tilt. Downloads a 15 MB model once.",
     noFace: "No face found in this photo",
+    bgReplaced: "replaced by software",
+    bgPhotographed: "photographed",
     legendGot: "where your face is",
     legendWant: "where this document wants it",
     labels: {
@@ -251,6 +253,7 @@ const en: Dict = {
       format: "Format",
       "bg-brightness": "Background brightness",
       "bg-even": "Background evenness",
+      "bg-synthetic": "Background",
       "head-height": "Head height",
       "eye-line": "Eye line from bottom",
       tilt: "Head tilt",

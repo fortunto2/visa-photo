@@ -24,6 +24,8 @@ export interface CheckStrings {
   checkingFace: string;
   faceHint: string;
   noFace: string;
+  bgReplaced: string;
+  bgPhotographed: string;
   legendGot: string;
   legendWant: string;
 }
@@ -32,6 +34,8 @@ interface Props {
   preset: Preset;
   strings: CheckStrings;
   ctx: DocContext;
+  /** true where the authority refuses photos altered with software */
+  editingForbidden?: boolean;
 }
 
 /**
@@ -41,7 +45,7 @@ interface Props {
  * and for the DV lottery it is the more urgent half, because a bad photo disqualifies the
  * entry for a year. Every check runs on a canvas in this browser; the file is never sent.
  */
-export default function PhotoChecker({ preset, strings, ctx }: Props) {
+export default function PhotoChecker({ preset, strings, ctx, editingForbidden = false }: Props) {
   const [report, setReport] = useState<Report | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
@@ -73,6 +77,7 @@ export default function PhotoChecker({ preset, strings, ctx }: Props) {
         fileSizeKb: file.size / 1024,
         mimeType: file.type,
         preset,
+        editingForbidden,
       });
       setReport(result);
       track("photo_checked", {
@@ -228,7 +233,9 @@ export default function PhotoChecker({ preset, strings, ctx }: Props) {
                 </svg>
                 {strings.labels[f.id] ?? f.id}
               </td>
-              <td class="num">{f.value}</td>
+              <td class="num">{f.id === "bg-synthetic"
+                ? (f.value === "replaced" ? strings.bgReplaced : strings.bgPhotographed)
+                : f.value}</td>
               <td class="num muted">{f.expected}</td>
             </tr>
           ))}
@@ -246,7 +253,9 @@ export default function PhotoChecker({ preset, strings, ctx }: Props) {
                   </svg>
                   {strings.labels[f.id] ?? f.id}
                 </td>
-                <td class="num">{f.value}</td>
+                <td class="num">{f.id === "bg-synthetic"
+                ? (f.value === "replaced" ? strings.bgReplaced : strings.bgPhotographed)
+                : f.value}</td>
                 <td class="num muted">{f.expected}</td>
               </tr>
             ))}
