@@ -19,3 +19,10 @@
 # The models are immutable and large; let them sit in the browser cache.
 /*.wasm
   Cache-Control: public, max-age=31536000, immutable
+
+# The markdown twins are the same facts as the HTML page at the same address, for agents that
+# would rather not parse a tool out of a document. They must not compete with the page they
+# mirror, so they are served but never indexed.
+/*.md
+  X-Robots-Tag: noindex
+  Cache-Control: public, max-age=3600
