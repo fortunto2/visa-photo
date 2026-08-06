@@ -207,6 +207,7 @@ const ar: Dict = {
 
   check: {
     tab: "افحص صورة",
+    seoTitle: (doc: string) => `فحص ${doc} — مجانًا وداخل متصفحك`,
     makeTab: "اصنع صورة",
     title: "افحص صورة جاهزة",
     lead:

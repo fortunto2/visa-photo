@@ -196,6 +196,7 @@ const hi: Dict = {
 
   check: {
     tab: "फ़ोटो जाँचें",
+    seoTitle: (doc: string) => `${doc}: जाँच ऑनलाइन — मुफ़्त, ब्राउज़र में`,
     makeTab: "फ़ोटो बनाएँ",
     title: "पहले से बनी फ़ोटो जाँचें",
     lead:

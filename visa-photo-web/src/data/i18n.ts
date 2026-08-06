@@ -287,6 +287,8 @@ export interface Dict {
    */
   check: {
     tab: string;
+    /** page <title> for the checker's own URL */
+    seoTitle: (doc: string) => string;
     makeTab: string;
     title: string;
     lead: string;

@@ -192,6 +192,7 @@ const tr: Dict = {
 
   check: {
     tab: "Fotoğraf denetleme",
+    seoTitle: (doc: string) => `${doc} denetleyici — ücretsiz, tarayıcınızda`,
     makeTab: "Fotoğraf hazırlama",
     title: "Elinizdeki fotoğrafı denetleyin",
     lead:

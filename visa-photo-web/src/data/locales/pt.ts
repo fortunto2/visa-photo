@@ -192,6 +192,7 @@ const pt: Dict = {
 
   check: {
     tab: "Verificar uma foto",
+    seoTitle: (doc: string) => `${doc}: verificador online — grátis, no seu navegador`,
     makeTab: "Fazer uma foto",
     title: "Verificar uma foto que você já tem",
     lead:

@@ -1,0 +1,437 @@
+---
+import Page from "../layouts/Page.astro";
+import PhotoTool from "./PhotoTool.tsx";
+import {
+  CATALOG, KIND_ICON, presetOf, dpiOf, sameCountry, type CatalogEntry,
+} from "../data/catalog";
+import { docView } from "../data/docView";
+import { agentCard, agentPrompt } from "../data/agentCard";
+import CopyButton from "./CopyButton.tsx";
+import PhotoChecker from "./PhotoChecker.tsx";
+import ModeTabs from "./ModeTabs.tsx";
+import { DEFAULT_LANG, dict, hasSection, type ActiveLang } from "../data/locales";
+import { absolute, path } from "../lib/site";
+import { ltr } from "../lib/bidi";
+import { LANG_TAG } from "../data/i18n";
+
+/**
+ * One document, in either mode.
+ *
+ * The checker has its own URL because people search for it separately — "passport photo
+ * checker" is a different query from "passport photo size" — and a tab cannot be linked to.
+ * The tabs still switch instantly; they rewrite the address rather than fetching a page.
+ */
+interface Props {
+  lang: ActiveLang;
+  entry: CatalogEntry;
+  mode: "make" | "check";
+}
+const { lang, entry, mode } = Astro.props as Props;
+
+const t = dict(lang);
+const p = presetOf(entry);
+const key = entry.preset;
+
+
+const view = docView(entry, t);
+const {
+  title: docTitle, country: countryName, notes,
+  headlineSize, altUnits, conv, answer, faq,
+} = view;
+
+/** "2026-08-05" reads as untranslated boilerplate; every locale gets its own format. */
+const checkedOn = new Intl.DateTimeFormat(t.dateLocale, {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+}).format(new Date(entry.checked));
+
+const kindIcon = KIND_ICON[entry.kind];
+const segments = mode === "check"
+  ? [entry.country, entry.doc, "check"]
+  : [entry.country, entry.doc];
+const bgName = view.background;
+const format = view.format;
+
+// Only the other documents of the same country. Matching by format put Ireland under Japan
+// because both print 35x45, which is a fact about paper, not a reason to click.
+const related = sameCountry(entry);
+const card = agentCard(entry, view);
+// Not lower-cased: the title carries proper nouns ("Turkish", "ВНЖ Турции") that must survive.
+const prompt = agentPrompt(entry, view, lang, {
+  docTitle,
+  source: entry.source.label,
+});
+
+const schema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: t.nav.countries, item: absolute(path(lang)) },
+      { "@type": "ListItem", position: 2, name: docTitle, item: absolute(path(lang, ...segments)) },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: `${docTitle} maker`,
+    applicationCategory: "MultimediaApplication",
+    operatingSystem: "Any browser",
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    featureList: [
+      `Crops to ${headlineSize} (${p.digital_width}×${p.digital_height} px)`,
+      "Runs entirely in the browser; no upload",
+      "No watermark, no sign-up",
+    ],
+    inLanguage: LANG_TAG[lang],
+    url: absolute(path(lang, ...segments)),
+  },
+  ...(faq.length
+    ? [
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faq.map((item) => ({
+            "@type": "Question",
+            name: item.q,
+            acceptedAnswer: { "@type": "Answer", text: item.a },
+          })),
+        },
+      ]
+    : []),
+];
+---
+
+<Page
+  lang={lang}
+  t={t}
+  title={mode === "check" ? t.check.seoTitle(t.docTitle[key]) : t.pageTitle[key]}
+  description={answer}
+  segments={segments}
+  schema={schema}
+>
+  <p class="crumb">
+    <a href={path(lang)}>{t.nav.countries}</a>
+    <span class="doc-pill">
+      <svg width="17" height="12" viewBox="0 0 32 22" aria-hidden="true"><use href={`#fl-${entry.flag}`} /></svg>
+      {countryName}
+    </span>
+    <span class="doc-pill">
+      <svg width="17" height="17" aria-hidden="true"><use href={`#${kindIcon}`} /></svg>
+      {t.docShort[key]}
+    </span>
+  </p>
+
+  <h1>{t.countryPage.docHeadline({ title: docTitle, size: headlineSize })}</h1>
+
+  <p class="answer">{answer}</p>
+
+  {entry.warnings && entry.warnings.length > 0 && (
+    <div class="warn-banner">
+      {entry.warnings.includes("no-editing") && (
+        <p><svg width="19" height="19" aria-hidden="true"><use href="#ic-warn" /></svg>{t.warn.noEditing}</p>
+      )}
+      {entry.warnings.includes("studio-only") && (
+        <p><svg width="19" height="19" aria-hidden="true"><use href="#ic-warn" /></svg>{t.warn.studioOnly}</p>
+      )}
+      {entry.warnings.includes("no-home-print") && (
+        <p><svg width="19" height="19" aria-hidden="true"><use href="#ic-warn" /></svg>{t.warn.noHomePrint}</p>
+      )}
+    </div>
+  )}
+
+  <ModeTabs client:load makeLabel={t.check.makeTab} checkLabel={t.check.tab}
+    initial={mode} makeHref={path(lang, entry.country, entry.doc)}
+    checkHref={path(lang, entry.country, entry.doc, "check")}>
+    <div slot="check">
+      <p class="answer" style="margin-bottom:16px">{t.check.lead}</p>
+      <PhotoChecker
+        client:visible
+        preset={p}
+        ctx={{ preset: key, country: entry.country, doc: entry.doc }}
+        strings={{
+          drop: t.check.drop,
+          choose: t.check.choose,
+          allPass: t.check.allPass,
+          someFail: t.check.someFail,
+          someWarn: t.check.someWarn,
+          measured: t.check.measured,
+          expected: t.check.expected,
+          notChecked: t.check.notChecked,
+          notCheckedBody: t.check.notCheckedBody,
+          fixIt: t.check.fixIt,
+          labels: t.check.labels,
+          again: t.tool.reset,
+          checkFace: t.check.checkFace,
+          checkingFace: t.check.checkingFace,
+          faceHint: t.check.faceHint,
+          noFace: t.check.noFace,
+          legendGot: t.check.legendGot,
+          legendWant: t.check.legendWant,
+        }}
+      />
+    </div>
+
+  <div class="tool">
+    <PhotoTool client:idle preset={p} presetKey={key} canPrintSheet={Boolean(p.print_width_mm)} modelsHref={path(hasSection(lang, "models") ? lang : DEFAULT_LANG, "models")}
+      ctx={{ preset: key, country: entry.country, doc: entry.doc }}
+      editingForbidden={entry.warnings?.includes("no-editing")} strings={{
+      dropTitle: t.tool.dropTitle,
+      dropSub: t.tool.dropSub(t.docShort[key]),
+      choose: t.tool.choose,
+      camera: t.tool.camera,
+      working: t.tool.working,
+      framedTo: t.tool.framedTo(headlineSize),
+      downloadJpeg: t.tool.downloadJpeg,
+      downloadPng: t.tool.downloadPng,
+      downloadSheet: t.tool.downloadSheet(p.photo_count),
+      guideCrown: t.tool.guideCrown,
+      guideEyes: t.tool.guideEyes(String(p.eye_line_from_bottom_percent)),
+      guideChin: t.tool.guideChin,
+      reset: t.tool.reset,
+      checkResult: t.tool.checkResult,
+      tip: t.tool.tip,
+      removeBg: t.tool.removeBg,
+      removeBgHint: t.tool.removeBgHint,
+      bgDone: t.tool.bgDone,
+      bgUndo: t.tool.bgUndo,
+      tryBetterHint: t.tool.tryBetterHint,
+      modelCaveat: t.tool.modelCaveat,
+      cached: t.tool.cached,
+      alignFace: t.tool.alignFace,
+      aligning: t.tool.aligning,
+      alignHint: t.tool.alignHint,
+      alignFailed: t.tool.alignFailed,
+      tooTight: t.tool.tooTight,
+      aligned: t.tool.aligned,
+      rotateLeft: t.tool.rotateLeft,
+      rotateRight: t.tool.rotateRight,
+      autoLevels: t.tool.autoLevels,
+      zoom: t.tool.zoom,
+      undoLevels: t.tool.undoLevels,
+      changeModel: t.tool.changeModel,
+      changeModelWhen: t.tool.changeModelWhen,
+      modelsPageLink: t.tool.modelsPageLink,
+      modelDefault: t.tool.modelDefault,
+      noEditingAtAction: t.warn.noEditingAtAction,
+      proceedAnyway: t.warn.proceedAnyway,
+      mbUnit: t.unit.mb,
+      advanced: t.tool.advanced,
+      advancedHint: t.tool.advancedHint,
+      brightness: t.tool.brightness,
+      contrast: t.tool.contrast,
+      shadows: t.tool.shadows,
+      resetLevels: t.tool.resetLevels,
+      transparentBg: t.tool.transparentBg,
+      transparentHint: t.tool.transparentHint,
+      faceOval: t.tool.faceOval,
+      fileName: t.tool.fileName,
+      fileNamePlaceholder: t.tool.fileNamePlaceholder,
+      backdropLabel: t.tool.backdropLabel,
+      backdropNames: t.tool.backdropNames,
+      backdropRequired: t.tool.backdropRequired,
+    }} />
+
+    <div>
+      <div class="spec">
+        <p class="spec-head">
+          <svg width="19" height="19" aria-hidden="true"><use href="#ic-ruler" /></svg>
+          {t.spec.heading}
+        </p>
+        <dl>
+          {p.print_width_mm && (
+            <div class="spec-row">
+              <dt><svg width="17" height="17" aria-hidden="true"><use href="#ic-ruler" /></svg>{t.spec.print}</dt>
+              <dd>
+                {headlineSize}
+                <br /><span class="alt-unit">{altUnits}</span>
+              </dd>
+            </div>
+          )}
+          <div class="spec-row">
+            <dt><svg width="17" height="17" aria-hidden="true"><use href="#ic-pixel" /></svg>{t.spec.digital}</dt>
+            <dd>{ltr(`${p.digital_width} × ${p.digital_height}`)} {t.unit.px}</dd>
+          </div>
+          <div class="spec-row">
+            <dt><svg width="17" height="17" aria-hidden="true"><use href="#ic-drop" /></svg>{t.spec.background}</dt>
+            <dd>{bgName}</dd>
+          </div>
+          <div class="spec-row">
+            <dt><svg width="17" height="17" aria-hidden="true"><use href="#ic-face" /></svg>{t.spec.headHeight}</dt>
+            <dd>{p.face_height_percent} %</dd>
+          </div>
+          <div class="spec-row">
+            <dt><svg width="17" height="17" aria-hidden="true"><use href="#ic-eye" /></svg>{t.spec.eyeLine}</dt>
+            <dd>{p.eye_line_from_bottom_percent} % {t.spec.fromBottom}</dd>
+          </div>
+          <div class="spec-row">
+            <dt><svg width="17" height="17" aria-hidden="true"><use href="#ic-file" /></svg>{t.spec.file}</dt>
+            <dd>{format} ≤ {p.max_file_size_kb} {t.unit.kb}</dd>
+          </div>
+          {p.print_width_mm && (
+            <div class="spec-row">
+              <dt><svg width="17" height="17" aria-hidden="true"><use href="#ic-copies" /></svg>{t.spec.perSheet}</dt>
+              <dd>{p.photo_count} {t.spec.pieces}</dd>
+            </div>
+          )}
+        </dl>
+        {notes && (
+          <p class="spec-foot">
+            <svg width="19" height="19" aria-hidden="true"><use href="#ic-warn" /></svg>
+            {notes}
+          </p>
+        )}
+      </div>
+    </div>
+  </div>
+
+  </ModeTabs>
+
+  <div class="provenance">
+  <p class="verified">
+    <svg width="16" height="16" aria-hidden="true"><use href="#ic-check" /></svg>
+    <a href={entry.source.url} rel="nofollow noopener">
+      {t.verified({ date: checkedOn, source: entry.source.label })}
+    </a>
+  </p>
+
+  {entry.checkerVerified && (
+    <p class="verified" data-testid="checker-verified">
+      <svg width="16" height="16" aria-hidden="true"><use href="#ic-shield" /></svg>
+      {t.checkerVerified({
+        date: new Intl.DateTimeFormat(t.dateLocale, { day: "numeric", month: "long", year: "numeric" })
+          .format(new Date(entry.checkerVerified)),
+      })}
+    </p>
+  )}
+
+  <p class="submission-note">
+    <svg width="16" height="16" aria-hidden="true"><use href={entry.submission === "upload" ? "#ic-upload" : entry.submission === "print" ? "#ic-print" : "#ic-camera"} /></svg>
+    {t.submission[entry.submission]}
+    {entry.form && (
+      <>
+        <span class="sep">·</span>
+        {entry.form.url ? (
+          <a href={entry.form.url} rel="nofollow noopener">{entry.form.name}</a>
+        ) : (
+          <span>{entry.form.name}</span>
+        )}
+      </>
+    )}
+  </p>
+  </div>
+
+
+  <ul class="trust">
+    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-shield" /></svg>{t.trust.inBrowser}</li>
+    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-check" /></svg>{t.trust.noServer}</li>
+    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-check" /></svg>{t.trust.noWatermark}</li>
+    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-check" /></svg>{t.trust.noSignup}</li>
+  </ul>
+
+  <div class="seo">
+    <section>
+      <h2>
+        <span class="ico"><svg width="22" height="22" aria-hidden="true"><use href="#ic-ruler" /></svg></span>
+        {t.seo.requirements}
+      </h2>
+      <p>{t.seo.requirementsIntro(t.docShort[key])}</p>
+      <ul>
+        <li>
+          <b>{headlineSize}</b> — {altUnits} · {conv.px} {t.unit.px} @ {dpiOf(p)} dpi
+        </li>
+        <li>{t.spec.background}: <b>{bgName}</b></li>
+        <li>{t.spec.headHeight}: <b>{p.face_height_percent} %</b>, {t.spec.eyeLine.toLowerCase()} <b>{p.eye_line_from_bottom_percent} %</b> {t.spec.fromBottom}</li>
+        <li>{t.spec.file}: <b>{format} ≤ {p.max_file_size_kb} {t.unit.kb}</b></li>
+        {notes && <li>{notes}</li>}
+      </ul>
+    </section>
+
+    <section>
+      <h2>
+        <span class="ico"><svg width="22" height="22" aria-hidden="true"><use href="#ic-sun" /></svg></span>
+        {t.seo.howToShoot}
+      </h2>
+      <p>{t.seo.howToShootBody}</p>
+    </section>
+
+    {/* Nothing to say about printing where the authority publishes no physical size. */}
+    {p.print_width_mm && p.print_height_mm && view.dpi !== null && (
+      <section>
+        <h2>
+          <span class="ico"><svg width="22" height="22" aria-hidden="true"><use href="#ic-print" /></svg></span>
+          {t.seo.printing}
+        </h2>
+        <p>{t.seo.printingBody({ n: p.photo_count, w: p.print_width_mm, h: p.print_height_mm, dpi: view.dpi })}</p>
+      </section>
+    )}
+
+    {related.length > 0 && (
+      <section>
+        <h2>
+          <span class="ico"><svg width="22" height="22" aria-hidden="true"><use href="#ic-link" /></svg></span>
+          {t.seo.related}
+        </h2>
+        <ul class="related">
+          {related.map((other) => (
+            <li>
+              <a href={path(lang, other.country, other.doc)}>
+                <svg width="24" height="17" viewBox="0 0 32 22" aria-hidden="true"><use href={`#fl-${other.flag}`} /></svg>
+                {t.docTitle[other.preset]}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    {faq.length > 0 && (
+      <section>
+        <h2>
+          <span class="ico"><svg width="22" height="22" aria-hidden="true"><use href="#ic-question" /></svg></span>
+          {t.seo.faq}
+        </h2>
+        {faq.map((item) => (
+          <div class="faq-item">
+            <h3>{item.q}</h3>
+            <p>{item.a}</p>
+          </div>
+        ))}
+      </section>
+    )}
+
+    <section class="agent-block">
+      <h2>
+        <span class="ico"><svg width="22" height="22" aria-hidden="true"><use href="#ic-layers" /></svg></span>
+        {t.agent.heading}
+      </h2>
+      <p>{t.agent.lead}</p>
+      <div class="agent-actions">
+        <CopyButton client:load payload={prompt} label={t.agent.copyPrompt} done={t.agent.copied} />
+        <CopyButton client:load payload={card} label={t.agent.copySpec} done={t.agent.copied} variant="quiet" />
+        {hasSection(lang, "skills") && (
+          <a class="chip" href={path(lang, "skills")}>
+            <svg width="18" height="18" aria-hidden="true"><use href="#ic-spark" /></svg>
+            {t.agent.openSkills}
+          </a>
+        )}
+      </div>
+      <p class="hint caveat">{t.agent.disclaimer}</p>
+    </section>
+
+    <section>
+      <h2>
+        <span class="ico"><svg width="22" height="22" aria-hidden="true"><use href="#ic-shield" /></svg></span>
+        {t.seo.sources}
+      </h2>
+      <ul>
+        <li>
+          <a href={entry.source.url} rel="nofollow noopener">{entry.source.label}</a>
+          {" — "}{t.verified({ date: checkedOn, source: entry.source.label })}
+        </li>
+      </ul>
+      <p class="disclaimer" style="margin-top:14px">{t.seo.disclaimer}</p>
+    </section>
+  </div>
+</Page>

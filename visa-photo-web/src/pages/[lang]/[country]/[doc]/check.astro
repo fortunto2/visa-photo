@@ -1,7 +1,7 @@
 ---
-import DocPage from "../../../components/DocPage.astro";
-import { CATALOG, type CatalogEntry } from "../../../data/catalog";
-import { LANGS, type ActiveLang } from "../../../data/locales";
+import DocPage from "../../../../components/DocPage.astro";
+import { CATALOG, type CatalogEntry } from "../../../../data/catalog";
+import { LANGS, type ActiveLang } from "../../../../data/locales";
 
 export function getStaticPaths() {
   return LANGS.flatMap((lang) =>
@@ -16,4 +16,4 @@ const { lang } = Astro.params as { lang: ActiveLang };
 const { entry } = Astro.props as { entry: CatalogEntry };
 ---
 
-<DocPage lang={lang} entry={entry} mode="make" />
+<DocPage lang={lang} entry={entry} mode="check" />

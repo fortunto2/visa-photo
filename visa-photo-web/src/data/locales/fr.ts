@@ -194,6 +194,7 @@ const fr: Dict = {
 
   check: {
     tab: "Contrôler une photo",
+    seoTitle: (doc: string) => `${doc} : vérificateur en ligne — gratuit, dans votre navigateur`,
     makeTab: "Faire une photo",
     title: "Contrôler une photo existante",
     lead:

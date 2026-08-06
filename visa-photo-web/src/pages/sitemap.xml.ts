@@ -16,6 +16,8 @@ export const GET: APIRoute = () => {
     ["custom"],
     ...countryGroups().map((g) => [g.slug]), // /{lang}/{country}/
     ...CATALOG.map((e) => [e.country, e.doc]),
+    // the checker has its own address, and its own search
+    ...CATALOG.map((e) => [e.country, e.doc, "check"]),
   ];
 
   const urls = groups.flatMap((segments) =>

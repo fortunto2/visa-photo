@@ -186,6 +186,7 @@ const zh: Dict = {
 
   check: {
     tab: "检测照片",
+    seoTitle: (doc: string) => `${doc}检测 — 免费，在浏览器中运行`,
     makeTab: "制作照片",
     title: "检测已有的照片",
     lead:

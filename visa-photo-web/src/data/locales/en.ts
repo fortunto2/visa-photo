@@ -215,6 +215,7 @@ const en: Dict = {
 
   check: {
     tab: "Check a photo",
+    seoTitle: (doc: string) => `${doc} checker — free, runs in your browser`,
     makeTab: "Make a photo",
     title: "Check an existing photo",
     lead: "Already have a file? Drop it here and see which requirements it meets. Nothing is uploaded — the checks run in your browser.",
