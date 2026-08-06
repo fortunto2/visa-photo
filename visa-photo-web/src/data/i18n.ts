@@ -289,6 +289,8 @@ export interface Dict {
     tab: string;
     /** page <title> for the checker's own URL */
     seoTitle: (doc: string) => string;
+    /** page <title> for the checker hub, which has no country */
+    hubTitle: string;
     makeTab: string;
     title: string;
     lead: string;

@@ -193,6 +193,7 @@ const tr: Dict = {
   check: {
     tab: "Fotoğraf denetleme",
     seoTitle: (doc: string) => `${doc} denetleyici — ücretsiz, tarayıcınızda`,
+    hubTitle: "Pasaport ve vize fotoğrafı denetleyici — ücretsiz, yükleme yok",
     makeTab: "Fotoğraf hazırlama",
     title: "Elinizdeki fotoğrafı denetleyin",
     lead:

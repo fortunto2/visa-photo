@@ -1,0 +1,102 @@
+---
+import Page from "../../layouts/Page.astro";
+import { KIND_ICON, sizeLabels, CATALOG, presetOf, countryGroups } from "../../data/catalog";
+import { LANGS, dict, type ActiveLang } from "../../data/locales";
+import { SITE, absolute, path } from "../../lib/site";
+import { ltr } from "../../lib/bidi";
+
+/**
+ * The checker without a country.
+ *
+ * People search for "passport photo checker" as often as they search for a size, and until now
+ * that query had nowhere to land: every checker on this site was behind a document. This page
+ * is the entrance for anyone who knows they want a photo judged but has not yet picked what
+ * against — each card goes straight to that document's checker.
+ *
+ * It has no tool of its own on purpose. A checker needs a specification to check against, and
+ * inventing a generic one would be the same error as inventing a size.
+ */
+export function getStaticPaths() {
+  return LANGS.map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: ActiveLang };
+const t = dict(lang);
+
+const schema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: t.check.title,
+    numberOfItems: CATALOG.length,
+    itemListElement: CATALOG.map((entry, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: t.docTitle[entry.preset],
+      url: absolute(path(lang, entry.country, entry.doc, "check")),
+    })),
+  },
+];
+---
+
+<Page
+  lang={lang}
+  t={t}
+  title={`${t.check.hubTitle} — ${SITE.name}`}
+  description={t.check.lead}
+  segments={["photo-checker"]}
+  schema={schema}
+>
+  <h1>{t.check.title}</h1>
+  <p class="answer">{t.check.lead}</p>
+
+  <div class="country-groups">
+    {countryGroups().map((group) => (
+      <section class="country-group">
+        <h2 class="country-head">
+          <a href={path(lang, group.slug)}>
+            <svg class="flag" viewBox="0 0 32 22" aria-hidden="true"><use href={`#fl-${group.flag}`} /></svg>
+            {t.country[group.nameKey]}
+          </a>
+        </h2>
+        <ul class="hub-grid">
+          {group.entries.map((entry) => {
+            const p = presetOf(entry);
+            return (
+              <li>
+                <a class="hub-card" href={path(lang, entry.country, entry.doc, "check")}>
+                  <span class="hub-top">
+                    <svg class="doc-ico" width="21" height="21" style="margin-inline-start:0" aria-hidden="true"><use href={`#${KIND_ICON[entry.kind]}`} /></svg>
+                  </span>
+                  <span class="nm">{t.docShort[entry.preset]}</span>
+                  <span class="sz">{sizeLabels(p, entry, t.unit).headline}</span>
+                  <span class="px">{ltr(`${p.digital_width} × ${p.digital_height}`)} {t.unit.px}</span>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+    ))}
+  </div>
+
+  <ul class="trust">
+    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-shield" /></svg>{t.trust.inBrowser}</li>
+    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-check" /></svg>{t.trust.noServer}</li>
+    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-check" /></svg>{t.trust.noSignup}</li>
+  </ul>
+
+  <div class="seo" style="margin-top:44px">
+    <section>
+      <h2>
+        <span class="ico"><svg width="22" height="22" aria-hidden="true"><use href="#ic-question" /></svg></span>
+        {t.check.notChecked}
+      </h2>
+      <p>{t.check.notCheckedBody}</p>
+    </section>
+
+    <section>
+      <p class="disclaimer">{t.seo.disclaimer}</p>
+    </section>
+  </div>
+</Page>

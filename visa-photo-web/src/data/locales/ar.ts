@@ -208,6 +208,7 @@ const ar: Dict = {
   check: {
     tab: "افحص صورة",
     seoTitle: (doc: string) => `فحص ${doc} — مجانًا وداخل متصفحك`,
+    hubTitle: "فحص صور جوازات السفر والتأشيرات — مجانًا وبلا رفع",
     makeTab: "اصنع صورة",
     title: "افحص صورة جاهزة",
     lead:

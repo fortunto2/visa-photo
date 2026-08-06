@@ -112,6 +112,7 @@ const graph = [
       <div class="site-foot">
         <p class="foot-note">{t.seo.disclaimerShort}</p>
         <nav class="foot-links">
+          <a href={path(lang, "photo-checker")}>{t.check.tab}</a>
           {hasSection(lang, "skills") && <a href={path(lang, "skills")}>{t.agent.openSkills}</a>}
           {hasSection(lang, "models") && <a href={path(lang, "models")}>{t.nav.models}</a>}
           <a href={SITE.repo} rel="noopener">Source code</a>
