@@ -1,6 +1,7 @@
 ---
 import "../styles/site.css";
 import Sprite from "../components/Sprite.astro";
+import { toolsFor } from "../data/tools";
 import { SITE, absolute, alternates, path } from "../lib/site";
 import { LANG_LABEL, LANG_TAG, dirOf } from "../data/i18n";
 import type { Dict } from "../data/i18n";
@@ -88,6 +89,7 @@ const graph = [
         </a>
         <span class="nav-links">
           <a href={path(lang)}>{t.nav.countries}</a>
+          <a href={`${path(lang)}#tools`}>{t.nav.tools}</a>
         </span>
         {/* A disclosure rather than a row: nine languages do not fit a header, and this needs
             no JavaScript and stays keyboard-reachable. The links are still real links, so a
@@ -118,9 +120,10 @@ const graph = [
       <div class="site-foot">
         <p class="foot-note">{t.seo.disclaimerShort}</p>
         <nav class="foot-links">
-          <a href={path(lang, "photo-checker")}>{t.check.tab}</a>
+          {/* Every tool, from one list, so this and the hub cannot drift apart. The any-size
+              page had been orphaned since it was built — in the sitemap, linked from nothing. */}
+          {toolsFor(lang, t).map((tool) => <a href={tool.href}>{tool.name}</a>)}
           {hasSection(lang, "skills") && <a href={path(lang, "skills")}>{t.agent.openSkills}</a>}
-          {hasSection(lang, "models") && <a href={path(lang, "models")}>{t.nav.models}</a>}
           <a href={SITE.repo} rel="noopener">Source code</a>
           <a href="/llms.txt">llms.txt</a>
           <a href="/specs.json">specs.json</a>

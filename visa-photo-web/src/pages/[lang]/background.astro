@@ -1,0 +1,89 @@
+---
+import Page from "../../layouts/Page.astro";
+import BackgroundTool from "../../components/BackgroundTool.tsx";
+import { langsFor, dict, type ActiveLang } from "../../data/locales";
+import { absolute, path } from "../../lib/site";
+
+/**
+ * The background remover with no document attached.
+ *
+ * Every other tool on this site answers "what does this authority want". This one answers
+ * "get that wall out of my photo", which is asked far more often and by people who are not
+ * filling in any form at all — the top thing searched about document photos in Chinese is
+ * swapping the backdrop colour, not any measurement.
+ */
+export function getStaticPaths() {
+  return langsFor(["background"]).map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: ActiveLang };
+const t = dict(lang);
+const b = t.bgPage!;
+
+const schema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: b.h1,
+    applicationCategory: "MultimediaApplication",
+    operatingSystem: "Any browser",
+    description: b.lead,
+    url: absolute(path(lang, "background")),
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  },
+];
+---
+
+<Page lang={lang} t={t} title={b.title} description={b.lead} segments={["background"]} schema={schema}>
+  <p class="crumb"><a href={path(lang)}>{t.nav.countries}</a></p>
+
+  <h1>{b.h1}</h1>
+  <p class="answer">{b.lead}</p>
+
+  <BackgroundTool
+    client:load
+    modelsHref={path(lang, "models")}
+    page={{
+      cut: b.cut,
+      colour: b.colour,
+      keepTransparent: b.keepTransparent,
+      pickColour: b.pickColour,
+      download: b.download,
+    }}
+    strings={{
+      ...t.tool,
+      dropSub: t.tool.dropSub(b.h1),
+      framedTo: t.tool.framedTo(""),
+      downloadSheet: t.tool.downloadSheet(0),
+      guideEyes: t.tool.guideEyes(""),
+      removeBgHint: t.tool.removeBgHint,
+      modelDefault: t.tool.modelDefault,
+      noEditingAtAction: t.warn.noEditingAtAction,
+      proceedAnyway: t.warn.proceedAnyway,
+      mbUnit: t.unit.mb,
+      modelsPageLink: t.tool.modelsPageLink,
+    }}
+  />
+
+  <ul class="trust">
+    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-check" /></svg>{t.trust.free}</li>
+    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-shield" /></svg>{t.trust.inBrowser}</li>
+    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-check" /></svg>{t.trust.noServer}</li>
+    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-check" /></svg>{t.trust.noWatermark}</li>
+    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-check" /></svg>{t.trust.noSignup}</li>
+  </ul>
+  <p class="trust-why">{t.trust.why}</p>
+
+  <div class="seo" style="margin-top:44px">
+    <section>
+      <h2>
+        <span class="ico"><svg width="22" height="22" aria-hidden="true"><use href="#ic-question" /></svg></span>
+        {b.whenToUse}
+      </h2>
+      <p>{b.whenToUseBody}</p>
+    </section>
+    <section>
+      <p class="disclaimer">{t.seo.disclaimerShort}</p>
+    </section>
+  </div>
+</Page>

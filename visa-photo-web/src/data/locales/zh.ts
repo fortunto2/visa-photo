@@ -9,7 +9,7 @@ import type { Dict } from "../i18n";
  * one noun — which is exactly why the templates are per-language functions.
  */
 const zh: Dict = {
-  nav: { countries: "所有国家", models: "背景模型" },
+  nav: { countries: "所有国家", models: "背景模型", tools: "工具" },
   unit: { mm: "毫米", cm: "厘米", in: "英寸", px: "px", kb: "KB", mb: "MB" },
   dateLocale: "zh-CN",
   readHere: "阅读中文版",
@@ -284,6 +284,19 @@ const zh: Dict = {
     common: "问得最多的尺寸：",
     whenToUse: "什么时候用这个",
     whenToUseBody: "领事馆要求了一个少见的尺寸、单位的门禁卡、票证，或者某张表格自己写明了毫米数。如果你的证件在目录里，请用它自己的页面——那里有官方出处、头部高度的规定和文件大小上限，这些都不是一个尺寸数字能告诉你的。",
+  },
+
+  bgPage: {
+    title: "照片一键抠图换背景 — 免费，照片不上传",
+    cut: "抠掉背景",
+    h1: "抠掉或更换背景",
+    lead: "拖入照片，把背景抠掉，然后在后面换上任意颜色——也可以保留透明。神经网络就在这个标签页里运行，照片不会离开你的设备。不用注册，没有水印，没有次数限制。",
+    colour: "背景换成：",
+    keepTransparent: "保留透明",
+    pickColour: "自定义颜色",
+    download: "下载",
+    whenToUse: "这个页面适合什么",
+    whenToUseBody: "证件照只是其中一种用途，各国的页面已经把裁切和头部高度的规定一起做好了。这一页是给别的场景用的：头像、商品图、打印、背景不合适的人像。这里不做任何测量，也不对照任何规格——照片进来多大，出去还是多大。",
   },
 
   autoFaq: {

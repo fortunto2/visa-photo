@@ -9,7 +9,7 @@ import type { Dict } from "../i18n";
  * The colon in the heading is the layout's business, so it lives in docHeadline below.
  */
 const fr: Dict = {
-  nav: { countries: "Tous les pays", models: "Modèles d'arrière-plan" },
+  nav: { countries: "Tous les pays", models: "Modèles d'arrière-plan", tools: "Outils" },
   unit: { mm: "mm", cm: "cm", in: "po", px: "px", kb: "Ko", mb: "Mo" },
   dateLocale: "fr-FR",
   readHere: "Lire cette page en français",
@@ -302,6 +302,19 @@ const fr: Dict = {
     common: "Les formats les plus demandés :",
     whenToUse: "Quand cette page sert",
     whenToUseBody: "Un consulat qui demande un format inhabituel, un badge, un titre de transport, un formulaire qui donne ses propres millimètres. Si votre document figure au catalogue, passez plutôt par sa page : on y trouve la source officielle, la règle de hauteur du visage et la limite de poids du fichier, qu'une simple mesure ne dit pas.",
+  },
+
+  bgPage: {
+    title: "Supprimer le fond d'une photo — gratuit, et rien n'est envoyé",
+    cut: "Détourer le fond",
+    h1: "Supprimer ou remplacer le fond",
+    lead: "Déposez une photo, détourez le fond, puis mettez derrière la couleur que vous voulez — ou laissez-le transparent. Le réseau de neurones tourne dans cet onglet, l'image ne quitte pas votre appareil. Sans compte, sans filigrane, sans limite.",
+    colour: "Mettre derrière :",
+    keepTransparent: "Garder transparent",
+    pickColour: "N'importe quelle couleur",
+    download: "Télécharger",
+    whenToUse: "À quoi cette page sert",
+    whenToUseBody: "La photo d'identité n'est qu'un usage, et les pages par pays s'en chargent avec le cadrage et la règle de hauteur du visage. Cette page couvre tout le reste : une photo de profil, une annonce, un tirage, un portrait dont le fond ne convient pas. Rien n'y est mesuré ni comparé à une norme : la photo ressort à la taille où elle est entrée.",
   },
 
   autoFaq: {

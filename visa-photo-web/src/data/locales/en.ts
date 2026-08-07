@@ -1,7 +1,7 @@
 import type { Dict } from "../i18n";
 
 const en: Dict = {
-  nav: { countries: "All countries", models: "Background models" },
+  nav: { countries: "All countries", models: "Background models", tools: "Tools" },
   unit: { mm: "mm", cm: "cm", in: "in", px: "px", kb: "KB", mb: "MB" },
   dateLocale: "en-GB",
   readHere: "Read this in English",
@@ -411,6 +411,19 @@ const en: Dict = {
     kr_passport: "Passport",
     au_passport: "Passport",
     ru_passport: "Passport",
+  },
+
+  bgPage: {
+    title: "Remove the background from a photo — free, and nothing is uploaded",
+    cut: "Cut the background out",
+    h1: "Remove or replace a background",
+    lead: "Drop in a photo, cut the background out, and put any colour behind it — or leave it transparent. The network runs inside this tab, so the picture never leaves your device. No account, no watermark, no limit.",
+    colour: "Put behind it:",
+    keepTransparent: "Keep it transparent",
+    pickColour: "Any colour",
+    download: "Download",
+    whenToUse: "What this is for",
+    whenToUseBody: "A document photo is one use, and the country pages here do that with the crop and the head-height rule included. This page is for everything else: a profile picture, a listing, a print, a portrait whose backdrop is wrong. Nothing is measured or judged against a specification — the photo comes out the size it went in.",
   },
 
   autoFaq: {

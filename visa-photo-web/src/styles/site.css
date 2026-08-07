@@ -663,3 +663,57 @@ h1 {
   max-width: 72ch; margin: 12px 0 0;
   font-size: 15px; line-height: 1.6; color: var(--ink-soft);
 }
+
+/* ── Background remover ───────────────────────────────────────────────────
+   Its own page, so the preview holds a whole photo of any shape rather than a
+   document's fixed frame. The checkerboard behind it is the transparency, and
+   it has to survive both themes: a light grey pair reads as "nothing here" on
+   either ground, where a pure white one disappears into the light theme. */
+.bg-preview {
+  display: grid; place-items: center;
+  border-radius: var(--r-lg); border: 1px solid var(--line);
+  padding: 18px; min-height: 260px; overflow: hidden;
+}
+.bg-preview img { max-width: 100%; max-height: 62vh; display: block; }
+
+.stage-col { display: flex; flex-direction: column; gap: 14px; align-items: stretch; }
+
+/* The transparent option needs to look like the absence of a colour, not like white. */
+.swatch.alpha {
+  background: repeating-conic-gradient(#d8d8dc 0% 25%, #f4f4f6 0% 50%) 50% / 14px 14px;
+}
+
+.dl-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+.dl-row > * { flex: 1 1 auto; }
+
+/* Out in the open rather than behind a disclosure: trying another model is the
+   one thing that fixes a bad cut-out, so the whole list stays visible. */
+.model-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+/* The native colour well is a hairline in Safari unless it is given a box. */
+.bg-picker input[type="color"] {
+  inline-size: 62px; block-size: 34px; padding: 2px; cursor: pointer;
+  border: 1px solid var(--line); border-radius: var(--r-md); background: none;
+}
+
+/* ── Tools section on the hub ─────────────────────────────────────────────
+   Wider cards than the document grid: these carry a sentence, not a size. */
+.tools-section { margin: 26px 0 38px; }
+.tools-section > h2 { font-size: 25px; letter-spacing: -.03em; margin-bottom: 16px; }
+.tool-grid {
+  display: grid; gap: 12px; list-style: none; padding: 0; margin: 0;
+  grid-template-columns: repeat(auto-fill, minmax(268px, 1fr));
+}
+.tool-card {
+  display: grid; gap: 7px; height: 100%; padding: 17px 18px;
+  border: 1px solid var(--line); border-radius: var(--r-lg);
+  text-decoration: none; color: inherit; background: var(--card);
+  transition: border-color .12s ease, transform .12s ease;
+}
+.tool-card:hover { border-color: var(--teal); transform: translateY(-2px); }
+.tool-card .nm { font-weight: 720; font-size: 17px; letter-spacing: -.02em; }
+.tool-card .blurb {
+  font-size: 14.5px; color: var(--ink-soft); line-height: 1.5;
+  /* The leads are a paragraph long on their own pages; here they are a taste of one. */
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+.tool-ico { color: var(--teal); }

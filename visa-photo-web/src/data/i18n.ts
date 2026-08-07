@@ -61,7 +61,7 @@ export function dirOf(lang: Lang): "ltr" | "rtl" {
  */
 export interface Dict {
   /** site-wide */
-  nav: { countries: string; models: string };
+  nav: { countries: string; models: string; tools: string };
   /** unit suffixes, localised — "mm" is not "мм" */
   unit: { mm: string; cm: string; in: string; px: string; kb: string; mb: string };
 
@@ -247,6 +247,25 @@ export interface Dict {
      * may want none at all.
      */
     docHeadline: (v: { title: string; size: string }) => string;
+  };
+
+  /**
+   * The background remover on its own page. Optional in the same way as the other secondary
+   * pages: a locale without it gets no route, no hreflang and no sitemap entry, rather than an
+   * English page served under its prefix.
+   */
+  bgPage?: {
+    title: string;
+    /** the action, which here is the cut — the colour comes after */
+    cut: string;
+    h1: string;
+    lead: string;
+    colour: string;
+    keepTransparent: string;
+    pickColour: string;
+    download: string;
+    whenToUse: string;
+    whenToUseBody: string;
   };
 
   /** the models page: what the background remover actually downloads and why */

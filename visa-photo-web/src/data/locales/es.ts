@@ -10,7 +10,7 @@ import type { Dict } from "../i18n";
  * los Estados Unidos — which no shared template can decide from a name alone.
  */
 const es: Dict = {
-  nav: { countries: "Todos los países", models: "Modelos de fondo" },
+  nav: { countries: "Todos los países", models: "Modelos de fondo", tools: "Herramientas" },
   unit: { mm: "mm", cm: "cm", in: "in", px: "px", kb: "KB", mb: "MB" },
   dateLocale: "es-ES",
   readHere: "Leer esta página en español",
@@ -301,6 +301,19 @@ const es: Dict = {
     common: "Los tamaños que más se piden:",
     whenToUse: "Cuándo hace falta esto",
     whenToUseBody: "Un consulado que pide algo poco común, un pase interno, un billete, un formulario que indica sus propios milímetros. Si tu documento está en el catálogo, usa su página: allí está la fuente oficial, la regla de altura de la cabeza y el límite de peso del archivo, cosas que una medida a secas no te dice.",
+  },
+
+  bgPage: {
+    title: "Quitar el fondo de una foto — gratis, y nada se sube",
+    cut: "Recortar el fondo",
+    h1: "Quitar o cambiar el fondo",
+    lead: "Suelta una foto, recorta el fondo y pon detrás el color que quieras, o déjalo transparente. La red neuronal funciona dentro de esta pestaña, así que la imagen no sale de tu dispositivo. Sin cuenta, sin marca de agua, sin límite.",
+    colour: "Poner detrás:",
+    keepTransparent: "Dejarlo transparente",
+    pickColour: "Cualquier color",
+    download: "Descargar",
+    whenToUse: "Para qué sirve",
+    whenToUseBody: "La foto de documento es sólo un caso, y para eso están las páginas por país, que además traen el recorte y la regla de altura de la cabeza. Esta página es para todo lo demás: una foto de perfil, un anuncio, una impresión, un retrato con un fondo que no va. Aquí no se mide ni se compara nada con una especificación: la foto sale del tamaño con el que entró.",
   },
 
   autoFaq: {

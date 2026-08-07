@@ -8,7 +8,7 @@ import type { Dict } from "../i18n";
  * (Kanada'ya but İngiltere'ye, ABD'ye but Hindistan'a).
  */
 const tr: Dict = {
-  nav: { countries: "Tüm ülkeler", models: "Arka plan modelleri" },
+  nav: { countries: "Tüm ülkeler", models: "Arka plan modelleri", tools: "Araçlar" },
   unit: { mm: "mm", cm: "cm", in: "inç", px: "px", kb: "KB", mb: "MB" },
   dateLocale: "tr-TR",
   readHere: "Bu sayfayı Türkçe okuyun",
@@ -298,6 +298,19 @@ const tr: Dict = {
     common: "En çok sorulan ölçüler:",
     whenToUse: "Bu sayfa ne zaman gerekir",
     whenToUseBody: "Alışılmadık bir ölçü isteyen konsolosluk, kurum kartı, bilet ya da kendi milimetresini yazan bir form. Belgeniz listede varsa onun sayfasını kullanın: orada resmî kaynak, baş yüksekliği kuralı ve dosya boyutu sınırı da var — bunları çıplak bir ölçü söyleyemez.",
+  },
+
+  bgPage: {
+    title: "Fotoğrafın arka planını kaldır — ücretsiz, hiçbir şey yüklenmez",
+    cut: "Arka planı kaldır",
+    h1: "Arka planı kaldırın veya değiştirin",
+    lead: "Fotoğrafı bırakın, arka planı kesin, arkasına istediğiniz rengi koyun ya da saydam bırakın. Sinir ağı bu sekmenin içinde çalışır, fotoğraf cihazınızdan çıkmaz. Hesap yok, filigran yok, sınır yok.",
+    colour: "Arkasına ne konsun:",
+    keepTransparent: "Saydam kalsın",
+    pickColour: "Herhangi bir renk",
+    download: "İndir",
+    whenToUse: "Bu sayfa ne işe yarar",
+    whenToUseBody: "Belge fotoğrafı yalnızca bir kullanım; onun için ülke sayfaları var ve orada kırpma ile baş yüksekliği kuralı da birlikte geliyor. Bu sayfa geri kalan her şey için: profil fotoğrafı, ilan görseli, baskı, arka planı yakışmayan bir portre. Burada hiçbir şey ölçülmez, hiçbir şartnameyle karşılaştırılmaz — fotoğraf hangi boyutta girdiyse o boyutta çıkar.",
   },
 
   autoFaq: {
