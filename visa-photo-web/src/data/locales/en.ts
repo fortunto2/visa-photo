@@ -354,6 +354,7 @@ const en: Dict = {
   },
 
   docTitle: {
+    jp_passport_online: "Japan passport photo for online application (Mynaportal)",
     es_tie: "Spain TIE photo (residence card)",
     ie_passport: "Irish passport photo",
     nz_passport: "New Zealand passport photo",
@@ -400,6 +401,7 @@ const en: Dict = {
   },
 
   docShort: {
+    jp_passport_online: "Passport · online",
     es_tie: "Residence card (TIE)",
     ie_passport: "Passport",
     nz_passport: "Passport",
@@ -499,6 +501,27 @@ const en: Dict = {
   },
 
   faq: {
+    ru_passport: [
+      {
+        q: "Is a photo needed for a Russian passport, or is it taken there?",
+        a: "It depends which of the three routes you are on. For the biometric ten-year passport " +
+          "you are photographed on the spot, at the ministry or in a booth at an MFC, and paper " +
+          "photos are not accepted for it at all. The old-style five-year passport still takes " +
+          "printed 35 × 45 mm photos. And the application filed through Gosuslugi asks for an " +
+          "uploaded photo, which goes with the form rather than into the document. This page " +
+          "serves the second and third of those.",
+      },
+    ],
+    cn_passport: [
+      {
+        q: "Do I need to bring a photo for a Chinese passport?",
+        a: "Not necessarily. The exit-entry administration hall photographs applicants during " +
+          "the visit, free of charge. A photo of your own is also accepted, but only with a " +
+          "\u7167\u7247\u56de\u6267 — a receipt code issued by an approved studio — which no file made here " +
+          "can carry. The size on this page is right for that studio photo and for applications " +
+          "at a Chinese mission abroad, and the checker works on any file you already have.",
+      },
+    ],
     in_passport: [
       {
         q: "Do I need to bring or upload a photo for an Indian passport?",

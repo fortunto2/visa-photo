@@ -221,7 +221,10 @@ export const CATALOG: CatalogEntry[] = [
   },
   {
     preset: "cn_passport",
-    submission: "print",
+    // The exit-entry hall photographs applicants free of charge. A self-supplied photo is also
+    // accepted, but only with a 照片回执 — a receipt code issued by an approved studio — which
+    // no file made here can carry.
+    submission: "captured",
     country: "china",
     doc: "passport",
     kind: "passport",
@@ -279,6 +282,10 @@ export const CATALOG: CatalogEntry[] = [
   },
   {
     preset: "kr_passport",
+    // Korea forbids retouching by name — AI correction and reshaping included — and will not
+    // take a photo printed on ordinary paper rather than photographic paper. Both rules
+    // contradict what a tool like this does, so both are stated on the page.
+    warnings: ["no-editing", "no-home-print"],
     submission: "print",
     country: "south-korea",
     doc: "passport",
@@ -286,6 +293,20 @@ export const CATALOG: CatalogEntry[] = [
     flag: "kr",
     source: { label: "Korean MOFA", url: "https://www.passport.go.kr/" },
     checked: "2026-08-05",
+  },
+  {
+    preset: "jp_passport_online",
+    submission: "upload",
+    country: "japan",
+    doc: "passport-online",
+    kind: "passport",
+    flag: "jp",
+    form: { name: "Mynaportal", online: true, url: "https://myna.go.jp/" },
+    source: {
+      label: "外務省 / マイナポータル",
+      url: "https://faq.myna.go.jp/faq/show/8043",
+    },
+    checked: "2026-08-07",
   },
   {
     preset: "nz_passport",
@@ -459,7 +480,12 @@ export const CATALOG: CatalogEntry[] = [
   },
   {
     preset: "ru_passport",
-    submission: "print",
+    // Three routes under one name. The biometric passport is photographed on the spot, at the
+    // ministry or in an MFC booth, and paper photos are not accepted for it; the old-style
+    // five-year passport still takes printed ones; and the Gosuslugi application form wants an
+    // uploaded photo that is not the one printed in the document. "Captured" is the honest
+    // answer for the route most people take.
+    submission: "captured",
     country: "russia",
     doc: "passport",
     kind: "passport",

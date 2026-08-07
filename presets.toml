@@ -269,6 +269,27 @@ photo_count = 2
 format = "jpeg"
 notes = "White bg, 600x600 px minimum, entry is disqualified for a non-compliant photo"
 
+# Japan's online route, and a genuinely different shape from the counter route.
+# Since 24 March 2025 every prefecture accepts an application through Mynaportal, and the file
+# it wants is 600x730 px — the ministry's own FAQ warns in as many words that the aspect ratio
+# differs from the 35x45 mm used on paper (0.822 against 0.778). Resizing a print-shaped photo
+# to fit is exactly the mistake the warning is about, so this is its own preset rather than a
+# note on jp_passport. The vertical rule is unchanged: face 32-36 mm of the 45 mm frame, which
+# is the same 71-80 % of the height; only the side margin grows.
+[jp_passport_online]
+name = "Japan Passport (online, Mynaportal)"
+digital_width = 600
+digital_height = 730
+min_file_size_kb = 20
+max_file_size_kb = 2048
+face_height_percent = 75.6
+face_top_margin_percent = 5.5
+eye_line_from_bottom_percent = 62.0
+background = "white"
+photo_count = 1
+format = "jpeg"
+notes = "600x730 px for Mynaportal. Not the same shape as the 35x45 mm paper photo."
+
 # ── New Zealand ──
 # States ranges, not one size: 900-4500 wide, 1200-6000 high, and a file between 250 KB and
 # 5 MB. The lower weight bound is the unusual part and the reason min_file_size_kb exists.
