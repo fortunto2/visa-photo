@@ -40,6 +40,8 @@ export default function BackgroundTool({ strings, page, modelsHref }: Props) {
   const [dragging, setDragging] = useState(false);
   const [model, setModel] = useState<BgModel>(MODELS[0]);
   const [cachedIds, setCachedIds] = useState<Set<string>>(new Set());
+  /** The name the photo arrived with, so the download is recognisable in a folder. */
+  const [name, setName] = useState("photo");
 
   const urls = useRef<string[]>([]);
   const keep = (u: string) => { urls.current.push(u); return u; };
@@ -54,6 +56,9 @@ export default function BackgroundTool({ strings, page, modelsHref }: Props) {
     const file = files?.[0];
     if (!file || !file.type.startsWith("image/")) return;
     setCut(null);
+    // "background.png" told you nothing about which photo it was. Keep the original stem and
+    // mark what happened to it — a folder of these is otherwise unreadable.
+    setName(file.name.replace(/\.[^.]+$/, "").replace(/[\\/:*?"<>|]/g, "").slice(0, 60) || "photo");
     setSrc(keep(URL.createObjectURL(file)));
   };
 
@@ -89,7 +94,10 @@ export default function BackgroundTool({ strings, page, modelsHref }: Props) {
       c.toBlob((b) => r(b!), ext === "png" ? "image/png" : "image/jpeg", 0.92));
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = `background.${ext}`;
+    // Transparent is a cut-out; anything behind it is a replacement. JPEG counts as a
+    // replacement even when transparent is selected, because it has no alpha channel and gets
+    // filled white above — a file called "no-bg.jpg" with a white background would be a lie.
+    a.download = `${name}-${colour || ext === "jpg" ? "new-bg" : "no-bg"}.${ext}`;
     a.click();
     URL.revokeObjectURL(a.href);
   };
@@ -116,7 +124,8 @@ export default function BackgroundTool({ strings, page, modelsHref }: Props) {
   }
 
   return (
-    <div class="tool" data-testid="bg-tool">
+    <>
+      <div class="tool" data-testid="bg-tool">
       <div class="stage-col">
         <div
           class="bg-preview"
@@ -177,14 +186,24 @@ export default function BackgroundTool({ strings, page, modelsHref }: Props) {
               onClick={() => save("jpg")}>{page.download} JPEG</button>
           </div>
 
-          {/*
-            Out in the open, not behind a "change model" link.
-            No one model cuts every photo well — hair and glasses are where the light ones give
-            up — and the only way to find out is to try another. Hidden behind a disclosure, the
-            reader concludes the tool is simply bad at their photo instead of switching. So the
-            whole list is here, each with its weight, and the one already on the device says so.
-          */}
-          <p class="spec-head" style="margin-top:22px">
+          <button class="btn-reset" type="button" data-testid="bg-reset"
+            onClick={() => { setSrc(null); setCut(null); setColour("#FFFFFF"); }}>
+            {strings.reset}
+          </button>
+        </div>
+      )}
+      </div>
+
+      {/*
+        Out in the open, not behind a "change model" link, and full width rather than in the
+        side panel — five names with their weights fold into a ragged stack in a 310px column.
+        No one model cuts every photo well: hair and glasses are where the light ones give up,
+        and the only way to find out is to try another. Hidden behind a disclosure, the reader
+        concludes the tool is bad at their photo instead of switching.
+      */}
+      {cut && (
+        <section class="model-picker">
+          <p class="spec-head">
             <svg width="19" height="19" aria-hidden="true"><use href="#ic-layers" /></svg>
             {strings.changeModel}
           </p>
@@ -199,13 +218,8 @@ export default function BackgroundTool({ strings, page, modelsHref }: Props) {
             ))}
           </div>
           <p class="hint"><a href={modelsHref}>{strings.modelsPageLink}</a></p>
-
-          <button class="btn-reset" type="button" data-testid="bg-reset"
-            onClick={() => { setSrc(null); setCut(null); setColour("#FFFFFF"); }}>
-            {strings.reset}
-          </button>
-        </div>
+        </section>
       )}
-    </div>
+    </>
   );
 }

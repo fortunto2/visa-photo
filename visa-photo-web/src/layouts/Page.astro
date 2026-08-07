@@ -68,6 +68,13 @@ const graph = [
     <link rel="alternate" type="application/json" href={absolute("/specs.json")} title="All specifications" />
 
     <script type="application/ld+json" set:html={JSON.stringify(graph)} />
+    <!-- Google Tag Manager -->
+    <script is:inline set:html={`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','${SITE.gtm}');`} />
+
     <!-- Queue stub: the tool can fire an event before the deferred script has loaded. -->
     <script is:inline>
       window.sda = window.sda || function () { (window.sda.q = window.sda.q || []).push(arguments); };
@@ -76,6 +83,11 @@ const graph = [
   </head>
 
   <body>
+    <noscript>
+      <iframe src={`https://www.googletagmanager.com/ns.html?id=${SITE.gtm}`}
+        height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    </noscript>
+
     <Sprite />
 
     <header class="wrap">

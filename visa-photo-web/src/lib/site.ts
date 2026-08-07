@@ -24,6 +24,16 @@ export const SITE = {
   tagline: "photos that match the spec",
   repo: "https://github.com/fortunto2/visa-photo",
   analytics: { src: "https://analytics.superduperai.co/sda.js", source: "visaphoto" },
+  /**
+   * Google Tag Manager container.
+   *
+   * Worth being precise about what this does and does not change, because the page next to it
+   * promises privacy: it measures visits, not photographs. The image is still cropped and cut
+   * out on a canvas in the tab and is never uploaded, so every claim in the trust row stays
+   * true. What it does add is a Google script on every page, which in the EU normally wants
+   * consent before it runs — and the largest audience here is Schengen applicants.
+   */
+  gtm: "GTM-KHQX2NBZ",
 } as const;
 
 /**

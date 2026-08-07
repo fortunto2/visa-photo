@@ -717,3 +717,14 @@ h1 {
   display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
 }
 .tool-ico { color: var(--teal); }
+
+/* The model picker sits under the tool, not in the 310px panel: five names with their
+   weights fold into a ragged stack in a column that narrow. */
+.model-picker {
+  margin-top: 18px; padding: 16px 18px;
+  border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--card);
+}
+.model-picker .hint.caveat { max-width: 68ch; }
+/* Beats `.field input { flex: 1 }`, which stretched the colour well into a hairline. */
+.field.bg-picker input[type="color"] { flex: 0 0 auto; inline-size: 64px; block-size: 36px; padding: 3px; }
+.bg-tool-reset { margin-top: 14px; }
