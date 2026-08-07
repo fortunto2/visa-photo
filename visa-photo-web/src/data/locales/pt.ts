@@ -91,6 +91,8 @@ const pt: Dict = {
 
     advanced: "Mais controles",
     advancedHint: "Na maioria das fotos você não vai precisar deles.",
+    maxKb: "Peso do arquivo",
+    maxKbHint: "Este órgão publica {kb} KB. Mude apenas se o seu portal informar um limite próprio.",
     brightness: "Brilho",
     contrast: "Contraste",
     shadows: "Sombras",
@@ -343,6 +345,24 @@ const pt: Dict = {
     answerCleared: "Pronto. A barra vai perguntar de novo na próxima página.",
     contactH: "Contato",
     contactP: "Escreva para info@superduperai.co. O código-fonte é público, então qualquer afirmação desta página pode ser conferida em vez de aceita.",
+  },
+
+  kbPage: {
+    title: "Comprimir foto para 50, 100 ou 200 KB — grátis, sem enviar nada",
+    alsoCropQ: "Precisa recortar também?",
+    alsoCropA: "Defina tamanho e peso ao mesmo tempo",
+    h1: "Reduzir a foto para os KB pedidos",
+    lead: "Um formulário recusar o arquivo por passar do limite de peso é o motivo mais comum de uma foto não servir. Escolha o número que pedem e a foto é comprimida abaixo dele, aqui no navegador. Nada é enviado e as dimensões continuam as mesmas, a menos que você peça outra coisa.",
+    target: "Deixar abaixo de:",
+    run: "Comprimir",
+    working: "Comprimindo…",
+    was: "Antes",
+    now: "agora",
+    missed: "Não desceu tanto sem estragar a imagem. Tente um número maior, ou limite também o lado maior — é ele que realmente tira peso.",
+    keepSize: "Lado maior, se o formulário também limitar:",
+    download: "Baixar",
+    whenToUse: "Quando é isto que você precisa",
+    whenToUseBody: "Os portais informam um peso em kilobytes muito mais vezes do que uma medida em milímetros, e recusam o envio sem dizer qual limite foi rompido. Se o seu documento está no catálogo, use a página dele: lá a exportação comprime até o limite daquele órgão e recorta no tamanho dele ao mesmo tempo.",
   },
 
   autoFaq: {

@@ -380,3 +380,32 @@ export function autoEnhance(img: HTMLImageElement): { brightness: number; contra
 
   return { brightness, contrast, shadows };
 }
+
+/**
+ * Squeeze a file under a stated number of kilobytes, and say what it actually reached.
+ *
+ * A separate entry point from `cropAndExport` because the intent is different: nothing is
+ * cropped, measured or framed here. The search data is unambiguous that this is asked on its
+ * own — "compress image to 50kb", "уменьшить размер фото до 300 кб", "kb में फोटो साइज कम करें" —
+ * and always with a specific number, because a form stated it.
+ *
+ * The size is reported back rather than assumed. Compression cannot always reach an arbitrary
+ * target: a large photograph asked to fit 20 KB will come back bigger, and a page that pretends
+ * otherwise sends someone to an upload that will be refused.
+ */
+export async function compressToKb(
+  file: File,
+  targetKb: number,
+  maxSide?: number,
+): Promise<{ blob: Blob; kb: number }> {
+  const imageCompression = await loadCompressor();
+  const compressed = await imageCompression(file, {
+    maxSizeMB: targetKb / 1024,
+    // Undefined means "leave the dimensions alone", which is the honest default: someone asking
+    // for 50 KB has not asked to have their photo shrunk.
+    maxWidthOrHeight: maxSide,
+    useWebWorker: true,
+    initialQuality: 0.92,
+  });
+  return { blob: compressed, kb: Math.round((compressed.size / 1024) * 10) / 10 };
+}

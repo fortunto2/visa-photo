@@ -91,6 +91,8 @@ const tr: Dict = {
 
     advanced: "Daha fazla ayar",
     advancedHint: "Çoğu fotoğrafta bunlara gerek kalmaz.",
+    maxKb: "Dosya boyutu",
+    maxKbHint: "Kurum {kb} KB yayımlıyor. Yalnızca portalınız kendi sınırını belirtiyorsa değiştirin.",
     brightness: "Parlaklık",
     contrast: "Kontrast",
     shadows: "Gölgeler",
@@ -343,6 +345,24 @@ const tr: Dict = {
     answerCleared: "Sıfırlandı. Bir sonraki sayfada tekrar sorulacak.",
     contactH: "İletişim",
     contactP: "info@superduperai.co adresine yazın. Kaynak kod açık, dolayısıyla bu sayfadaki her iddia inanılmak yerine doğrulanabilir.",
+  },
+
+  kbPage: {
+    title: "Fotoğrafı 50, 100 veya 200 KB'a düşür — ücretsiz, hiçbir şey yüklenmez",
+    alsoCropQ: "Kırpmanız da gerekiyor mu?",
+    alsoCropA: "Ölçüyü ve boyutu birlikte belirleyin",
+    h1: "Fotoğrafı istenen KB'a düşürün",
+    lead: "Bir formun dosyayı boyut sınırını aştığı için kabul etmemesi, fotoğrafın geri çevrilmesinin en yaygın nedeni. İstenen sayıyı seçin, fotoğraf tarayıcının içinde onun altına insin. Hiçbir şey yüklenmez ve siz istemedikçe ölçüler aynı kalır.",
+    target: "Şunun altına indir:",
+    run: "Küçült",
+    working: "Küçültülüyor…",
+    was: "Önce",
+    now: "şimdi",
+    missed: "Bu kadar küçültmek fotoğrafı bozmadan olmadı. Daha büyük bir sayı deneyin ya da en uzun kenarı da sınırlayın — ağırlığı asıl o düşürür.",
+    keepSize: "En uzun kenar, form onu da sınırlıyorsa:",
+    download: "İndir",
+    whenToUse: "Bu ne zaman gerekir",
+    whenToUseBody: "Portallar sınırı milimetreden çok daha sık kilobayt olarak yazar ve yüklemeyi hangi sınırın aşıldığını söylemeden geri çevirir. Belgeniz listedeyse onun sayfasını kullanın: oradaki dışa aktarma hem o kurumun sınırına göre sıkıştırır hem de aynı anda onun ölçüsüne kırpar.",
   },
 
   autoFaq: {

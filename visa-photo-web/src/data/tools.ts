@@ -40,6 +40,15 @@ export function toolsFor(lang: ActiveLang, t: Dict): ToolLink[] {
           icon: "ic-layers",
         }
       : null,
+    t.kbPage
+      ? {
+          segment: "compress",
+          href: path(lang, "compress"),
+          name: t.kbPage.h1,
+          blurb: t.kbPage.lead,
+          icon: "ic-file",
+        }
+      : null,
     t.customPage
       ? {
           segment: "custom",

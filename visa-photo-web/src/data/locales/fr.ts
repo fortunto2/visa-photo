@@ -91,6 +91,8 @@ const fr: Dict = {
 
     advanced: "Plus de réglages",
     advancedHint: "Pour la plupart des photos, vous n'en aurez pas besoin.",
+    maxKb: "Poids du fichier",
+    maxKbHint: "Cette administration publie {kb} Ko. Ne le changez que si votre portail indique sa propre limite.",
     brightness: "Luminosité",
     contrast: "Contraste",
     shadows: "Ombres",
@@ -347,6 +349,24 @@ const fr: Dict = {
     answerCleared: "C'est fait. La barre reposera la question à la page suivante.",
     contactH: "Contact",
     contactP: "Écrivez à info@superduperai.co. Le code source est public, donc chaque affirmation de cette page peut être vérifiée plutôt que crue.",
+  },
+
+  kbPage: {
+    title: "Compresser une photo à 50, 100 ou 200 Ko — gratuit, rien n'est envoyé",
+    alsoCropQ: "Besoin de recadrer aussi ?",
+    alsoCropA: "Réglez la taille et le poids ensemble",
+    h1: "Réduire une photo au poids demandé",
+    lead: "Qu'un formulaire refuse le fichier parce qu'il dépasse la limite de poids est la première cause de rejet d'une photo. Choisissez le nombre demandé et la photo passe en dessous, ici dans le navigateur. Rien n'est envoyé et les dimensions restent les mêmes, sauf demande contraire.",
+    target: "Passer sous :",
+    run: "Compresser",
+    working: "Compression…",
+    was: "Avant",
+    now: "maintenant",
+    missed: "Impossible de descendre si bas sans abîmer l'image. Essayez un nombre plus grand, ou limitez aussi le plus grand côté : c'est lui qui fait vraiment perdre du poids.",
+    keepSize: "Plus grand côté, si le formulaire le limite aussi :",
+    download: "Télécharger",
+    whenToUse: "Quand cette page sert",
+    whenToUseBody: "Les portails indiquent un poids en kilo-octets bien plus souvent qu'une mesure en millimètres, et refusent l'envoi sans dire quelle limite a été dépassée. Si votre document figure au catalogue, passez par sa page : l'export y compresse à la limite de l'administration concernée et recadre à son format en même temps.",
   },
 
   autoFaq: {

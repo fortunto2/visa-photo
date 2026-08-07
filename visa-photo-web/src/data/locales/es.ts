@@ -92,6 +92,8 @@ const es: Dict = {
 
     advanced: "Más controles",
     advancedHint: "Para la mayoría de las fotos no hacen falta.",
+    maxKb: "Peso del archivo",
+    maxKbHint: "Esta administración publica {kb} KB. Cámbialo sólo si tu portal indica su propio límite.",
     brightness: "Brillo",
     contrast: "Contraste",
     shadows: "Sombras",
@@ -346,6 +348,24 @@ const es: Dict = {
     answerCleared: "Hecho. La barra volverá a preguntar en la siguiente página.",
     contactH: "Contacto",
     contactP: "Escribe a info@superduperai.co. El código fuente es público, así que cualquier afirmación de esta página se puede comprobar en lugar de creerse.",
+  },
+
+  kbPage: {
+    title: "Comprimir una foto a 50, 100 o 200 KB — gratis y sin subir nada",
+    alsoCropQ: "¿También hay que recortarla?",
+    alsoCropA: "Fija el tamaño y el peso a la vez",
+    h1: "Reducir una foto a los KB que te piden",
+    lead: "Que un formulario rechace el archivo por pasarse de peso es el motivo más común de que una foto no valga. Elige el número que te piden y la foto se comprime por debajo, aquí en el navegador. No se sube nada y las dimensiones se mantienen salvo que pidas otra cosa.",
+    target: "Dejarla por debajo de:",
+    run: "Comprimir",
+    working: "Comprimiendo…",
+    was: "Antes",
+    now: "ahora",
+    missed: "No baja tanto sin estropearla. Prueba un número mayor, o limita también el lado más largo: eso es lo que de verdad quita peso.",
+    keepSize: "Lado más largo, si el formulario también lo limita:",
+    download: "Descargar",
+    whenToUse: "Cuándo es esto lo que necesitas",
+    whenToUseBody: "Los portales indican un peso en kilobytes mucho más a menudo que una medida en milímetros, y rechazan la subida sin decir qué límite se saltó. Si tu documento está en el catálogo, usa su página: allí la exportación comprime al límite de esa administración y recorta a su tamaño a la vez.",
   },
 
   autoFaq: {

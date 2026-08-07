@@ -82,6 +82,8 @@ const en: Dict = {
 
     advanced: "More controls",
     advancedHint: "You will not need these for most photos.",
+    maxKb: "Max file size",
+    maxKbHint: "This authority publishes {kb} KB. Change it only if your portal states its own limit.",
     brightness: "Brightness",
     contrast: "Contrast",
     shadows: "Shadows",
@@ -458,6 +460,24 @@ const en: Dict = {
     answerCleared: "Cleared. The bar will ask again on the next page.",
     contactH: "Contact",
     contactP: "Write to info@superduperai.co. The source code is public, so any claim on this page can be checked rather than trusted.",
+  },
+
+  kbPage: {
+    title: "Compress a photo to 50, 100 or 200 KB — free, nothing uploaded",
+    alsoCropQ: "Need to crop it as well?",
+    alsoCropA: "Set a size and a weight together",
+    h1: "Reduce a photo to a set number of KB",
+    lead: "A form that refuses your file over a weight limit is the most common reason a photo is rejected. Pick the number it asks for and the photo is squeezed under it, here in the browser. Nothing is uploaded and the picture keeps its dimensions unless you say otherwise.",
+    target: "Squeeze it under:",
+    run: "Compress",
+    working: "Compressing…",
+    was: "Was",
+    now: "now",
+    missed: "It would not go that small without wrecking it. Try a larger number, or cap the longest side as well — that is what actually removes weight.",
+    keepSize: "Longest side, if the form limits it too:",
+    download: "Download",
+    whenToUse: "When this is what you need",
+    whenToUseBody: "Portals state a weight in kilobytes far more often than they state one in millimetres, and they refuse the upload without saying which limit was broken. If your document is in the catalogue, use its page instead: the export there compresses to that authority's own limit and crops to its size at the same time.",
   },
 
   autoFaq: {

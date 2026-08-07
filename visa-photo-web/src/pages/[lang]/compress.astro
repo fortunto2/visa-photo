@@ -1,58 +1,60 @@
 ---
 import Page from "../../layouts/Page.astro";
-import BackgroundTool from "../../components/BackgroundTool.tsx";
+import CompressTool from "../../components/CompressTool.tsx";
 import { langsFor, dict, type ActiveLang } from "../../data/locales";
 import { absolute, path } from "../../lib/site";
 
 /**
- * The background remover with no document attached.
+ * Weight, on its own.
  *
- * Every other tool on this site answers "what does this authority want". This one answers
- * "get that wall out of my photo", which is asked far more often and by people who are not
- * filling in any form at all — the top thing searched about document photos in Chinese is
- * swapping the backdrop colour, not any measurement.
+ * The catalogue answers "what size", but portals refuse far more uploads over a number of
+ * kilobytes than over millimetres — and they say which limit was broken almost never. This is
+ * the page for the number, and it exists separately because the search for it is separate:
+ * always phrased with a specific figure, because a form stated one.
  */
 export function getStaticPaths() {
-  return langsFor(["background"]).map((lang) => ({ params: { lang } }));
+  return langsFor(["compress"]).map((lang) => ({ params: { lang } }));
 }
 
 const { lang } = Astro.params as { lang: ActiveLang };
 const t = dict(lang);
-const b = t.bgPage!;
+const k = t.kbPage!;
 
 const schema = [
   {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: b.h1,
+    name: k.h1,
     applicationCategory: "MultimediaApplication",
     operatingSystem: "Any browser",
-    description: b.lead,
-    url: absolute(path(lang, "background")),
+    description: k.lead,
+    url: absolute(path(lang, "compress")),
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
   },
 ];
 ---
 
-<Page lang={lang} t={t} title={b.title} description={b.lead} segments={["background"]} schema={schema}>
+<Page lang={lang} t={t} title={k.title} description={k.lead} segments={["compress"]} schema={schema}>
   <p class="crumb"><a href={path(lang)}>{t.nav.countries}</a></p>
 
-  <h1>{b.h1}</h1>
-  <p class="answer">{b.lead}</p>
+  <h1>{k.h1}</h1>
+  <p class="answer">{k.lead}</p>
 
-  <BackgroundTool
+  <CompressTool
     client:load
-    modelsHref={path(lang, "models")}
     page={{
-      cut: b.cut,
-      colour: b.colour,
-      keepTransparent: b.keepTransparent,
-      pickColour: b.pickColour,
-      download: b.download,
+      target: k.target,
+      run: k.run,
+      working: k.working,
+      was: k.was,
+      now: k.now,
+      missed: k.missed,
+      keepSize: k.keepSize,
+      download: k.download,
     }}
     strings={{
       ...t.tool,
-      dropSub: t.tool.dropSub(b.h1),
+      dropSub: t.tool.dropSub(k.h1),
       framedTo: t.tool.framedTo(""),
       downloadSheet: t.tool.downloadSheet(0),
       guideEyes: t.tool.guideEyes(""),
@@ -67,11 +69,16 @@ const schema = [
     }}
   />
 
+  {/* Cropping and a weight limit together already exist one page over; a second editor here
+      would be the same tool twice. */}
+  <p class="hint" style="margin-top:16px">
+    {k.alsoCropQ} <a href={path(lang, "custom")}>{k.alsoCropA}</a>
+  </p>
+
   <ul class="trust">
     <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-check" /></svg>{t.trust.free}</li>
     <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-shield" /></svg>{t.trust.inBrowser}</li>
     <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-check" /></svg>{t.trust.noServer}</li>
-    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-check" /></svg>{t.trust.noWatermark}</li>
     <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-check" /></svg>{t.trust.noSignup}</li>
   </ul>
   <p class="trust-why">{t.trust.why}</p>
@@ -80,12 +87,10 @@ const schema = [
     <section>
       <h2>
         <span class="ico"><svg width="22" height="22" aria-hidden="true"><use href="#ic-question" /></svg></span>
-        {b.whenToUse}
+        {k.whenToUse}
       </h2>
-      <p>{b.whenToUseBody}</p>
+      <p>{k.whenToUseBody}</p>
     </section>
-    <section>
-      <p class="disclaimer">{t.seo.disclaimerShort}</p>
-    </section>
+    <section><p class="disclaimer">{t.seo.disclaimerShort}</p></section>
   </div>
 </Page>

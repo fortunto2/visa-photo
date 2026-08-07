@@ -90,6 +90,8 @@ const zh: Dict = {
 
     advanced: "更多调整",
     advancedHint: "大多数照片用不到这些。",
+    maxKb: "文件大小上限",
+    maxKbHint: "该机构公布的是 {kb} KB。只有当你的申请系统另有规定时才改。",
     brightness: "亮度",
     contrast: "对比度",
     shadows: "阴影",
@@ -329,6 +331,24 @@ const zh: Dict = {
     answerCleared: "已重置。下一页会再问一次。",
     contactH: "联系",
     contactP: "写信到 info@superduperai.co。源代码是公开的，所以本页的每一句话都可以核实，而不必相信。",
+  },
+
+  kbPage: {
+    title: "把照片压到 50KB、100KB 或 200KB — 免费，不上传",
+    alsoCropQ: "还需要裁切吗？",
+    alsoCropA: "同时设定尺寸和大小",
+    h1: "把照片压缩到指定的 KB",
+    lead: "表单因为文件超重而不收，是照片被退回最常见的原因。选一个它要求的数字，照片就在浏览器里压到这个数以下。什么都不会上传，除非你另外要求，尺寸也保持不变。",
+    target: "压到不超过：",
+    run: "开始压缩",
+    working: "压缩中…",
+    was: "原来",
+    now: "现在",
+    missed: "再压就把画面压坏了。换一个大一点的数字，或者同时限制最长边——真正减重的是它。",
+    keepSize: "最长边，如果表单也有限制：",
+    download: "下载",
+    whenToUse: "什么时候用这个",
+    whenToUseBody: "各种申请系统给出的限制是千字节的次数，远多于毫米；而且退回上传时往往不说是哪一条超了。如果你的证件在目录里，请用它自己的页面：那里的导出会按该机构的限制压缩，同时按它的尺寸裁切。",
   },
 
   autoFaq: {

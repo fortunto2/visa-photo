@@ -58,6 +58,8 @@ export interface ToolStrings {
   mbUnit: string;
   advanced: string;
   advancedHint: string;
+  maxKb: string;
+  maxKbHint: string;
   brightness: string;
   contrast: string;
   shadows: string;
@@ -125,6 +127,14 @@ export default function PhotoTool({
   const [levels, setLevels] = useState(NO_LEVELS);
   const [dragging, setDragging] = useState(false);
   const [advanced, setAdvanced] = useState(false);
+  /**
+   * The weight limit, overridable.
+   *
+   * The preset carries what the authority publishes, and that stays the recommendation. But a
+   * particular portal sometimes states a tighter number than the specification does, and the
+   * only way to hit it was to guess at quality until the upload stopped failing.
+   */
+  const [maxKb, setMaxKb] = useState(preset.max_file_size_kb);
   const [transparent, setTransparent] = useState(false);
   /**
    * The cut-out is kept with its alpha, and the colour goes on at export. Changing it is then
@@ -290,7 +300,7 @@ export default function PhotoTool({
     setBusy(strings.working);
     try {
       const blob = await cropAndExport(
-        imgRef.current, preset, cx, cy, scale,
+        imgRef.current, { ...preset, max_file_size_kb: maxKb }, cx, cy, scale,
         levels.brightness, levels.contrast, levels.shadows, usePng, rotation,
         // A transparent PNG is the one export that wants nothing painted underneath.
         usePng && transparent ? null : backdrop.css,
@@ -308,7 +318,7 @@ export default function PhotoTool({
     setBusy(strings.working);
     try {
       const blob = await cropAndExport(
-        imgRef.current, preset, cx, cy, scale,
+        imgRef.current, { ...preset, max_file_size_kb: maxKb }, cx, cy, scale,
         levels.brightness, levels.contrast, levels.shadows, false, rotation, backdrop.css,
       );
       handOff(blob, `${stem()}.jpg`);
@@ -598,6 +608,21 @@ export default function PhotoTool({
         {advanced && (
           <div class="advanced-body">
             <p class="hint caveat">{strings.advancedHint}</p>
+
+            <label class="field">
+              <span>{strings.maxKb}</span>
+              <input type="number" min="20" max="5000" step="10" value={maxKb} data-testid="max-kb"
+                onInput={(e) => setMaxKb(Math.max(20, Math.min(5000,
+                  Number((e.target as HTMLInputElement).value) || preset.max_file_size_kb)))} />
+              <b>KB</b>
+            </label>
+            <p class="hint">
+              {strings.maxKbHint.replace("{kb}", String(preset.max_file_size_kb))}
+              {maxKb !== preset.max_file_size_kb && (
+                <> · <button class="linkish" type="button"
+                  onClick={() => setMaxKb(preset.max_file_size_kb)}>{strings.resetLevels}</button></>
+              )}
+            </p>
 
             {([
               ["brightness", strings.brightness, -50, 50],

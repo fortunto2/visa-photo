@@ -160,6 +160,9 @@ export interface Dict {
 
     advanced: string;
     advancedHint: string;
+    /** the authority's published limit stays the default; a portal may state a tighter one */
+    maxKb: string;
+    maxKbHint: string;
     brightness: string;
     contrast: string;
     shadows: string;
@@ -315,6 +318,31 @@ export interface Dict {
     answerCleared: string;
     contactH: string;
     contactP: string;
+  };
+
+  /**
+   * Compressing to a stated number of kilobytes, on its own page.
+   *
+   * Its own intent and its own vocabulary: every autocomplete for it carries a specific number,
+   * because a form stated one — "compress image to 50kb", "уменьшить размер фото до 300 кб".
+   */
+  kbPage?: {
+    title: string;
+    /** cropping lives on the any-size page; point at it rather than build it twice */
+    alsoCropQ: string;
+    alsoCropA: string;
+    h1: string;
+    lead: string;
+    target: string;
+    run: string;
+    working: string;
+    was: string;
+    now: string;
+    missed: string;
+    keepSize: string;
+    download: string;
+    whenToUse: string;
+    whenToUseBody: string;
   };
 
   /** the models page: what the background remover actually downloads and why */
