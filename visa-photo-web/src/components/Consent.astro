@@ -1,8 +1,8 @@
 ---
 import type { Dict } from "../data/i18n";
 
-interface Props { t: Dict }
-const { t } = Astro.props;
+interface Props { t: Dict; privacyHref?: string }
+const { t, privacyHref } = Astro.props;
 ---
 
 {/*
@@ -23,7 +23,10 @@ const { t } = Astro.props;
   run either.
 */}
 <div class="consent" id="consent" hidden data-testid="consent">
-  <p>{t.consent.text}</p>
+  <p>
+    {t.consent.text}
+    {privacyHref && <> <a href={privacyHref}>{t.consent.more}</a></>}
+  </p>
   <div class="consent-buttons">
     <button type="button" data-consent="denied" data-testid="consent-no">{t.consent.decline}</button>
     <button type="button" class="primary" data-consent="granted" data-testid="consent-yes">

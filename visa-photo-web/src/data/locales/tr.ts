@@ -124,6 +124,7 @@ const tr: Dict = {
 
   consent: {
     text: "Fotoğrafınız cihazınızda kalır, bu değişmez. Buradaki konu yalnızca ziyaretleri sayan Google analitiği. Siz izin verene kadar kapalı.",
+    more: "Ayrıntılar",
     accept: "Analitiğe izin ver",
     decline: "Gerek yok",
   },
@@ -317,6 +318,30 @@ const tr: Dict = {
     download: "İndir",
     whenToUse: "Bu sayfa ne işe yarar",
     whenToUseBody: "Belge fotoğrafı yalnızca bir kullanım; onun için ülke sayfaları var ve orada kırpma ile baş yüksekliği kuralı da birlikte geliyor. Bu sayfa geri kalan her şey için: profil fotoğrafı, ilan görseli, baskı, arka planı yakışmayan bir portre. Burada hiçbir şey ölçülmez, hiçbir şartnameyle karşılaştırılmaz — fotoğraf hangi boyutta girdiyse o boyutta çıkar.",
+  },
+
+  privacyPage: {
+    title: "Gizlilik — bu site neyi topluyor, neyi toplamıyor",
+    h1: "Gizlilik",
+    lead: "Kısa, çünkü anlatacak pek bir şey yok. Fotoğrafınız hiçbir zaman yüklenmiyor ve burada hiçbir şey sizi tanımlamıyor. Aşağıdaki metin bunun tamamı ve kaynak koddan doğrulanabilsin diye yazıldı.",
+    photoH: "Fotoğrafınız",
+    photoP: "Cihazınızdan çıkmaz. Kırpma, düzleştirme ve baskı sayfası sekmenin içindeki bir canvas üzerinde çizilir, arka planı da makinenizde çalışan bir sinir ağı kaldırır. Yükleme yok; dolayısıyla sunucularımızda yüzünüzün bir kopyası da yok — sonradan silinmiyor, hiç ulaşmıyor. Denetleyici de aynı şekilde çalışır: dosyayı sekmede ölçer ve bulduğunu söyler.",
+    modelsH: "Modeller",
+    modelsP: "Arka planı kaldırmak ve yüzü bulmak için bir model gerekir; o model ilk istediğinizde bir içerik dağıtım ağından indirilir. Bu istek, her indirmede olduğu gibi, ağa IP adresinizi ve hangi dosyayı istediğinizi bildirir. Sonrasında model tarayıcınızın önbelleğinde kalır ve ikinci seferde ağ olmadan da çalışır. Fotoğrafınıza dair hiçbir şey onunla birlikte gitmez.",
+    countingH: "Ziyaretlerin sayılması",
+    countingP: "Sitenin kendi sayacı, kendi sunucusunda çalışır. Çerez koymaz, tarayıcınıza bir şey yazmaz ve kimlik oluşturmaz; bu yüzden sizi ziyaretler ya da siteler arasında izleyemez. Her olayda sayfa yolu, geldiyseniz yönlendiren site, saat, adresteki kampanya etiketleri ve hangi denetimleri kullandığınız yazılır — yüklediğiniz şey asla. Her web sunucusu gibi bizimki de isteğin geldiği IP adresini görür.",
+    googleH: "Google'ın ölçümü",
+    googleP: "Sitede bir Google Tag Manager kapsayıcısı var ve kapalı başlıyor. Consent Mode varsayılanları o yüklenmeden önce tanımlanıyor; siz izin verene kadar hiçbir şey yazmıyor, hiçbir şey okumuyor. Reklam depolaması varsayılan olarak reddedilmiş durumda ve bu sitede onu açacak bir şey yok. Analitiğe izin verirseniz Google her yerde aldığı şeyleri alır: sayfa, yönlendiren, yaklaşık konum, cihaz.",
+    storedH: "Tarayıcınızda kalanlar",
+    storedP: "Üç şey, hepsi yerel: izin sorusuna verdiğiniz yanıt, tercih ettiğiniz arka plan modeli ve modellerin dosyaları. Tarayıcınızda bu sitenin verilerini temizlemek üçünü de siler; site sonrasında eskisi gibi çalışır, sadece yeniden sorar ve yeniden indirir.",
+    hostingH: "Barındırma",
+    hostingP: "Sayfalar, Cloudflare Pages tarafından sunulan statik dosyalardır. Cloudflare, her barındırıcının tuttuğu istek kayıtlarını tutar — IP adresleri dahil — siteyi sunmak ve kötüye kullanıma karşı korumak için. Bunları başka hiçbir amaçla okumuyoruz.",
+    rightsH: "Hesap, ödeme, haklar",
+    rightsP: "Hesap yok, kayıt yok, e-posta toplanmıyor ve ödenecek bir şey yok. Bir kişiye bağlı kaydımız olmadığı için talep edilecek, düzeltilecek ya da silinecek bir profil de yok. Google analitiğine izin verdiyseniz ve bunu geri almak isterseniz aşağıdaki düğmeyi kullanın: anında geçerli olur ve etiket hiçbir şey saklamayı bırakır. Diğer her şey için bize yazın.",
+    changeAnswer: "Analitik yanıtımı değiştir",
+    answerCleared: "Sıfırlandı. Bir sonraki sayfada tekrar sorulacak.",
+    contactH: "İletişim",
+    contactP: "info@superduperai.co adresine yazın. Kaynak kod açık, dolayısıyla bu sayfadaki her iddia inanılmak yerine doğrulanabilir.",
   },
 
   autoFaq: {

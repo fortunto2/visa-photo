@@ -154,6 +154,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
               page had been orphaned since it was built — in the sitemap, linked from nothing. */}
           {toolsFor(lang, t).map((tool) => <a href={tool.href}>{tool.name}</a>)}
           {hasSection(lang, "skills") && <a href={path(lang, "skills")}>{t.agent.openSkills}</a>}
+          {hasSection(lang, "privacy") && <a href={path(lang, "privacy")}>{t.privacyPage!.h1}</a>}
           <a href={SITE.repo} rel="noopener">Source code</a>
           <a href="/llms.txt">llms.txt</a>
           <a href="/specs.json">specs.json</a>
@@ -161,6 +162,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       </div>
     </footer>
 
-    <Consent t={t} />
+    <Consent t={t} privacyHref={hasSection(lang, "privacy") ? path(lang, "privacy") : undefined} />
   </body>
 </html>

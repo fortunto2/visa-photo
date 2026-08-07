@@ -124,6 +124,7 @@ const pt: Dict = {
 
   consent: {
     text: "Sua foto continua no seu aparelho — isso não muda. Aqui se trata apenas da análise do Google, que conta visitas. Está desligada até você permitir.",
+    more: "Mais",
     accept: "Permitir análise",
     decline: "Não, obrigado",
   },
@@ -317,6 +318,30 @@ const pt: Dict = {
     download: "Baixar",
     whenToUse: "Para que serve",
     whenToUseBody: "Foto de documento é só um dos usos, e para isso existem as páginas por país, que já trazem o recorte e a regra de altura da cabeça. Esta página é para todo o resto: foto de perfil, anúncio, impressão, um retrato com o fundo errado. Aqui nada é medido nem comparado com uma especificação — a foto sai do tamanho que entrou.",
+  },
+
+  privacyPage: {
+    title: "Privacidade — o que este site coleta e o que não coleta",
+    h1: "Privacidade",
+    lead: "Curto, porque há pouco a descrever. Sua foto nunca é enviada e nada aqui identifica você. O que vem abaixo é tudo, escrito para ser conferido no código-fonte em vez de acreditado.",
+    photoH: "Sua fotografia",
+    photoP: "Ela não sai do seu aparelho. O recorte, o alinhamento e a folha de impressão são desenhados num canvas dentro da aba, e o fundo é removido por uma rede neural que roda na sua máquina. Não há envio, então não existe cópia do seu rosto em servidor nenhum nosso — não é que apaguemos depois, é que nunca chega. O verificador funciona igual: mede o arquivo na aba e relata o que encontrou.",
+    modelsH: "Os modelos",
+    modelsP: "Remover um fundo e encontrar um rosto precisam de um modelo, e ele é baixado de uma rede de distribuição na primeira vez que você pede. Essa requisição informa à rede o seu IP e qual arquivo você pediu, como qualquer download. Depois o modelo fica no cache do navegador e na segunda vez funciona sem rede nenhuma. Nada da sua foto viaja junto.",
+    countingH: "Contagem de visitas",
+    countingP: "O site tem o próprio contador, no próprio servidor. Ele não põe cookie, não guarda nada no seu navegador e não cria identificador, então não consegue seguir você entre visitas nem entre sites. Cada evento registra o caminho da página, o site de origem se você veio de um, a hora, as marcações de campanha da URL e quais controles foram usados — nunca o que você enviou. Como qualquer servidor web, o nosso vê o endereço IP de onde veio a requisição.",
+    googleH: "A medição do Google",
+    googleP: "Há um contêiner do Google Tag Manager, e ele começa desligado. Os padrões do Consent Mode são declarados antes de ele carregar, então até você permitir ele não guarda nem lê nada. O armazenamento de publicidade é negado por padrão e nada neste site pode concedê-lo. Se você permitir a análise, o Google recebe o de sempre: página, origem, localização aproximada, aparelho.",
+    storedH: "O que fica no seu navegador",
+    storedP: "Três coisas, todas locais: sua resposta sobre o consentimento, qual modelo de fundo você prefere e os próprios arquivos dos modelos. Limpar os dados deste site no navegador remove as três, e depois tudo funciona como antes — ele apenas pergunta de novo e baixa de novo.",
+    hostingH: "Hospedagem",
+    hostingP: "As páginas são arquivos estáticos servidos pelo Cloudflare Pages, que mantém os registros de requisição que qualquer hospedagem mantém, incluindo endereços IP, para servir o site e defendê-lo de abusos. Não os lemos para nenhuma outra finalidade.",
+    rightsH: "Contas, pagamento, direitos",
+    rightsP: "Não há conta, não há cadastro, não coletamos e-mail e não há nada a pagar. Como não guardamos registro ligado a uma pessoa, não existe perfil para pedir, corrigir ou apagar. Se você permitiu a análise do Google e quer desfazer, use o botão abaixo: vale na hora e a tag para de guardar qualquer coisa. Para o resto, escreva para a gente.",
+    changeAnswer: "Mudar minha resposta sobre a análise",
+    answerCleared: "Pronto. A barra vai perguntar de novo na próxima página.",
+    contactH: "Contato",
+    contactP: "Escreva para info@superduperai.co. O código-fonte é público, então qualquer afirmação desta página pode ser conferida em vez de aceita.",
   },
 
   autoFaq: {

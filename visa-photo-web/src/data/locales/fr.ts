@@ -125,6 +125,7 @@ const fr: Dict = {
 
   consent: {
     text: "Votre photo reste sur votre appareil, cela ne change pas. Il s'agit seulement des statistiques Google, qui comptent les visites. Elles sont désactivées tant que vous n'acceptez pas.",
+    more: "En savoir plus",
     accept: "Autoriser les statistiques",
     decline: "Non merci",
   },
@@ -321,6 +322,30 @@ const fr: Dict = {
     download: "Télécharger",
     whenToUse: "À quoi cette page sert",
     whenToUseBody: "La photo d'identité n'est qu'un usage, et les pages par pays s'en chargent avec le cadrage et la règle de hauteur du visage. Cette page couvre tout le reste : une photo de profil, une annonce, un tirage, un portrait dont le fond ne convient pas. Rien n'y est mesuré ni comparé à une norme : la photo ressort à la taille où elle est entrée.",
+  },
+
+  privacyPage: {
+    title: "Confidentialité — ce que ce site collecte et ce qu'il ne collecte pas",
+    h1: "Confidentialité",
+    lead: "Court, parce qu'il y a peu à décrire. Votre photo n'est jamais envoyée et rien ici ne vous identifie. Ce qui suit est l'ensemble, écrit pour être vérifié dans le code source plutôt que cru sur parole.",
+    photoH: "Votre photographie",
+    photoP: "Elle ne quitte pas votre appareil. Le recadrage, le redressement et la planche d'impression sont dessinés sur un canvas dans l'onglet, et le fond est retiré par un réseau de neurones qui tourne sur votre machine. Il n'y a pas d'envoi, donc aucune copie de votre visage sur nos serveurs — non pas supprimée ensuite, jamais reçue. Le vérificateur fonctionne pareil : il mesure le fichier dans l'onglet et rapporte ce qu'il a trouvé.",
+    modelsH: "Les modèles",
+    modelsP: "Détourer un fond et trouver un visage demandent un modèle, et ce modèle est téléchargé depuis un réseau de diffusion la première fois que vous le demandez. Cette requête indique au réseau votre adresse IP et le fichier demandé, comme tout téléchargement. Le modèle reste ensuite dans le cache du navigateur, et la deuxième fois tout fonctionne sans réseau. Rien de votre photo ne voyage avec lui.",
+    countingH: "Le comptage des visites",
+    countingP: "Le site a son propre compteur, sur son propre serveur. Il ne pose aucun cookie, n'écrit rien dans votre navigateur et ne crée aucun identifiant : il ne peut donc pas vous suivre d'une visite à l'autre ni d'un site à l'autre. Chaque événement note le chemin de la page, le site d'origine si vous venez d'un lien, l'heure, les paramètres de campagne présents dans l'adresse et les commandes utilisées — jamais ce que vous avez chargé. Comme tout serveur web, le nôtre voit l'adresse IP d'où vient la requête.",
+    googleH: "La mesure de Google",
+    googleP: "Il y a un conteneur Google Tag Manager, et il démarre éteint. Les valeurs par défaut du Consent Mode sont déclarées avant son chargement : tant que vous n'acceptez pas, il n'enregistre rien et ne lit rien. Le stockage publicitaire est refusé par défaut et rien sur ce site ne peut l'autoriser. Si vous acceptez les statistiques, Google reçoit ce qu'il reçoit partout : page, provenance, localisation approximative, appareil.",
+    storedH: "Ce qui reste dans votre navigateur",
+    storedP: "Trois choses, toutes locales : votre réponse à la question du consentement, le modèle de fond que vous préférez, et les fichiers des modèles eux-mêmes. Effacer les données de ce site dans votre navigateur supprime les trois, et tout fonctionne ensuite comme avant : la question sera simplement reposée et le modèle retéléchargé.",
+    hostingH: "Hébergement",
+    hostingP: "Les pages sont des fichiers statiques servis par Cloudflare Pages, qui conserve les journaux de requêtes que tout hébergeur conserve, adresses IP comprises, pour servir le site et le protéger des abus. Nous ne les consultons pour rien d'autre.",
+    rightsH: "Comptes, paiement, droits",
+    rightsP: "Il n'y a pas de compte, rien à créer, aucune adresse e-mail collectée et rien à payer. Comme nous ne conservons aucun enregistrement lié à une personne, il n'y a pas de profil à demander, corriger ou supprimer. Si vous avez accepté les statistiques Google et souhaitez revenir dessus, utilisez le bouton ci-dessous : l'effet est immédiat et la balise cesse d'enregistrer quoi que ce soit. Pour le reste, écrivez-nous.",
+    changeAnswer: "Modifier ma réponse sur les statistiques",
+    answerCleared: "C'est fait. La barre reposera la question à la page suivante.",
+    contactH: "Contact",
+    contactP: "Écrivez à info@superduperai.co. Le code source est public, donc chaque affirmation de cette page peut être vérifiée plutôt que crue.",
   },
 
   autoFaq: {

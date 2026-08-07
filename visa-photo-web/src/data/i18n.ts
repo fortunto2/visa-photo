@@ -198,6 +198,8 @@ export interface Dict {
    */
   consent: {
     text: string;
+    /** link to the privacy page, so the bar is not the only account of itself */
+    more: string;
     accept: string;
     decline: string;
   };
@@ -280,6 +282,39 @@ export interface Dict {
     download: string;
     whenToUse: string;
     whenToUseBody: string;
+  };
+
+  /**
+   * The privacy page. Optional per locale like the other secondary pages, so a language that
+   * has not translated it gets no route rather than an English page under its prefix — but the
+   * consent bar links here, so a locale that shows the bar should carry this too.
+   *
+   * Every claim on it was checked against what the code actually does, including reading the
+   * analytics script to confirm it sets no cookie and creates no identifier. A privacy page
+   * that overstates is worse than none: it is the one page a reader will test.
+   */
+  privacyPage?: {
+    title: string;
+    h1: string;
+    lead: string;
+    photoH: string;
+    photoP: string;
+    modelsH: string;
+    modelsP: string;
+    countingH: string;
+    countingP: string;
+    googleH: string;
+    googleP: string;
+    storedH: string;
+    storedP: string;
+    hostingH: string;
+    hostingP: string;
+    rightsH: string;
+    rightsP: string;
+    changeAnswer: string;
+    answerCleared: string;
+    contactH: string;
+    contactP: string;
   };
 
   /** the models page: what the background remover actually downloads and why */

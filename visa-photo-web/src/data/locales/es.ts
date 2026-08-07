@@ -125,6 +125,7 @@ const es: Dict = {
 
   consent: {
     text: "Tu foto se queda en tu dispositivo, y eso no cambia. Esto es sólo la analítica de Google, que cuenta visitas. Está apagada hasta que digas lo contrario.",
+    more: "Más",
     accept: "Permitir analítica",
     decline: "No, gracias",
   },
@@ -320,6 +321,30 @@ const es: Dict = {
     download: "Descargar",
     whenToUse: "Para qué sirve",
     whenToUseBody: "La foto de documento es sólo un caso, y para eso están las páginas por país, que además traen el recorte y la regla de altura de la cabeza. Esta página es para todo lo demás: una foto de perfil, un anuncio, una impresión, un retrato con un fondo que no va. Aquí no se mide ni se compara nada con una especificación: la foto sale del tamaño con el que entró.",
+  },
+
+  privacyPage: {
+    title: "Privacidad — qué recoge y qué no recoge este sitio",
+    h1: "Privacidad",
+    lead: "Corto, porque hay poco que contar. Tu foto nunca se sube y aquí nada te identifica. Lo que sigue es todo, escrito para que puedas comprobarlo en el código fuente en vez de creerlo.",
+    photoH: "Tu fotografía",
+    photoP: "No sale de tu dispositivo. El recorte, el enderezado y la hoja de impresión se dibujan en un lienzo dentro de la pestaña, y el fondo lo quita una red neuronal que corre en tu máquina. No hay subida, así que no hay copia de tu cara en ningún servidor nuestro: no es que se borre después, es que nunca llega. El verificador funciona igual: mide el archivo en la pestaña y cuenta lo que encontró.",
+    modelsH: "Los modelos",
+    modelsP: "Quitar un fondo y encontrar una cara necesitan un modelo, y ese modelo se descarga de una red de distribución la primera vez que lo pides. Esa petición le dice a la red tu dirección IP y qué archivo pediste, como cualquier descarga. Después el modelo queda en la caché del navegador y la segunda vez funciona sin red. Nada de tu foto viaja con él.",
+    countingH: "Contar visitas",
+    countingP: "El sitio tiene su propio contador, en su propio servidor. No pone ninguna cookie, no guarda nada en tu navegador y no crea ningún identificador, así que no puede seguirte entre visitas ni entre sitios. Cada evento anota la ruta de la página, el sitio de origen si viniste de uno, la hora, las etiquetas de campaña de la URL y qué controles usaste; nunca lo que subiste. Como cualquier servidor web, el nuestro ve la dirección IP desde la que llegó la petición.",
+    googleH: "La medición de Google",
+    googleP: "Hay un contenedor de Google Tag Manager y arranca apagado. Los valores de Consent Mode se declaran antes de que cargue, así que hasta que lo permitas no guarda ni lee nada. El almacenamiento publicitario está denegado por defecto y nada en este sitio puede concederlo. Si permites la analítica, Google recibe lo de siempre: página, origen, ubicación aproximada, dispositivo.",
+    storedH: "Qué se queda en tu navegador",
+    storedP: "Tres cosas, todas locales: tu respuesta sobre el consentimiento, qué modelo de fondo prefieres y los propios archivos de los modelos. Borrar los datos de este sitio en tu navegador quita las tres, y después funciona igual que antes: simplemente volverá a preguntar y a descargar.",
+    hostingH: "Alojamiento",
+    hostingP: "Las páginas son archivos estáticos servidos por Cloudflare Pages, que guarda los registros de peticiones que guarda cualquier alojamiento, incluidas las direcciones IP, para servir el sitio y protegerlo de abusos. No los leemos para ninguna otra cosa.",
+    rightsH: "Cuentas, pagos, derechos",
+    rightsP: "No hay cuenta, no hay que registrarse, no recogemos correos y no hay nada que pagar. Como no guardamos ningún registro ligado a una persona, no hay perfil que pedir, corregir ni borrar. Si permitiste la analítica de Google y quieres deshacerlo, usa el botón de abajo: surte efecto al momento y la etiqueta deja de guardar nada. Para cualquier otra cosa, escríbenos.",
+    changeAnswer: "Cambiar mi respuesta sobre la analítica",
+    answerCleared: "Hecho. La barra volverá a preguntar en la siguiente página.",
+    contactH: "Contacto",
+    contactP: "Escribe a info@superduperai.co. El código fuente es público, así que cualquier afirmación de esta página se puede comprobar en lugar de creerse.",
   },
 
   autoFaq: {

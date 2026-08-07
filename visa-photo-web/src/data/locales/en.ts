@@ -113,6 +113,7 @@ const en: Dict = {
 
   consent: {
     text: "Your photo stays on your device — that never changes. This is only about Google's analytics, which counts visits. Off until you say otherwise.",
+    more: "More",
     accept: "Allow analytics",
     decline: "No thanks",
   },
@@ -430,6 +431,30 @@ const en: Dict = {
     download: "Download",
     whenToUse: "What this is for",
     whenToUseBody: "A document photo is one use, and the country pages here do that with the crop and the head-height rule included. This page is for everything else: a profile picture, a listing, a print, a portrait whose backdrop is wrong. Nothing is measured or judged against a specification — the photo comes out the size it went in.",
+  },
+
+  privacyPage: {
+    title: "Privacy — what this site does and does not collect",
+    h1: "Privacy",
+    lead: "Short, because there is little to describe. Your photograph is never uploaded, and nothing here identifies you. What follows is the whole of it, written so it can be checked against the source code rather than believed.",
+    photoH: "Your photograph",
+    photoP: "It never leaves your device. The crop, the straightening and the print sheet are drawn on a canvas inside the browser tab, and the background is removed by a neural network that runs on your machine. There is no upload, so there is no copy of your face on any server of ours — not deleted later, never received. The checker works the same way: it measures the file in the tab and reports what it found.",
+    modelsH: "The models",
+    modelsP: "Removing a background and finding a face need a model, and that model is downloaded from a content delivery network the first time you ask for it. That request tells the network your IP address and which file you asked for, as any download does. The model is then kept in your browser's cache, so the second time it works with no network at all. Nothing about your photograph travels with it.",
+    countingH: "Counting visits",
+    countingP: "This site runs its own visit counter, on its own server. It sets no cookie, stores nothing in your browser and creates no identifier, so it cannot follow you between visits or between sites. Each event records the page path, the referring site if you came from one, the time, any campaign tags in the URL, and which controls were used — never what you uploaded. As with every web server, ours sees the IP address the request came from.",
+    googleH: "Google's measurement",
+    googleP: "There is a Google Tag Manager container, and it starts switched off. Consent Mode defaults are declared before it loads, so until you allow it, it stores nothing and reads nothing. Advertising storage is denied at the default and nothing on this site can grant it. If you allow analytics, Google receives the ordinary things it receives everywhere: page, referrer, approximate location, device.",
+    storedH: "What is kept in your browser",
+    storedP: "Three things, all local: your answer to the consent question, which background model you prefer, and the model files themselves. Clearing this site's data in your browser removes all three, and the site works exactly as before afterwards — it will simply ask again and download again.",
+    hostingH: "Hosting",
+    hostingP: "The pages are static files served by Cloudflare Pages, which keeps the request logs any host keeps, including IP addresses, to serve the site and defend it from abuse. We do not read them for any other purpose.",
+    rightsH: "Accounts, payment, rights",
+    rightsP: "There is no account, nothing to sign up for, no e-mail address collected, and nothing to pay. Since we hold no record tied to a person, there is no profile to request, correct or delete. If you allowed Google's analytics and want that undone, use the button below — it takes effect immediately and the tag stops storing anything. For anything else, write to us.",
+    changeAnswer: "Change my answer about analytics",
+    answerCleared: "Cleared. The bar will ask again on the next page.",
+    contactH: "Contact",
+    contactP: "Write to info@superduperai.co. The source code is public, so any claim on this page can be checked rather than trusted.",
   },
 
   autoFaq: {
