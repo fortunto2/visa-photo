@@ -353,7 +353,7 @@ const en: Dict = {
     us_dv: "US DV Lottery photo (Green Card lottery)",
     turkey: "Turkish residence permit (ikamet) photo",
     eu_schengen: "Schengen visa photo",
-    us_visa: "US visa and Green Card photo",
+    us_visa: "US visa photo (DS-160)",
     us_passport: "US passport photo",
     uk_passport: "UK passport photo",
     ca_passport: "Canadian passport and PR photo",
@@ -399,7 +399,7 @@ const en: Dict = {
     us_dv: "DV Lottery",
     turkey: "Residence permit",
     eu_schengen: "Schengen visa",
-    us_visa: "Visa / Green Card",
+    us_visa: "Visa (DS-160)",
     us_passport: "Passport",
     uk_passport: "Passport",
     ca_passport: "Passport / PR",
@@ -509,6 +509,15 @@ const en: Dict = {
       },
     ],
     us_visa: [
+      {
+        q: "Does a green card application need a photo made here?",
+        a: "Not any more, if it goes through USCIS. Since 12 December 2025 USCIS no longer accepts " +
+          "a photo you submit yourself — it takes one at the biometrics appointment, and Form I-485 " +
+          "(adjust status), I-90 (replace the card), N-400 (naturalisation) and N-600 all require a " +
+          "fresh one regardless of when you were last photographed. A photo made here is for the " +
+          "DS-160 and for an immigrant visa applied for at a consulate abroad, which are State " +
+          "Department, not USCIS.",
+      },
       {
         q: "What size is a US visa photo?",
         a: "2 × 2 inches, which is 51 × 51 mm or 5.08 × 5.08 cm. Digitally that is 600 × 600 pixels " +

@@ -52,7 +52,7 @@ format = "jpeg"
 notes = "White bg, 2x2 inch, head 1-1.375 inch"
 
 [us_visa]
-name = "USA Visa / Green Card"
+name = "USA Visa (DS-160)"
 digital_width = 600
 digital_height = 600
 max_file_size_kb = 240
