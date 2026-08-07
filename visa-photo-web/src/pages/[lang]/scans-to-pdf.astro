@@ -1,0 +1,86 @@
+---
+import Page from "../../layouts/Page.astro";
+import ScansTool from "../../components/ScansTool.tsx";
+import { langsFor, dict, type ActiveLang } from "../../data/locales";
+import { absolute, path } from "../../lib/site";
+
+/**
+ * The end of the path this site already had most of.
+ *
+ * Someone makes a photo here and compresses a scan here, and then the application asks for one
+ * PDF holding all of it — so they leave for a converter and hand it a passport. This closes
+ * that gap, and the privacy claim is worth more here than on any photo page.
+ */
+export function getStaticPaths() {
+  return langsFor(["scans-to-pdf"]).map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: ActiveLang };
+const t = dict(lang);
+const k = t.scansPage!;
+
+const schema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: k.h1,
+    applicationCategory: "UtilitiesApplication",
+    operatingSystem: "Any browser",
+    description: k.lead,
+    url: absolute(path(lang, "scans-to-pdf")),
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  },
+];
+---
+
+<Page lang={lang} t={t} title={k.title} description={k.lead} segments={["scans-to-pdf"]} schema={schema}>
+  <p class="crumb"><a href={path(lang)}>{t.nav.countries}</a></p>
+
+  <h1>{k.h1}</h1>
+  <p class="answer">{k.lead}</p>
+
+  <ScansTool
+    client:load
+    page={{
+      addMore: k.addMore, fitLabel: k.fitLabel, fitImage: k.fitImage, fitA4: k.fitA4,
+      target: k.target, noLimit: k.noLimit, run: k.run, working: k.working,
+      result: k.result, missed: k.missed, download: k.download, fileLabel: k.fileLabel,
+      up: k.up, down: k.down, remove: k.remove, order: k.order,
+    }}
+    strings={{
+      ...t.tool,
+      dropSub: t.tool.dropSub(k.h1),
+      framedTo: t.tool.framedTo(""),
+      downloadSheet: t.tool.downloadSheet(0),
+      guideEyes: t.tool.guideEyes(""),
+      removeBgHint: t.tool.removeBgHint,
+      modelDefault: t.tool.modelDefault,
+      noEditingAtAction: t.warn.noEditingAtAction,
+      proceedAnyway: t.warn.proceedAnyway,
+      mbUnit: t.unit.mb,
+      modelsPageLink: t.tool.modelsPageLink,
+      maxKb: t.tool.maxKb,
+      maxKbHint: t.tool.maxKbHint,
+      fileLabel: t.spec.file,
+    }}
+  />
+
+  <ul class="trust">
+    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-check" /></svg>{t.trust.free}</li>
+    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-shield" /></svg>{t.trust.inBrowser}</li>
+    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-check" /></svg>{t.trust.noServer}</li>
+    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-check" /></svg>{t.trust.noSignup}</li>
+  </ul>
+  <p class="trust-why">{t.trust.why}</p>
+
+  <div class="seo" style="margin-top:44px">
+    <section>
+      <h2>
+        <span class="ico"><svg width="22" height="22" aria-hidden="true"><use href="#ic-question" /></svg></span>
+        {k.whenToUse}
+      </h2>
+      <p>{k.whenToUseBody}</p>
+    </section>
+    <section><p class="disclaimer">{t.seo.disclaimerShort}</p></section>
+  </div>
+</Page>

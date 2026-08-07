@@ -385,6 +385,30 @@ const pt: Dict = {
     whenToUseBody: "Portais de visto, universidades e bancos informam um limite em megabytes e recusam o envio sem dizer qual arquivo estourou. O culpado de sempre é um escaneamento feito com a câmera em resolução cheia. Aqui tudo roda no seu navegador e o documento não chega até nós — e é justamente esse o ponto: o que se comprime costuma ser passaporte, extrato e contrato, e todas as outras ferramentas pedem para você subir exatamente isso.",
   },
 
+  scansPage: {
+    title: "Juntar digitalizações num só PDF — grátis, sem enviar nada",
+    h1: "Vários escaneamentos em um PDF",
+    lead: "As solicitações pedem um arquivo só, com passaporte, extrato e certidão dentro. Adicione as fotos na ordem que quiser, escolha um limite de tamanho, e o PDF é montado aqui no navegador. Os documentos não saem do seu aparelho — e é justamente esse o ponto, considerando que documentos são esses.",
+    order: "As páginas sairão nesta ordem:",
+    addMore: "Adicionar mais",
+    fitLabel: "Formato da página:",
+    fitImage: "Conforme a imagem",
+    fitA4: "Folha A4",
+    target: "Manter o PDF abaixo de:",
+    noLimit: "Sem limite",
+    run: "Montar o PDF",
+    working: "Montando…",
+    result: "Pronto:",
+    missed: "Não coube nesse limite. Tente um maior, ou tire uma página e envie separado.",
+    download: "Baixar PDF",
+    fileLabel: "PDF",
+    up: "Subir",
+    down: "Descer",
+    remove: "Remover",
+    whenToUse: "Quando é isto que você precisa",
+    whenToUseBody: "Consulados, universidades e locadores pedem um único PDF e colocam um limite de tamanho nele. As páginas que você está juntando são passaportes, extratos e certidões, e qualquer outro conversor começa pedindo que você suba exatamente isso. Aqui o arquivo é montado no seu navegador e não existe cópia em lugar nenhum.",
+  },
+
   autoFaq: {
     size: ({ doc }) => `${doc}: qual é o tamanho em centímetros e polegadas?`,
     sizeA: ({ mm, cm, inch }) =>

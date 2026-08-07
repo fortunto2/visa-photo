@@ -49,6 +49,15 @@ export function toolsFor(lang: ActiveLang, t: Dict): ToolLink[] {
           icon: "ic-file",
         }
       : null,
+    t.scansPage
+      ? {
+          segment: "scans-to-pdf",
+          href: path(lang, "scans-to-pdf"),
+          name: t.scansPage.h1,
+          blurb: t.scansPage.lead,
+          icon: "ic-layers",
+        }
+      : null,
     t.pdfPage
       ? {
           segment: "compress-pdf",

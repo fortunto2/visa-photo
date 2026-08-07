@@ -385,6 +385,30 @@ const tr: Dict = {
     whenToUseBody: "Vize portalları, üniversiteler ve bankalar sınırı megabayt olarak yazar, sonra hangi dosyanın aştığını söylemeden yüklemeyi geri çevirir. Olağan şüpheli, tam kamera çözünürlüğünde çekilmiş bir tarama. Burada her şey tarayıcınızda çalışır, belge bize hiç ulaşmaz — ve mesele tam da bu: sıkıştırılanlar genellikle pasaportlar, dökümler ve sözleşmelerdir, diğer bütün araçlar ise tam onları yüklemenizi ister.",
   },
 
+  scansPage: {
+    title: "Taramaları tek PDF'te birleştir — ücretsiz, hiçbir şey yüklenmez",
+    h1: "Birkaç tarama, tek PDF",
+    lead: "Başvurular pasaportu, hesap dökümünü ve belgeyi içeren tek bir dosya ister. Fotoğrafları istediğiniz sırayla ekleyin, bir boyut sınırı seçin, PDF tarayıcının içinde oluşsun. Belgeler cihazınızdan çıkmaz — hangi belgeler olduğunu düşününce mesele zaten tam da bu.",
+    order: "Sayfalar bu sırayla çıkacak:",
+    addMore: "Daha ekle",
+    fitLabel: "Sayfa biçimi:",
+    fitImage: "Görsele göre",
+    fitA4: "A4 sayfa",
+    target: "PDF şunun altında kalsın:",
+    noLimit: "Sınırsız",
+    run: "PDF oluştur",
+    working: "Oluşturuluyor…",
+    result: "Hazır:",
+    missed: "Bu sınıra sığmadı. Daha büyük bir sınır deneyin ya da bir sayfayı çıkarıp ayrı gönderin.",
+    download: "PDF indir",
+    fileLabel: "PDF",
+    up: "Yukarı",
+    down: "Aşağı",
+    remove: "Çıkar",
+    whenToUse: "Bu ne zaman gerekir",
+    whenToUseBody: "Konsolosluklar, üniversiteler ve ev sahipleri tek bir PDF ister ve ona boyut sınırı koyar. Birleştirdiğiniz sayfalar pasaportlar, hesap dökümleri ve belgelerdir; başka her dönüştürücü ise işe tam bunları yüklemenizi isteyerek başlar. Burada dosya kendi tarayıcınızda oluşur ve başka hiçbir yerde kopyası bulunmaz.",
+  },
+
   autoFaq: {
     size: ({ doc }) => `${doc}: kaç santimetre, kaç inç?`,
     sizeA: ({ mm, cm, inch }) =>

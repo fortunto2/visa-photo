@@ -388,6 +388,30 @@ const es: Dict = {
     whenToUseBody: "Los portales de visados, las universidades y los bancos indican un límite en megabytes y rechazan la subida sin decir qué archivo se pasó. El culpable habitual es un escaneo hecho con la cámara a plena resolución. Aquí todo ocurre en tu navegador y el documento no llega hasta nosotros, que es justamente lo que importa: lo que se comprime suelen ser pasaportes, extractos y contratos, y cualquier otra herramienta te pide subir precisamente eso.",
   },
 
+  scansPage: {
+    title: "Unir escaneos en un solo PDF — gratis y sin subir nada",
+    h1: "Varios escaneos en un PDF",
+    lead: "Las solicitudes piden un único archivo con el pasaporte, el extracto y el certificado dentro. Añade las fotos en el orden que quieras, elige un límite de tamaño y el PDF se monta aquí, en el navegador. Los documentos no salen de tu dispositivo, que es justo lo importante viendo de qué documentos hablamos.",
+    order: "Las páginas saldrán en este orden:",
+    addMore: "Añadir más",
+    fitLabel: "Forma de la página:",
+    fitImage: "Según la imagen",
+    fitA4: "Hoja A4",
+    target: "Mantener el PDF por debajo de:",
+    noLimit: "Sin límite",
+    run: "Crear el PDF",
+    working: "Creando…",
+    result: "Listo:",
+    missed: "No cabe en ese límite. Prueba uno mayor, o quita una página y envíala aparte.",
+    download: "Descargar PDF",
+    fileLabel: "PDF",
+    up: "Subir",
+    down: "Bajar",
+    remove: "Quitar",
+    whenToUse: "Cuándo es esto lo que necesitas",
+    whenToUseBody: "Consulados, universidades y caseros piden un solo PDF y le ponen un límite de peso. Las páginas que estás uniendo son pasaportes, extractos bancarios y certificados, y cualquier otro conversor empieza pidiéndote que subas precisamente eso. Aquí el archivo se monta en tu navegador y no existe copia en ningún otro sitio.",
+  },
+
   autoFaq: {
     size: ({ doc }) => `${doc}: ¿qué tamaño tiene en centímetros y pulgadas?`,
     sizeA: ({ mm, cm, inch }) =>

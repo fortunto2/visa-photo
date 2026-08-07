@@ -19,6 +19,7 @@ export const GET: APIRoute = () => {
     ["privacy"],
     ["compress"],
     ["compress-pdf"],
+    ["scans-to-pdf"],
     ...countryGroups().map((g) => [g.slug]), // /{lang}/{country}/
     ...CATALOG.map((e) => [e.country, e.doc]),
     // the checker has its own address, and its own search

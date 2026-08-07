@@ -372,6 +372,35 @@ export interface Dict {
     whenToUseBody: string;
   };
 
+  /**
+   * Assembling several scans into one PDF. The privacy argument is at its strongest here:
+   * the pages being combined are passports, statements and certificates, and every converter
+   * that offers this begins by asking for them to be uploaded.
+   */
+  scansPage?: {
+    title: string;
+    h1: string;
+    lead: string;
+    order: string;
+    addMore: string;
+    fitLabel: string;
+    fitImage: string;
+    fitA4: string;
+    target: string;
+    noLimit: string;
+    run: string;
+    working: string;
+    result: string;
+    missed: string;
+    download: string;
+    fileLabel: string;
+    up: string;
+    down: string;
+    remove: string;
+    whenToUse: string;
+    whenToUseBody: string;
+  };
+
   /** the models page: what the background remover actually downloads and why */
   modelsPage?: {
     title: string;

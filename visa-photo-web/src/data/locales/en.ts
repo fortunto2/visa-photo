@@ -500,6 +500,30 @@ const en: Dict = {
     whenToUseBody: "Visa portals, universities and banks state a limit in megabytes and refuse the upload without saying which file broke it. The usual culprit is a scan photographed at full camera resolution. Everything here runs in your browser, so the document never reaches us — the reason to care is that the files people compress are passports, bank statements and contracts, and every other tool for this asks you to upload exactly those.",
   },
 
+  scansPage: {
+    title: "Combine scans into one PDF — free, and nothing is uploaded",
+    h1: "Several scans into one PDF",
+    lead: "Applications ask for one file holding a passport, a statement and a certificate. Add the photographs in the order you want them, choose a size limit, and the PDF is built here in the browser. The documents never leave your device — which is the whole point, given what they are.",
+    order: "Pages come out in this order:",
+    addMore: "Add more",
+    fitLabel: "Page shape:",
+    fitImage: "Fit the image",
+    fitA4: "A4 sheet",
+    target: "Keep the PDF under:",
+    noLimit: "No limit",
+    run: "Build the PDF",
+    working: "Building…",
+    result: "Ready:",
+    missed: "It would not fit that limit. Try a larger one, or remove a page and send it separately.",
+    download: "Download PDF",
+    fileLabel: "PDF",
+    up: "Move up",
+    down: "Move down",
+    remove: "Remove",
+    whenToUse: "When this is what you need",
+    whenToUseBody: "Consulates, universities and landlords ask for a single PDF and set a size limit on it. The pages you are combining are passports, bank statements and certificates, and every other converter for this begins by asking you to upload exactly those. Here the file is assembled in your own browser and no copy exists anywhere else.",
+  },
+
   autoFaq: {
     size: ({ doc }) => `What size is a ${doc}, in cm and inches?`,
     sizeA: ({ mm, cm, inch }) =>

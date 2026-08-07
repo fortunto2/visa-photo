@@ -389,6 +389,30 @@ const fr: Dict = {
     whenToUseBody: "Les portails de visa, les universités et les banques annoncent une limite en mégaoctets puis refusent l'envoi sans dire quel fichier l'a dépassée. Le coupable habituel est un scan pris à pleine résolution d'appareil photo. Ici tout tourne dans votre navigateur et le document ne nous parvient jamais — et c'est précisément le sujet : ce que l'on compresse, ce sont des passeports, des relevés et des contrats, et tous les autres outils vous demandent justement de les téléverser.",
   },
 
+  scansPage: {
+    title: "Réunir des scans en un seul PDF — gratuit, rien n'est envoyé",
+    h1: "Plusieurs scans en un PDF",
+    lead: "Les dossiers demandent un seul fichier contenant le passeport, le relevé et l'attestation. Ajoutez les photos dans l'ordre voulu, choisissez une limite de poids, et le PDF est assemblé ici, dans le navigateur. Les documents ne quittent pas votre appareil — ce qui est bien l'essentiel, vu de quels documents il s'agit.",
+    order: "Les pages sortiront dans cet ordre :",
+    addMore: "Ajouter",
+    fitLabel: "Forme de la page :",
+    fitImage: "Au format de l'image",
+    fitA4: "Feuille A4",
+    target: "Garder le PDF sous :",
+    noLimit: "Sans limite",
+    run: "Assembler le PDF",
+    working: "Assemblage…",
+    result: "Prêt :",
+    missed: "Impossible de tenir dans cette limite. Essayez-en une plus haute, ou retirez une page et envoyez-la à part.",
+    download: "Télécharger le PDF",
+    fileLabel: "PDF",
+    up: "Monter",
+    down: "Descendre",
+    remove: "Retirer",
+    whenToUse: "Quand cette page sert",
+    whenToUseBody: "Consulats, universités et propriétaires réclament un seul PDF et lui imposent une limite de poids. Les pages que vous réunissez sont des passeports, des relevés bancaires et des attestations, et tout autre convertisseur commence par vous demander de les téléverser. Ici le fichier est assemblé dans votre navigateur et il n'en existe de copie nulle part ailleurs.",
+  },
+
   autoFaq: {
     size: ({ doc }) => `${doc} : quel format en centimètres et en pouces ?`,
     sizeA: ({ mm, cm, inch }) =>
