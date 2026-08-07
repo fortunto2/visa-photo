@@ -99,6 +99,11 @@ export default function CompressTool({ strings, page }: Props) {
       </div>
 
       <div class="spec">
+        <p class="spec-head">
+          <svg width="19" height="19" aria-hidden="true"><use href="#ic-file" /></svg>
+          {strings.fileLabel}
+        </p>
+        <div class="spec-body">
         <p class="hint caveat">{page.target}</p>
         <div class="funnel-row">
           {TARGETS.map((kb) => (
@@ -146,6 +151,7 @@ export default function CompressTool({ strings, page }: Props) {
           onClick={() => { setFile(null); setPreview(null); setResult(null); }}>
           {strings.reset}
         </button>
+        </div>
       </div>
     </div>
   );

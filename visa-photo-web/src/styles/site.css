@@ -751,3 +751,28 @@ h1 {
 .consent button:hover { border-color: var(--teal); color: var(--teal); }
 .consent button.primary:hover { color: #fff; filter: brightness(1.06); }
 .consent button:focus-visible { outline: 3px solid var(--teal); outline-offset: 2px; }
+
+/* ── Chips ────────────────────────────────────────────────────────────────
+   Used by the any-size, background and compress tools since they were built,
+   and never actually defined — so they rendered as raw bordered buttons with
+   sharp corners and no padding. Same failure as the missing --card token. */
+.funnel-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  cursor: pointer; font: inherit; font-size: 13.5px; font-weight: 600;
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+  padding: 8px 13px; border-radius: var(--r-pill);
+  border: 1px solid var(--line); background: var(--surface-2); color: var(--ink-soft);
+  transition: border-color .12s ease, color .12s ease, background .12s ease;
+}
+.chip:hover { border-color: var(--teal); color: var(--teal); }
+.chip.is-on {
+  border-color: var(--teal); background: var(--teal-soft); color: var(--teal);
+}
+.chip:focus-visible { outline: 3px solid var(--teal); outline-offset: 2px; }
+
+/* `.spec` clips to its rounded corners and expects a head plus rows; anything
+   else dropped into it sat flush against the edges. */
+.spec-body { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 12px; }
+.spec-body > .hint.caveat { margin: 2px 0 -4px; }
+.spec-body .field { justify-content: space-between; }
+.spec-body .btn-reset { align-self: flex-start; margin-top: 4px; }

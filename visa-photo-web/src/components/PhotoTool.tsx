@@ -60,6 +60,7 @@ export interface ToolStrings {
   advancedHint: string;
   maxKb: string;
   maxKbHint: string;
+  fileLabel: string;
   brightness: string;
   contrast: string;
   shadows: string;

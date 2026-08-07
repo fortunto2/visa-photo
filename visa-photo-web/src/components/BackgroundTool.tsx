@@ -160,6 +160,7 @@ export default function BackgroundTool({ strings, page, modelsHref }: Props) {
             {strings.bgDone}
           </p>
 
+          <div class="spec-body">
           <p class="hint caveat">{page.colour}</p>
           <div class="swatches" data-testid="bg-swatches">
             {BACKDROPS.map((b) => (
@@ -190,6 +191,7 @@ export default function BackgroundTool({ strings, page, modelsHref }: Props) {
             onClick={() => { setSrc(null); setCut(null); setColour("#FFFFFF"); }}>
             {strings.reset}
           </button>
+          </div>
         </div>
       )}
       </div>
