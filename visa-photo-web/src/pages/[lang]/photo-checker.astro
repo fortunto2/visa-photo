@@ -1,7 +1,7 @@
 ---
 import Page from "../../layouts/Page.astro";
 import { KIND_ICON, sizeLabels, CATALOG, presetOf, countryGroups, idOf } from "../../data/catalog";
-import { LANGS, dict, type ActiveLang } from "../../data/locales";
+import { LANGS, dict, hasSection, type ActiveLang } from "../../data/locales";
 import { SITE, absolute, path } from "../../lib/site";
 import { ltr } from "../../lib/bidi";
 
@@ -100,6 +100,9 @@ const schema = [
         {t.check.notChecked}
       </h2>
       <p>{t.check.notCheckedBody}</p>
+      {hasSection(lang, "photo-rejected") && (
+        <p><a href={path(lang, "photo-rejected")}>{t.rejectedPage!.h1}</a></p>
+      )}
     </section>
 
     <section>

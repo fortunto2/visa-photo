@@ -413,6 +413,28 @@ const fr: Dict = {
     whenToUseBody: "Consulats, universités et propriétaires réclament un seul PDF et lui imposent une limite de poids. Les pages que vous réunissez sont des passeports, des relevés bancaires et des attestations, et tout autre convertisseur commence par vous demander de les téléverser. Ici le fichier est assemblé dans votre navigateur et il n'en existe de copie nulle part ailleurs.",
   },
 
+  sigPage: {
+    title: "Photo de signature pour un formulaire — réglez la taille et les Ko, gratuit",
+    h1: "Préparer une signature pour un envoi",
+    lead: "Photographiez votre signature sur du papier blanc : le papier est nettoyé, le cadre est recadré sur l'encre, et la taille correspond à ce que demande le formulaire. Tout se passe dans le navigateur, la signature ne quitte pas votre appareil.",
+    threshold: "Seuil d'encre",
+    thresholdHint: "Faites glisser jusqu'à ce que le papier soit net et les traits entiers. Trop bas, les fins de trait disparaissent ; trop haut, les ombres restent.",
+    trim: "Recadrer sur l'encre",
+    transparent: "Fond transparent (PNG)",
+    widthLabel: "Largeur :",
+    minKb: "Au moins :",
+    maxKb: "Au plus :",
+    noMin: "Sans minimum",
+    result: "Résultat :",
+    noInk: "Rien d'assez sombre n'a été trouvé. Montez le seuil, ou refaites la photo sous une lumière plus uniforme.",
+    tooSmall: "En dessous du minimum exigé. Essayez une largeur supérieure : une image plus grande pèse davantage.",
+    tooBig: "Au-dessus de la limite. Essayez une largeur inférieure.",
+    download: "Télécharger",
+    fileLabel: "Signature",
+    whenToUse: "Pourquoi une page à part",
+    whenToUseBody: "Les formulaires qui réclament une signature indiquent la largeur en pixels et une fourchette en kilo-octets — et cette fourchette a un plancher autant qu'un plafond : une signature propre se compresse si bien qu'elle passe sous le minimum et se fait refuser parce qu'elle est trop légère. C'est la moitié de la règle que presque tous les outils oublient ; ici, c'est un réglage et non une surprise.",
+  },
+
   autoFaq: {
     size: ({ doc }) => `${doc} : quel format en centimètres et en pouces ?`,
     sizeA: ({ mm, cm, inch }) =>

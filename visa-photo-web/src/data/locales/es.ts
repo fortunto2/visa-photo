@@ -412,6 +412,28 @@ const es: Dict = {
     whenToUseBody: "Consulados, universidades y caseros piden un solo PDF y le ponen un límite de peso. Las páginas que estás uniendo son pasaportes, extractos bancarios y certificados, y cualquier otro conversor empieza pidiéndote que subas precisamente eso. Aquí el archivo se monta en tu navegador y no existe copia en ningún otro sitio.",
   },
 
+  sigPage: {
+    title: "Foto de la firma para un formulario — fija el tamaño y los KB, gratis",
+    h1: "Preparar una firma para subirla",
+    lead: "Fotografía tu firma en papel blanco: aquí se limpia el papel, se recorta a la tinta y se ajusta al tamaño que pide el formulario. Todo en el navegador, así que la firma no sale de tu dispositivo.",
+    threshold: "Umbral de tinta",
+    thresholdHint: "Desliza hasta que el papel quede limpio y los trazos enteros. Muy bajo y se pierden los finales finos; muy alto y quedan las sombras.",
+    trim: "Recortar a la tinta",
+    transparent: "Fondo transparente (PNG)",
+    widthLabel: "Ancho:",
+    minKb: "No menos de:",
+    maxKb: "No más de:",
+    noMin: "Sin mínimo",
+    result: "Resultado:",
+    noInk: "No se encontró nada lo bastante oscuro. Sube el umbral, o repite la foto con luz más uniforme.",
+    tooSmall: "Por debajo del mínimo que pide el formulario. Prueba un ancho mayor: una imagen más grande pesa más.",
+    tooBig: "Por encima del límite. Prueba un ancho menor.",
+    download: "Descargar",
+    fileLabel: "Firma",
+    whenToUse: "Por qué una página aparte",
+    whenToUseBody: "Los formularios que piden una firma indican el ancho en píxeles y un rango en kilobytes, y ese rango tiene suelo además de techo: una firma limpia se comprime tan bien que cae por debajo del mínimo y la rechazan por ser demasiado pequeña. Esa mitad de la regla la ignoran casi todas las herramientas, así que aquí es un control y no una sorpresa.",
+  },
+
   autoFaq: {
     size: ({ doc }) => `${doc}: ¿qué tamaño tiene en centímetros y pulgadas?`,
     sizeA: ({ mm, cm, inch }) =>

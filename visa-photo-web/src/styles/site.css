@@ -818,3 +818,13 @@ h1 {
 }
 .scan-acts button:hover:not(:disabled) { background: rgb(0 0 0 / 35%); }
 .scan-acts button:disabled { opacity: .35; cursor: default; }
+
+/* A signature is wide and short; the box follows it rather than the other way round. */
+.sig-preview {
+  display: grid; place-items: center; min-block-size: 200px; padding: 20px;
+  border: 1px solid var(--line); border-radius: var(--r-lg); background: #fff;
+}
+.sig-preview[data-transparent="true"] {
+  background: repeating-conic-gradient(#d8d8dc 0% 25%, #f4f4f6 0% 50%) 50% / 18px 18px;
+}
+.sig-preview img { max-inline-size: 100%; max-block-size: 40vh; display: block; }

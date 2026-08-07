@@ -409,6 +409,28 @@ const pt: Dict = {
     whenToUseBody: "Consulados, universidades e locadores pedem um único PDF e colocam um limite de tamanho nele. As páginas que você está juntando são passaportes, extratos e certidões, e qualquer outro conversor começa pedindo que você suba exatamente isso. Aqui o arquivo é montado no seu navegador e não existe cópia em lugar nenhum.",
   },
 
+  sigPage: {
+    title: "Foto da assinatura para um formulário — defina o tamanho e os KB, grátis",
+    h1: "Preparar a assinatura para envio",
+    lead: "Fotografe sua assinatura em papel branco: aqui o papel é limpo, o corte é feito na tinta e o tamanho fica no que o formulário pede. Tudo no navegador, então a assinatura não sai do seu aparelho.",
+    threshold: "Limiar da tinta",
+    thresholdHint: "Arraste até o papel ficar limpo e os traços inteiros. Baixo demais some com as pontas finas; alto demais deixa as sombras.",
+    trim: "Cortar na tinta",
+    transparent: "Fundo transparente (PNG)",
+    widthLabel: "Largura:",
+    minKb: "No mínimo:",
+    maxKb: "No máximo:",
+    noMin: "Sem mínimo",
+    result: "Resultado:",
+    noInk: "Nada escuro o bastante foi encontrado. Aumente o limiar, ou refaça a foto com luz mais uniforme.",
+    tooSmall: "Abaixo do mínimo que o formulário pede. Tente uma largura maior — imagem maior carrega mais bytes.",
+    tooBig: "Acima do limite. Tente uma largura menor.",
+    download: "Baixar",
+    fileLabel: "Assinatura",
+    whenToUse: "Por que uma página separada",
+    whenToUseBody: "Formulários que pedem assinatura informam a largura em pixels e uma faixa em kilobytes — e essa faixa tem piso além de teto: uma assinatura limpa comprime tão bem que cai abaixo do mínimo e é recusada por ser pequena demais. Essa metade da regra quase nenhuma ferramenta trata, então aqui ela é um controle e não uma surpresa.",
+  },
+
   autoFaq: {
     size: ({ doc }) => `${doc}: qual é o tamanho em centímetros e polegadas?`,
     sizeA: ({ mm, cm, inch }) =>

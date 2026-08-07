@@ -1,0 +1,87 @@
+---
+import Page from "../../layouts/Page.astro";
+import SignatureTool from "../../components/SignatureTool.tsx";
+import { langsFor, dict, type ActiveLang } from "../../data/locales";
+import { absolute, path } from "../../lib/site";
+
+/**
+ * A signature is not a portrait, and the difference decides the method.
+ *
+ * Dark ink on light paper separates with a luminance threshold, instantly and better than a
+ * segmentation model would — that model is looking for a person and finds nothing on a sheet
+ * of paper. The rest of the page is the part the forms actually argue about: a pixel width, a
+ * ceiling in kilobytes, and a floor in kilobytes that almost no tool handles.
+ */
+export function getStaticPaths() {
+  return langsFor(["signature"]).map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: ActiveLang };
+const t = dict(lang);
+const k = t.sigPage!;
+
+const schema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: k.h1,
+    applicationCategory: "UtilitiesApplication",
+    operatingSystem: "Any browser",
+    description: k.lead,
+    url: absolute(path(lang, "signature")),
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  },
+];
+---
+
+<Page lang={lang} t={t} title={k.title} description={k.lead} segments={["signature"]} schema={schema}>
+  <p class="crumb"><a href={path(lang)}>{t.nav.countries}</a></p>
+
+  <h1>{k.h1}</h1>
+  <p class="answer">{k.lead}</p>
+
+  <SignatureTool
+    client:load
+    page={{
+      threshold: k.threshold, thresholdHint: k.thresholdHint, trim: k.trim,
+      transparent: k.transparent, widthLabel: k.widthLabel, minKb: k.minKb,
+      maxKb: k.maxKb, noMin: k.noMin, result: k.result, noInk: k.noInk,
+      tooSmall: k.tooSmall, tooBig: k.tooBig, download: k.download, fileLabel: k.fileLabel,
+    }}
+    strings={{
+      ...t.tool,
+      dropSub: t.tool.dropSub(k.h1),
+      framedTo: t.tool.framedTo(""),
+      downloadSheet: t.tool.downloadSheet(0),
+      guideEyes: t.tool.guideEyes(""),
+      removeBgHint: t.tool.removeBgHint,
+      modelDefault: t.tool.modelDefault,
+      noEditingAtAction: t.warn.noEditingAtAction,
+      proceedAnyway: t.warn.proceedAnyway,
+      mbUnit: t.unit.mb,
+      modelsPageLink: t.tool.modelsPageLink,
+      maxKb: t.tool.maxKb,
+      maxKbHint: t.tool.maxKbHint,
+      fileLabel: t.spec.file,
+    }}
+  />
+
+  <ul class="trust">
+    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-check" /></svg>{t.trust.free}</li>
+    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-shield" /></svg>{t.trust.inBrowser}</li>
+    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-check" /></svg>{t.trust.noServer}</li>
+    <li><svg width="17" height="17" aria-hidden="true"><use href="#ic-check" /></svg>{t.trust.noSignup}</li>
+  </ul>
+  <p class="trust-why">{t.trust.why}</p>
+
+  <div class="seo" style="margin-top:44px">
+    <section>
+      <h2>
+        <span class="ico"><svg width="22" height="22" aria-hidden="true"><use href="#ic-question" /></svg></span>
+        {k.whenToUse}
+      </h2>
+      <p>{k.whenToUseBody}</p>
+    </section>
+    <section><p class="disclaimer">{t.seo.disclaimerShort}</p></section>
+  </div>
+</Page>

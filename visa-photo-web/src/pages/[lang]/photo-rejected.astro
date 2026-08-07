@@ -1,0 +1,70 @@
+---
+import Page from "../../layouts/Page.astro";
+import { langsFor, dict, type ActiveLang } from "../../data/locales";
+import { absolute, path } from "../../lib/site";
+
+/**
+ * The page for the query people arrive with after a refusal.
+ *
+ * They paste the portal's error message into a search box — "الرجاء اختيار صورة 35x45 mm",
+ * "e ikamet fotoğraf yükleme sorunu", "subir foto ds 160" — and land nowhere, because every
+ * result explains what a correct photo is rather than what the message they were given means.
+ *
+ * No new tool: the checker already measures exactly these things. What was missing was a page
+ * that says so in the words of the refusal, and hands them to it. Rendered as FAQ structured
+ * data, since each entry is literally a question someone typed.
+ */
+export function getStaticPaths() {
+  return langsFor(["photo-rejected"]).map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: ActiveLang };
+const t = dict(lang);
+const r = t.rejectedPage!;
+
+const reasons = [
+  { q: r.r1h, a: r.r1b },
+  { q: r.r2h, a: r.r2b },
+  { q: r.r3h, a: r.r3b },
+  { q: r.r4h, a: r.r4b },
+  { q: r.r5h, a: r.r5b },
+  { q: r.r6h, a: r.r6b },
+];
+
+const schema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: reasons.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: { "@type": "Answer", text: item.a },
+    })),
+  },
+];
+---
+
+<Page lang={lang} t={t} title={r.title} description={r.lead} segments={["photo-rejected"]} schema={schema}>
+  <p class="crumb"><a href={path(lang)}>{t.nav.countries}</a></p>
+
+  <h1>{r.h1}</h1>
+  <p class="answer">{r.lead}</p>
+
+  {/* The answer to most of these is a measurement, so the way to it comes before the reading. */}
+  <p style="margin:18px 0 30px">
+    <a class="cta" href={path(lang, "photo-checker")}>
+      <svg width="21" height="21" aria-hidden="true"><use href="#ic-check" /></svg>
+      {r.checkIt}
+    </a>
+  </p>
+
+  <div class="seo">
+    {reasons.map((item) => (
+      <section>
+        <h2>{item.q}</h2>
+        <p>{item.a}</p>
+      </section>
+    ))}
+    <section><p class="disclaimer">{t.seo.disclaimer}</p></section>
+  </div>
+</Page>

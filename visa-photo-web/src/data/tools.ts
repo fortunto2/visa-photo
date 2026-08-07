@@ -67,6 +67,15 @@ export function toolsFor(lang: ActiveLang, t: Dict): ToolLink[] {
           icon: "ic-copies",
         }
       : null,
+    t.sigPage
+      ? {
+          segment: "signature",
+          href: path(lang, "signature"),
+          name: t.sigPage.h1,
+          blurb: t.sigPage.lead,
+          icon: "ic-file",
+        }
+      : null,
     t.customPage
       ? {
           segment: "custom",

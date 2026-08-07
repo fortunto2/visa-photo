@@ -401,6 +401,59 @@ export interface Dict {
     whenToUseBody: string;
   };
 
+  /**
+   * Preparing a signature for an upload. The floor in kilobytes is the reason this page exists:
+   * a clean signature compresses under the minimum a form states and is refused for being small.
+   */
+  sigPage?: {
+    title: string;
+    h1: string;
+    lead: string;
+    threshold: string;
+    thresholdHint: string;
+    trim: string;
+    transparent: string;
+    widthLabel: string;
+    minKb: string;
+    maxKb: string;
+    noMin: string;
+    result: string;
+    noInk: string;
+    tooSmall: string;
+    tooBig: string;
+    download: string;
+    fileLabel: string;
+    whenToUse: string;
+    whenToUseBody: string;
+  };
+
+  /**
+   * "Why was my photo rejected" — the query people arrive with after a portal refuses them,
+   * often by pasting its error message into a search box. Not a new tool: the checker already
+   * answers this, and had no page that said so in the words the refusal used.
+   *
+   * English and Russian only for now, deliberately: these are six specific claims about what
+   * portal messages mean, and a rough translation of a diagnosis is worse than none.
+   */
+  rejectedPage?: {
+    title: string;
+    h1: string;
+    lead: string;
+    checkIt: string;
+    r1h: string;
+    r1b: string;
+    r2h: string;
+    r2b: string;
+    r3h: string;
+    r3b: string;
+    r4h: string;
+    r4b: string;
+    r5h: string;
+    r5b: string;
+    r6h: string;
+    r6b: string;
+  };
+
   /** the models page: what the background remover actually downloads and why */
   modelsPage?: {
     title: string;

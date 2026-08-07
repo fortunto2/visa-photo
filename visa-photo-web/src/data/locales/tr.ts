@@ -409,6 +409,28 @@ const tr: Dict = {
     whenToUseBody: "Konsolosluklar, üniversiteler ve ev sahipleri tek bir PDF ister ve ona boyut sınırı koyar. Birleştirdiğiniz sayfalar pasaportlar, hesap dökümleri ve belgelerdir; başka her dönüştürücü ise işe tam bunları yüklemenizi isteyerek başlar. Burada dosya kendi tarayıcınızda oluşur ve başka hiçbir yerde kopyası bulunmaz.",
   },
 
+  sigPage: {
+    title: "Form için imza fotoğrafı — ölçüyü ve KB'ı ayarlayın, ücretsiz",
+    h1: "İmzayı yüklemeye hazırlayın",
+    lead: "İmzanızı beyaz kâğıda atıp fotoğraflayın; burada kâğıt temizlenir, çerçeve mürekkebe göre kırpılır ve boyut formun istediğine ayarlanır. Her şey tarayıcıda çalışır, imza cihazınızdan çıkmaz.",
+    threshold: "Mürekkep eşiği",
+    thresholdHint: "Kâğıt temizlenene ve çizgiler bütün kalana kadar kaydırın. Çok düşükte ince uçlar kaybolur, çok yüksekte gölgeler kalır.",
+    trim: "Mürekkebe göre kırp",
+    transparent: "Saydam arka plan (PNG)",
+    widthLabel: "Genişlik:",
+    minKb: "En az:",
+    maxKb: "En fazla:",
+    noMin: "Alt sınır yok",
+    result: "Sonuç:",
+    noInk: "Yeterince koyu bir şey bulunamadı. Eşiği yükseltin ya da kâğıdı daha eşit ışıkta yeniden çekin.",
+    tooSmall: "Formun istediği alt sınırın altında. Daha büyük bir genişlik deneyin — büyük görüntü daha çok bayt taşır.",
+    tooBig: "Sınırın üstünde. Daha küçük bir genişlik deneyin.",
+    download: "İndir",
+    fileLabel: "İmza",
+    whenToUse: "Neden ayrı bir sayfa",
+    whenToUseBody: "İmza isteyen formlar hem piksel genişliğini hem de kilobayt cinsinden bir aralık verir; o aralığın tavanı kadar tabanı da vardır: temiz bir imza o kadar iyi sıkışır ki alt sınırın altına düşer ve 'çok küçük' diye geri çevrilir. Kuralın bu yarısını çoğu araç atlar, burada ise sürpriz değil bir düğmedir.",
+  },
+
   autoFaq: {
     size: ({ doc }) => `${doc}: kaç santimetre, kaç inç?`,
     sizeA: ({ mm, cm, inch }) =>
