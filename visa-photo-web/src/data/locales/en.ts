@@ -111,6 +111,12 @@ const en: Dict = {
     why: "Nothing is uploaded because nothing needs to be. Cropping happens on a canvas in your browser, and the background is removed by a neural network that downloads to your device and runs there. The only thing that travels is the model coming down — your photo never leaves the tab, and the source code is public so this can be checked rather than believed.",
   },
 
+  consent: {
+    text: "Your photo stays on your device — that never changes. This is only about Google's analytics, which counts visits. Off until you say otherwise.",
+    accept: "Allow analytics",
+    decline: "No thanks",
+  },
+
   seo: {
     requirements: "Photo requirements",
     requirementsIntro: (doc) => `Everything an accepted ${doc} photo has to satisfy.`,

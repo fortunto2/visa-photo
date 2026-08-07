@@ -123,6 +123,12 @@ const fr: Dict = {
     why: "Rien n\u2019est envoyé parce que rien n\u2019a besoin de l\u2019être. Le recadrage se fait sur un canvas dans votre navigateur, et le fond est retiré par un réseau de neurones téléchargé sur votre appareil et exécuté là. La seule chose qui circule, c\u2019est le modèle qui descend ; votre photo ne quitte pas l\u2019onglet. Le code est public : cela se vérifie au lieu de se croire.",
   },
 
+  consent: {
+    text: "Votre photo reste sur votre appareil, cela ne change pas. Il s'agit seulement des statistiques Google, qui comptent les visites. Elles sont désactivées tant que vous n'acceptez pas.",
+    accept: "Autoriser les statistiques",
+    decline: "Non merci",
+  },
+
   seo: {
     requirements: "Exigences pour la photo d'identité",
     requirementsIntro: (doc) => `Tout ce qu'une photo de ${doc.toLowerCase()} doit respecter pour être acceptée.`,

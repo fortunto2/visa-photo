@@ -122,6 +122,12 @@ const tr: Dict = {
     why: "Hiçbir şey yüklenmiyor, çünkü gerek yok. Kırpma tarayıcınızdaki bir tuval üzerinde yapılıyor, arka planı ise cihazınıza inip orada çalışan bir sinir ağı kaldırıyor. Yolculuk edenin tek şey modelin kendisi; fotoğrafınız sekmeden çıkmıyor. Kaynak kod açık olduğu için buna inanmak yerine bakıp doğrulayabilirsiniz.",
   },
 
+  consent: {
+    text: "Fotoğrafınız cihazınızda kalır, bu değişmez. Buradaki konu yalnızca ziyaretleri sayan Google analitiği. Siz izin verene kadar kapalı.",
+    accept: "Analitiğe izin ver",
+    decline: "Gerek yok",
+  },
+
   seo: {
     requirements: "Fotoğraf şartları",
     requirementsIntro: (doc) => `Kabul edilen bir ${doc.toLocaleLowerCase("tr")} fotoğrafının karşılaması gereken her şey.`,

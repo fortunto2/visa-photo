@@ -706,7 +706,7 @@ h1 {
 .tool-card {
   display: grid; gap: 7px; height: 100%; padding: 17px 18px;
   border: 1px solid var(--line); border-radius: var(--r-lg);
-  text-decoration: none; color: inherit; background: var(--card);
+  text-decoration: none; color: inherit; background: var(--surface);
   transition: border-color .12s ease, transform .12s ease;
 }
 .tool-card:hover { border-color: var(--teal); transform: translateY(-2px); }
@@ -722,9 +722,32 @@ h1 {
    weights fold into a ragged stack in a column that narrow. */
 .model-picker {
   margin-top: 18px; padding: 16px 18px;
-  border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--card);
+  border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--surface);
 }
 .model-picker .hint.caveat { max-width: 68ch; }
 /* Beats `.field input { flex: 1 }`, which stretched the colour well into a hairline. */
 .field.bg-picker input[type="color"] { flex: 0 0 auto; inline-size: 64px; block-size: 36px; padding: 3px; }
 .bg-tool-reset { margin-top: 14px; }
+
+/* ── Consent bar ──────────────────────────────────────────────────────────
+   Anchored, not a modal: it asks about counting visits, which does not warrant
+   blocking the page. Sits above everything and clears the safe area on phones. */
+.consent {
+  position: fixed; inset-inline: 12px; bottom: 12px; z-index: 60;
+  margin-inline: auto; max-width: 620px;
+  display: flex; flex-wrap: wrap; gap: 12px 18px; align-items: center;
+  padding: 14px 18px calc(14px + env(safe-area-inset-bottom));
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r-lg); box-shadow: 0 12px 34px rgb(0 0 0 / 14%);
+}
+.consent p { margin: 0; flex: 1 1 260px; font-size: 14px; line-height: 1.5; color: var(--ink-soft); }
+.consent-buttons { display: flex; gap: 9px; margin-inline-start: auto; }
+.consent button {
+  cursor: pointer; font: inherit; font-size: 14px; font-weight: 620;
+  padding: 9px 15px; border-radius: var(--r-pill);
+  border: 1px solid var(--line); background: var(--surface-2); color: var(--ink-soft);
+}
+.consent button.primary { background: var(--teal); border-color: var(--teal); color: #fff; }
+.consent button:hover { border-color: var(--teal); color: var(--teal); }
+.consent button.primary:hover { color: #fff; filter: brightness(1.06); }
+.consent button:focus-visible { outline: 3px solid var(--teal); outline-offset: 2px; }

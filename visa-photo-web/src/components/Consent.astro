@@ -1,0 +1,69 @@
+---
+import type { Dict } from "../data/i18n";
+
+interface Props { t: Dict }
+const { t } = Astro.props;
+---
+
+{/*
+  Consent for Google's measurement, done the way Google actually specifies it.
+
+  A bar that only hides itself is theatre: the tag has already run by the time anyone clicks.
+  Consent Mode v2 is the mechanism that makes the answer mean something — the defaults are
+  declared in <head> before the container loads, so until someone allows it the tag stores
+  nothing and reads nothing. `wait_for_update` holds the tag briefly so a returning visitor's
+  stored answer is applied before it decides anything.
+
+  Only the two storage types that are genuinely load-bearing stay granted: `security_storage`,
+  which is anti-fraud, and `functionality_storage`, which is how the page remembers the answer
+  itself. Everything about advertising is denied and there is nothing here to grant it.
+
+  Rendered hidden and revealed by script, so it never flashes for someone who has already
+  answered, and never appears for someone with JavaScript off — for whom the container has not
+  run either.
+*/}
+<div class="consent" id="consent" hidden data-testid="consent">
+  <p>{t.consent.text}</p>
+  <div class="consent-buttons">
+    <button type="button" data-consent="denied" data-testid="consent-no">{t.consent.decline}</button>
+    <button type="button" class="primary" data-consent="granted" data-testid="consent-yes">
+      {t.consent.accept}
+    </button>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    var KEY = "visayes-consent";
+    var bar = document.getElementById("consent");
+    if (!bar) return;
+
+    function gtag() { window.dataLayer.push(arguments); }
+
+    function apply(answer) {
+      gtag("consent", "update", {
+        analytics_storage: answer,
+        ad_storage: "denied",
+        ad_user_data: "denied",
+        ad_personalization: "denied",
+      });
+    }
+
+    var stored = null;
+    try { stored = localStorage.getItem(KEY); } catch (e) { /* private mode: ask again */ }
+
+    if (stored === "granted" || stored === "denied") {
+      apply(stored);
+      return;
+    }
+
+    bar.hidden = false;
+    bar.addEventListener("click", function (e) {
+      var answer = e.target && e.target.getAttribute && e.target.getAttribute("data-consent");
+      if (!answer) return;
+      try { localStorage.setItem(KEY, answer); } catch (e2) { /* nothing to do */ }
+      apply(answer);
+      bar.hidden = true;
+    });
+  })();
+</script>

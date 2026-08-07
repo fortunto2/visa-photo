@@ -123,6 +123,12 @@ const es: Dict = {
     why: "No se sube nada porque no hace falta. El recorte ocurre en un lienzo dentro de tu navegador, y el fondo lo quita una red neuronal que se descarga a tu dispositivo y se ejecuta ahí. Lo único que viaja es el modelo al bajar; tu foto no sale de la pestaña. El código es público, así que esto se comprueba en lugar de creerse.",
   },
 
+  consent: {
+    text: "Tu foto se queda en tu dispositivo, y eso no cambia. Esto es sólo la analítica de Google, que cuenta visitas. Está apagada hasta que digas lo contrario.",
+    accept: "Permitir analítica",
+    decline: "No, gracias",
+  },
+
   seo: {
     requirements: "Requisitos de la foto",
     requirementsIntro: (doc) => `Todo lo que debe cumplir una foto de ${doc} para ser aceptada.`,

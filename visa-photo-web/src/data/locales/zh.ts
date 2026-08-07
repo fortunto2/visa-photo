@@ -121,6 +121,12 @@ const zh: Dict = {
     why: "什么都不上传，因为根本不需要。裁切在你浏览器的画布上完成，背景由一个下载到你设备上、并在本地运行的神经网络去除。传输的只有模型本身，照片不会离开这个标签页。源代码是公开的，所以这一点可以查验而不必只靠相信。",
   },
 
+  consent: {
+    text: "你的照片始终留在你的设备上，这一点不会变。这里只关乎 Google 的访问统计。在你同意之前它是关闭的。",
+    accept: "允许统计",
+    decline: "不用了",
+  },
+
   seo: {
     requirements: "照片要求",
     requirementsIntro: (doc) => `${doc}照片要想顺利通过，需要满足的全部条件。`,
@@ -334,7 +340,10 @@ const zh: Dict = {
   },
 
   // Generated from the catalogue and presets.toml — see ../docText.ts.
-  country: {},
+  country: {
+    // Latin-script locales search the word untranslated; these three do not.
+    eu_schengen: "申根",
+  },
   docTitle: {},
   docShort: {},
   docNotes: {},

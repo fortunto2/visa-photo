@@ -153,6 +153,12 @@ const ar: Dict = {
     why: "لا يُرفع شيء لأن لا حاجة إلى ذلك. القصّ يجري على لوحة داخل متصفحك، والخلفية يزيلها نموذج عصبي يُنزَّل إلى جهازك ويعمل عليه. الشيء الوحيد الذي ينتقل هو النموذج نازلًا؛ أما صورتك فلا تغادر التبويب. والشفرة المصدرية معلنة، فيمكن التحقق من ذلك بدل تصديقه.",
   },
 
+  consent: {
+    text: "صورتك تبقى على جهازك، وهذا لا يتغيّر. الأمر يخصّ تحليلات Google التي تَعُدّ الزيارات فقط، وهي متوقّفة حتى تسمح بها.",
+    accept: "اسمح بالتحليلات",
+    decline: "لا، شكرًا",
+  },
+
   seo: {
     requirements: "متطلبات الصورة",
     requirementsIntro: (doc) => `كل ما يجب أن تستوفيه صورة ${doc} كي تُقبل.`,
@@ -376,7 +382,10 @@ const ar: Dict = {
   },
 
   // Generated from the catalogue and presets.toml — see ../docText.ts.
-  country: {},
+  country: {
+    // Latin-script locales search the word untranslated; these three do not.
+    eu_schengen: "شنغن",
+  },
   docTitle: {},
   docShort: {},
   docNotes: {},

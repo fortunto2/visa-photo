@@ -188,6 +188,20 @@ export interface Dict {
     why: string;
   };
 
+  /**
+   * The consent bar. Not optional per locale: a page that measures without asking is the
+   * problem this exists to avoid, so every language must be able to ask.
+   *
+   * The wording separates the two things a visitor here would otherwise conflate. The photo
+   * never leaves the device and no permission changes that; what is being asked about is
+   * Google counting the visit. Saying so is the honest version and also the persuasive one.
+   */
+  consent: {
+    text: string;
+    accept: string;
+    decline: string;
+  };
+
   /** SEO zone below the tool */
   seo: {
     requirements: string;

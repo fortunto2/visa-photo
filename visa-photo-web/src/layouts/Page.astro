@@ -1,6 +1,7 @@
 ---
 import "../styles/site.css";
 import Sprite from "../components/Sprite.astro";
+import Consent from "../components/Consent.astro";
 import { toolsFor } from "../data/tools";
 import { SITE, absolute, alternates, path } from "../lib/site";
 import { LANG_LABEL, LANG_TAG, dirOf } from "../data/i18n";
@@ -68,6 +69,23 @@ const graph = [
     <link rel="alternate" type="application/json" href={absolute("/specs.json")} title="All specifications" />
 
     <script type="application/ld+json" set:html={JSON.stringify(graph)} />
+    {/* Consent Mode v2 defaults, before the container. Everything measurable starts denied;
+        Consent.astro flips analytics_storage once the visitor answers. Advertising storage is
+        denied here and never granted — nothing on this site sells anything. */}
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { window.dataLayer.push(arguments); }
+      gtag("consent", "default", {
+        ad_storage: "denied",
+        ad_user_data: "denied",
+        ad_personalization: "denied",
+        analytics_storage: "denied",
+        functionality_storage: "granted",
+        security_storage: "granted",
+        wait_for_update: 500,
+      });
+    </script>
+
     <!-- Google Tag Manager -->
     <script is:inline set:html={`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -142,5 +160,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         </nav>
       </div>
     </footer>
+
+    <Consent t={t} />
   </body>
 </html>

@@ -122,6 +122,12 @@ const pt: Dict = {
     why: "Nada é enviado porque não precisa ser. O corte acontece em um canvas dentro do seu navegador, e o fundo é removido por uma rede neural que baixa para o seu aparelho e roda ali. A única coisa que viaja é o modelo descendo; a sua foto não sai da aba. O código é público, então dá para conferir em vez de acreditar.",
   },
 
+  consent: {
+    text: "Sua foto continua no seu aparelho — isso não muda. Aqui se trata apenas da análise do Google, que conta visitas. Está desligada até você permitir.",
+    accept: "Permitir análise",
+    decline: "Não, obrigado",
+  },
+
   seo: {
     requirements: "Requisitos da foto",
     requirementsIntro: (doc) => `Tudo o que uma foto de ${doc} precisa cumprir para ser aceita.`,

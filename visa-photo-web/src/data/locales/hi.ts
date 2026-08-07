@@ -128,6 +128,12 @@ const hi: Dict = {
     why: "कुछ भी अपलोड नहीं होता, क्योंकि ज़रूरत ही नहीं। क्रॉप आपके ब्राउज़र के कैनवस पर होता है, और बैकग्राउंड वह नेटवर्क हटाता है जो आपके डिवाइस पर उतरकर वहीं चलता है। सफ़र सिर्फ़ मॉडल करता है — नीचे की ओर; फ़ोटो टैब से बाहर नहीं जाती। सोर्स कोड सार्वजनिक है, इसलिए इसे मानना नहीं, जाँचना संभव है।",
   },
 
+  consent: {
+    text: "आपकी फ़ोटो आपके डिवाइस पर ही रहती है — यह कभी नहीं बदलता। यह सिर्फ़ Google के एनालिटिक्स की बात है, जो विज़िट गिनता है। जब तक आप हाँ न कहें, वह बंद है।",
+    accept: "एनालिटिक्स चालू करें",
+    decline: "नहीं चाहिए",
+  },
+
   seo: {
     requirements: "फ़ोटो की आवश्यकताएँ",
     requirementsIntro: (doc) => `${doc} फ़ोटो के स्वीकार होने के लिए जो-जो शर्तें पूरी करनी ज़रूरी हैं।`,
@@ -358,7 +364,10 @@ const hi: Dict = {
 
   // Per-document text is generated; see ../docText.ts. These stay empty until a string here
   // would beat the generated one — which for Hindi means a search phrase, not a translation.
-  country: {},
+  country: {
+    // Latin-script locales search the word untranslated; these three do not.
+    eu_schengen: "शेंगेन",
+  },
   docTitle: {},
   docShort: {},
   docNotes: {},
