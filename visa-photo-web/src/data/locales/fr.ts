@@ -288,6 +288,22 @@ const fr: Dict = {
     ],
   },
 
+  customPage: {
+    title: "Photo de n'importe quel format — en mm, cm, pouces ou pixels, gratuit",
+    h1: "N'importe quel format, saisi à la main",
+    lead: "Pour un format que les pages ci-dessus ne couvrent pas : indiquez la mesure demandée par votre formulaire, et le recadrage s'y conforme. En millimètres, centimètres, pouces ou pixels, selon ce qu'on vous demande. Tout se passe dans le navigateur.",
+    width: "Largeur",
+    height: "Hauteur",
+    unitMm: "mm",
+    unitPx: "pixels",
+    unitLabel: "Unité",
+    dpi: "Résolution",
+    presetHint: "Votre format",
+    common: "Les formats les plus demandés :",
+    whenToUse: "Quand cette page sert",
+    whenToUseBody: "Un consulat qui demande un format inhabituel, un badge, un titre de transport, un formulaire qui donne ses propres millimètres. Si votre document figure au catalogue, passez plutôt par sa page : on y trouve la source officielle, la règle de hauteur du visage et la limite de poids du fichier, qu'une simple mesure ne dit pas.",
+  },
+
   autoFaq: {
     size: ({ doc }) => `${doc} : quel format en centimètres et en pouces ?`,
     sizeA: ({ mm, cm, inch }) =>

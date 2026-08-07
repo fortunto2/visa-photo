@@ -268,6 +268,7 @@ const en: Dict = {
     height: "Height",
     unitMm: "mm",
     unitPx: "px",
+    unitLabel: "Units",
     dpi: "Resolution",
     presetHint: "Your size",
     common: "Sizes people ask for most:",

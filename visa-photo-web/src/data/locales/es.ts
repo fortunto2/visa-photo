@@ -287,6 +287,22 @@ const es: Dict = {
     ],
   },
 
+  customPage: {
+    title: "Foto de cualquier tamaño — en mm, cm, pulgadas o píxeles, gratis",
+    h1: "Cualquier tamaño, puesto a mano",
+    lead: "Para un tamaño que las páginas de arriba no cubren: escribe la medida que pide tu formulario y recorta a ella. En milímetros, centímetros, pulgadas o píxeles, lo que te pidan. Todo ocurre en el navegador.",
+    width: "Ancho",
+    height: "Alto",
+    unitMm: "mm",
+    unitPx: "píxeles",
+    unitLabel: "Unidades",
+    dpi: "Resolución",
+    presetHint: "Tu tamaño",
+    common: "Los tamaños que más se piden:",
+    whenToUse: "Cuándo hace falta esto",
+    whenToUseBody: "Un consulado que pide algo poco común, un pase interno, un billete, un formulario que indica sus propios milímetros. Si tu documento está en el catálogo, usa su página: allí está la fuente oficial, la regla de altura de la cabeza y el límite de peso del archivo, cosas que una medida a secas no te dice.",
+  },
+
   autoFaq: {
     size: ({ doc }) => `${doc}: ¿qué tamaño tiene en centímetros y pulgadas?`,
     sizeA: ({ mm, cm, inch }) =>

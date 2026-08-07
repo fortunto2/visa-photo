@@ -284,6 +284,22 @@ const pt: Dict = {
     ],
   },
 
+  customPage: {
+    title: "Foto de qualquer tamanho — 3x4, 5x7, 2x2, em cm, mm ou pixels, grátis",
+    h1: "Qualquer tamanho, você que define",
+    lead: "Para um tamanho que as páginas acima não cobrem: digite a medida que o seu formulário pede e recorte nela. Em centímetros, milímetros, polegadas ou pixels — 3x4 e 5x7 estão a um clique. Tudo roda no navegador.",
+    width: "Largura",
+    height: "Altura",
+    unitMm: "mm",
+    unitPx: "pixels",
+    unitLabel: "Unidade",
+    dpi: "Resolução",
+    presetHint: "Seu tamanho",
+    common: "Os tamanhos mais pedidos:",
+    whenToUse: "Quando isto serve",
+    whenToUseBody: "Um consulado que pede algo fora do comum, um crachá, um bilhete, um formulário que informa os próprios milímetros. Se o seu documento está no catálogo, use a página dele: lá estão a fonte oficial, a regra de altura da cabeça e o limite de tamanho do arquivo, que uma medida sozinha não conta.",
+  },
+
   autoFaq: {
     size: ({ doc }) => `${doc}: qual é o tamanho em centímetros e polegadas?`,
     sizeA: ({ mm, cm, inch }) =>

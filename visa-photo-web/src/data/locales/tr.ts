@@ -284,6 +284,22 @@ const tr: Dict = {
     ],
   },
 
+  customPage: {
+    title: "Her ölçüde fotoğraf — mm, cm, inç veya piksel, ücretsiz",
+    h1: "Ölçüyü kendiniz girin",
+    lead: "Yukarıdaki sayfaların kapsamadığı bir ölçü için: formunuzdaki sayıyı yazın, ona göre kırpalım. Milimetre, santimetre, inç ya da piksel — form hangisini istiyorsa. Her şey tarayıcınızda çalışır.",
+    width: "Genişlik",
+    height: "Yükseklik",
+    unitMm: "mm",
+    unitPx: "piksel",
+    unitLabel: "Birim",
+    dpi: "Çözünürlük",
+    presetHint: "Sizin ölçünüz",
+    common: "En çok sorulan ölçüler:",
+    whenToUse: "Bu sayfa ne zaman gerekir",
+    whenToUseBody: "Alışılmadık bir ölçü isteyen konsolosluk, kurum kartı, bilet ya da kendi milimetresini yazan bir form. Belgeniz listede varsa onun sayfasını kullanın: orada resmî kaynak, baş yüksekliği kuralı ve dosya boyutu sınırı da var — bunları çıplak bir ölçü söyleyemez.",
+  },
+
   autoFaq: {
     size: ({ doc }) => `${doc}: kaç santimetre, kaç inç?`,
     sizeA: ({ mm, cm, inch }) =>

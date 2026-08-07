@@ -278,6 +278,7 @@ const ru: Dict = {
     height: "Высота",
     unitMm: "мм",
     unitPx: "px",
+    unitLabel: "Единицы",
     dpi: "Разрешение",
     presetHint: "Ваш размер",
     common: "Размеры, которые спрашивают чаще всего:",

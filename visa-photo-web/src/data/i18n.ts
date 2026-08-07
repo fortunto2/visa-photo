@@ -348,6 +348,8 @@ export interface Dict {
     height: string;
     unitMm: string;
     unitPx: string;
+    /** label for the unit selector — the options themselves come from `unit` above */
+    unitLabel: string;
     dpi: string;
     presetHint: string;
     common: string;
