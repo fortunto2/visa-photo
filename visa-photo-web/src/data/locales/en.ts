@@ -455,6 +455,17 @@ const en: Dict = {
   },
 
   faq: {
+    in_passport: [
+      {
+        q: "Do I need to bring or upload a photo for an Indian passport?",
+        a: "At a Passport Seva Kendra, no. The centre photographs you during the appointment, free " +
+          "of charge, and Passport Seva states that a photograph is not required for the visit. " +
+          "A photo is still needed in two cases: a child under four, who needs one printed " +
+          "35 × 45 mm photo on a white background, and an application made at an Indian mission " +
+          "abroad, which has its own rules. The size on this page is for those, and the checker " +
+          "works for any photo you already have.",
+      },
+    ],
     fr_schengen: [
       {
         q: "Is the French visa photo different from other Schengen countries?",

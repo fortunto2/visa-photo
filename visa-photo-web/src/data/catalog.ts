@@ -256,7 +256,10 @@ export const CATALOG: CatalogEntry[] = [
   },
   {
     preset: "in_passport",
-    submission: "upload",
+    // Passport Seva photographs the applicant at the centre, free, and states "Photograph is
+    // not required" for the visit. A file is needed only in the exceptions: a child under
+    // four, and applications made at an Indian mission abroad.
+    submission: "captured",
     country: "india",
     doc: "passport",
     kind: "passport",
