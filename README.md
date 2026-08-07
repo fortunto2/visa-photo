@@ -89,4 +89,16 @@ swiftc -O -o tools/rembg-vision tools/rembg-vision.swift \
 
 ## License
 
-MIT
+[GNU AGPL-3.0](LICENSE). In plain terms: read it, run it, change it, and use it for whatever
+you like — but if you distribute it, or run a modified version as a service other people can
+reach over a network, you have to publish your source under the same licence.
+
+That last clause is the point. A permissive licence would let a competitor take this whole
+site, close it, and sell it back; the AGPL lets them compete only in the open. It does not
+forbid making money from it — it forbids doing so behind a closed fork.
+
+The copyright is held by the author, so a separate commercial licence can be granted on
+request for anyone who needs to build on this without publishing their changes.
+
+The background-removal models are downloaded from their own publishers at runtime and are not
+covered by this licence; each carries its own, listed in `models.toml`.

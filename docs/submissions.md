@@ -35,18 +35,19 @@ on the maker answering comments in the first two hours, and an unattended post s
 opportunity. The angle that would work there is the privacy one — a face-cropping tool where
 the face never leaves the tab — not the country coverage.
 
-## The licence blocks three more
+## The open-source directories, now reachable
 
-`github.com/fortunto2/visa-photo` is public but carries **no LICENSE file**, which in law means
-all rights reserved, not open source. That fails the first criterion of every open-source
-directory, so these are unreachable until it is decided:
+The project is **AGPL-3.0** as of 2026-08-07, which is an OSI-approved open-source licence, so
+these three now qualify. They verify by opening the repo, so they need the LICENSE commit
+**pushed** first:
 
 - opensourcealternative.to — free waitlist, exactly our shape (free alternative to paid tools)
-- OpenAlternative — same
+- OpenAlternative — same, needs an account
 - awesome-privacy and similar GitHub lists — pull request, and they check the licence
 
-Adding `LICENSE` (MIT is the usual choice for a tool like this) opens all three. It is your
-call, not a detail: a licence is effectively irrevocable once people rely on it.
+Describe it as "open source (AGPL-3.0)". Do not describe it as "free to use however you like":
+the whole point of the AGPL here is that a competitor may compete with this code only in the
+open, and a network service built on it has to publish its own source.
 
 ## The pitch
 
@@ -82,13 +83,13 @@ call, not a detail: a licence is effectively irrevocable once people rely on it.
 > and tells you what it found.
 >
 > Built because the existing tools charge for a crop, watermark the preview, and ask you to
-> upload your face to find out whether it fits. None of that is necessary. The source code is
-> public.
+> upload your face to find out whether it fits. None of that is necessary. Open source,
+> AGPL-3.0.
 
 **Tags:** visa photo, passport photo, privacy, travel, immigration, browser, free tools,
 photo editor, offline, ICAO
 
 **Categories that exist in most directories:** Photo Editing · Photos & Graphics · Travel Tools
 
-Say "the source code is public", not "open source", until there is a LICENSE file. The
-difference is the whole reason three directories are closed to us.
+Say "open source (AGPL-3.0)". The licence is the reason the open-source directories accept us,
+and the reason a competitor cannot take the site closed.
