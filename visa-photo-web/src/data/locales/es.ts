@@ -368,6 +368,26 @@ const es: Dict = {
     whenToUseBody: "Los portales indican un peso en kilobytes mucho más a menudo que una medida en milímetros, y rechazan la subida sin decir qué límite se saltó. Si tu documento está en el catálogo, usa su página: allí la exportación comprime al límite de esa administración y recorta a su tamaño a la vez.",
   },
 
+  pdfPage: {
+    title: "Comprimir un PDF a 1, 2 o 5 MB — gratis, y no sale de tu dispositivo",
+    h1: "Comprimir un PDF a los MB que te piden",
+    lead: "Elige el límite que indica tu formulario y el documento se comprime por debajo, aquí en el navegador. No se sube nada, y para el escaneo de un pasaporte, un extracto bancario o un contrato eso importa bastante más que para una foto.",
+    target: "Dejarlo por debajo de:",
+    run: "Comprimir",
+    working: "Trabajando…",
+    was: "Antes",
+    now: "ahora",
+    pages: "págs.",
+    missed: "No baja tanto y sigue siendo legible. Prueba un límite mayor, o divide el documento y envíalo por partes.",
+    rasterWarning: "Primero se prueba la vía suave: sólo se recomprimen las imágenes de dentro y se tira la basura de metadatos que dejan los editores. El texto, las fuentes, los enlaces y la capa de OCR quedan igual. Sólo si así no se llega a tu límite se recurre a redibujar cada página como imagen, que siempre pesa menos y siempre cuesta el texto.",
+    keptText: "Hecho sin tocar el texto: se sigue pudiendo seleccionar y buscar.",
+    becameImages: "Con las imágenes no bastó y hubo que redibujar las páginas. Se lee, pero el texto ya forma parte de la imagen.",
+    download: "Descargar",
+    fileLabel: "Archivo",
+    whenToUse: "Cuándo es esto lo que necesitas",
+    whenToUseBody: "Los portales de visados, las universidades y los bancos indican un límite en megabytes y rechazan la subida sin decir qué archivo se pasó. El culpable habitual es un escaneo hecho con la cámara a plena resolución. Aquí todo ocurre en tu navegador y el documento no llega hasta nosotros, que es justamente lo que importa: lo que se comprime suelen ser pasaportes, extractos y contratos, y cualquier otra herramienta te pide subir precisamente eso.",
+  },
+
   autoFaq: {
     size: ({ doc }) => `${doc}: ¿qué tamaño tiene en centímetros y pulgadas?`,
     sizeA: ({ mm, cm, inch }) =>

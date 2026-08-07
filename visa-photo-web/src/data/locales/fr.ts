@@ -369,6 +369,26 @@ const fr: Dict = {
     whenToUseBody: "Les portails indiquent un poids en kilo-octets bien plus souvent qu'une mesure en millimètres, et refusent l'envoi sans dire quelle limite a été dépassée. Si votre document figure au catalogue, passez par sa page : l'export y compresse à la limite de l'administration concernée et recadre à son format en même temps.",
   },
 
+  pdfPage: {
+    title: "Compresser un PDF à 1, 2 ou 5 Mo — gratuit, et le fichier ne quitte pas votre appareil",
+    h1: "Compresser un PDF au poids demandé",
+    lead: "Choisissez la limite indiquée par votre formulaire et le document passe en dessous, ici dans le navigateur. Rien n'est envoyé — et pour le scan d'un passeport, d'un relevé bancaire ou d'un contrat, cela compte bien plus que pour une photo.",
+    target: "Faire tenir sous :",
+    run: "Compresser",
+    working: "Traitement…",
+    was: "Avant",
+    now: "maintenant",
+    pages: "p.",
+    missed: "Impossible de descendre si bas en restant lisible. Essayez une limite plus haute, ou découpez le document et envoyez-le en plusieurs fois.",
+    rasterWarning: "La voie douce est essayée d'abord : seules les images à l'intérieur sont ré-encodées, et les résidus de métadonnées laissés par les éditeurs sont supprimés. Le texte, les polices, les liens et la couche OCR restent intacts. Ce n'est que si cela n'atteint pas votre limite que chaque page est redessinée en image — toujours plus léger, et toujours au prix du texte.",
+    keptText: "Fait sans toucher au texte : il reste sélectionnable et consultable.",
+    becameImages: "Les images seules n'ont pas suffi, les pages ont été redessinées. Toujours lisible, mais le texte fait désormais partie de l'image.",
+    download: "Télécharger",
+    fileLabel: "Fichier",
+    whenToUse: "Quand cette page sert",
+    whenToUseBody: "Les portails de visa, les universités et les banques annoncent une limite en mégaoctets puis refusent l'envoi sans dire quel fichier l'a dépassée. Le coupable habituel est un scan pris à pleine résolution d'appareil photo. Ici tout tourne dans votre navigateur et le document ne nous parvient jamais — et c'est précisément le sujet : ce que l'on compresse, ce sont des passeports, des relevés et des contrats, et tous les autres outils vous demandent justement de les téléverser.",
+  },
+
   autoFaq: {
     size: ({ doc }) => `${doc} : quel format en centimètres et en pouces ?`,
     sizeA: ({ mm, cm, inch }) =>

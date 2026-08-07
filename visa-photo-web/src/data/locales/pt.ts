@@ -365,6 +365,26 @@ const pt: Dict = {
     whenToUseBody: "Os portais informam um peso em kilobytes muito mais vezes do que uma medida em milímetros, e recusam o envio sem dizer qual limite foi rompido. Se o seu documento está no catálogo, use a página dele: lá a exportação comprime até o limite daquele órgão e recorta no tamanho dele ao mesmo tempo.",
   },
 
+  pdfPage: {
+    title: "Comprimir um PDF para 1, 2 ou 5 MB — grátis, e o arquivo não sai do seu aparelho",
+    h1: "Comprimir um PDF para os MB pedidos",
+    lead: "Escolha o limite que o formulário informa e o documento é comprimido abaixo dele, aqui no navegador. Nada é enviado — e para o escaneamento de um passaporte, um extrato ou um contrato isso importa bem mais do que para uma foto.",
+    target: "Deixar abaixo de:",
+    run: "Comprimir",
+    working: "Processando…",
+    was: "Antes",
+    now: "agora",
+    pages: "págs.",
+    missed: "Não desceu tanto continuando legível. Tente um limite maior, ou divida o documento e envie em partes.",
+    rasterWarning: "Primeiro tenta-se o caminho suave: só as imagens de dentro são recomprimidas e o lixo de metadados que os editores deixam é descartado. Texto, fontes, links e a camada de OCR continuam iguais. Só se isso não alcançar o seu limite é que cada página é redesenhada como imagem — o que sempre fica menor e sempre custa o texto.",
+    keptText: "Feito sem tocar no texto — ainda dá para selecionar e pesquisar.",
+    becameImages: "As imagens sozinhas não bastaram e as páginas foram redesenhadas. Continua legível, mas o texto agora faz parte da imagem.",
+    download: "Baixar",
+    fileLabel: "Arquivo",
+    whenToUse: "Quando é isto que você precisa",
+    whenToUseBody: "Portais de visto, universidades e bancos informam um limite em megabytes e recusam o envio sem dizer qual arquivo estourou. O culpado de sempre é um escaneamento feito com a câmera em resolução cheia. Aqui tudo roda no seu navegador e o documento não chega até nós — e é justamente esse o ponto: o que se comprime costuma ser passaporte, extrato e contrato, e todas as outras ferramentas pedem para você subir exatamente isso.",
+  },
+
   autoFaq: {
     size: ({ doc }) => `${doc}: qual é o tamanho em centímetros e polegadas?`,
     sizeA: ({ mm, cm, inch }) =>

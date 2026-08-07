@@ -776,3 +776,16 @@ h1 {
 .spec-body > .hint.caveat { margin: 2px 0 -4px; }
 .spec-body .field { justify-content: space-between; }
 .spec-body .btn-reset { align-self: flex-start; margin-top: 4px; }
+
+/* A PDF has no preview worth rendering before it is processed; say what it is instead. */
+.pdf-card {
+  display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;
+  padding: 40px 22px; border: 1px solid var(--line); border-radius: var(--r-lg);
+  background: var(--surface); color: var(--teal);
+}
+.pdf-card .pdf-name {
+  font-weight: 650; font-size: 16px; color: var(--ink);
+  max-width: 100%; overflow-wrap: anywhere;
+}
+/* A result that cost nothing should not be dressed as a warning. */
+.hint.ok-note { color: var(--ok); }

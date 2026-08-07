@@ -345,6 +345,33 @@ export interface Dict {
     whenToUseBody: string;
   };
 
+  /**
+   * Compressing a PDF, which is asked for in megabytes and about documents rather than photos.
+   * The privacy claim carries more weight here than anywhere else on the site: what people
+   * compress are passports, bank statements and contracts.
+   */
+  pdfPage?: {
+    title: string;
+    h1: string;
+    lead: string;
+    target: string;
+    run: string;
+    working: string;
+    was: string;
+    now: string;
+    pages: string;
+    missed: string;
+    rasterWarning: string;
+    /** shown after the gentle pass succeeded — the cost was not paid */
+    keptText: string;
+    /** shown only when the fallback ran, so the warning follows the fact rather than precedes it */
+    becameImages: string;
+    download: string;
+    fileLabel: string;
+    whenToUse: string;
+    whenToUseBody: string;
+  };
+
   /** the models page: what the background remover actually downloads and why */
   modelsPage?: {
     title: string;

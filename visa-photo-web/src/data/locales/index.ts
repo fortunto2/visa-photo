@@ -54,13 +54,14 @@ export function dict(lang: ActiveLang): Dict {
 /**
  * Pages that a locale may skip, keyed by the URL segment they live at.
  */
-const OPTIONAL: Record<string, "modelsPage" | "customPage" | "skills" | "bgPage" | "privacyPage" | "kbPage"> = {
+const OPTIONAL: Record<string, "modelsPage" | "customPage" | "skills" | "bgPage" | "privacyPage" | "kbPage" | "pdfPage"> = {
   models: "modelsPage",
   custom: "customPage",
   skills: "skills",
   background: "bgPage",
   privacy: "privacyPage",
   compress: "kbPage",
+  "compress-pdf": "pdfPage",
 };
 
 /** Whether this locale has translated the section a URL segment belongs to. */

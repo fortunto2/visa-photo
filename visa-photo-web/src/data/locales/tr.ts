@@ -365,6 +365,26 @@ const tr: Dict = {
     whenToUseBody: "Portallar sınırı milimetreden çok daha sık kilobayt olarak yazar ve yüklemeyi hangi sınırın aşıldığını söylemeden geri çevirir. Belgeniz listedeyse onun sayfasını kullanın: oradaki dışa aktarma hem o kurumun sınırına göre sıkıştırır hem de aynı anda onun ölçüsüne kırpar.",
   },
 
+  pdfPage: {
+    title: "PDF'i 1, 2 veya 5 MB'a düşür — ücretsiz ve dosya cihazınızdan çıkmaz",
+    h1: "PDF'i istenen MB'a düşürün",
+    lead: "Formunuzun belirttiği sınırı seçin, belge tarayıcının içinde onun altına insin. Hiçbir şey yüklenmez — pasaport taraması, hesap dökümü ya da sözleşme söz konusuysa bu bir fotoğraftan çok daha önemli.",
+    target: "Şunun altına sığdır:",
+    run: "Küçült",
+    working: "Çalışıyor…",
+    was: "Önce",
+    now: "şimdi",
+    pages: "sayfa",
+    missed: "Bu kadar küçültüp okunur bırakmak olmadı. Daha büyük bir sınır deneyin ya da belgeyi bölüp parçalar hâlinde gönderin.",
+    rasterWarning: "Önce yumuşak yol denenir: yalnızca içindeki görseller yeniden kodlanır ve düzenleyicilerin bıraktığı meta veri çöpü atılır. Metin, yazı tipleri, bağlantılar ve OCR katmanı olduğu gibi kalır. Ancak bu sizin sınırınıza yetmezse her sayfa görüntü olarak yeniden çizilir — o hep daha küçüktür ve bedeli hep metindir.",
+    keptText: "Metne dokunmadan yapıldı — hâlâ seçilebilir ve aranabilir.",
+    becameImages: "Yalnız görseller yetmedi, sayfalar yeniden çizildi. Okunur, ama metin artık görüntünün parçası.",
+    download: "İndir",
+    fileLabel: "Dosya",
+    whenToUse: "Bu ne zaman gerekir",
+    whenToUseBody: "Vize portalları, üniversiteler ve bankalar sınırı megabayt olarak yazar, sonra hangi dosyanın aştığını söylemeden yüklemeyi geri çevirir. Olağan şüpheli, tam kamera çözünürlüğünde çekilmiş bir tarama. Burada her şey tarayıcınızda çalışır, belge bize hiç ulaşmaz — ve mesele tam da bu: sıkıştırılanlar genellikle pasaportlar, dökümler ve sözleşmelerdir, diğer bütün araçlar ise tam onları yüklemenizi ister.",
+  },
+
   autoFaq: {
     size: ({ doc }) => `${doc}: kaç santimetre, kaç inç?`,
     sizeA: ({ mm, cm, inch }) =>

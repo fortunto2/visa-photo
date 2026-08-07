@@ -480,6 +480,26 @@ const en: Dict = {
     whenToUseBody: "Portals state a weight in kilobytes far more often than they state one in millimetres, and they refuse the upload without saying which limit was broken. If your document is in the catalogue, use its page instead: the export there compresses to that authority's own limit and crops to its size at the same time.",
   },
 
+  pdfPage: {
+    title: "Compress a PDF to 1, 2 or 5 MB — free, and it never leaves your device",
+    h1: "Compress a PDF to a set number of MB",
+    lead: "Pick the limit your form states and the document is squeezed under it, here in the browser. Nothing is uploaded — which for a passport scan, a bank statement or a contract matters rather more than for a photo.",
+    target: "Fit it under:",
+    run: "Compress",
+    working: "Working…",
+    was: "Was",
+    now: "now",
+    pages: "pages",
+    missed: "It would not go that small and stay readable. Try a larger limit, or split the document and send it in parts.",
+    rasterWarning: "It tries the gentle way first: only the pictures inside are re-encoded, and the metadata junk editors leave behind is dropped. Text, fonts, links and any OCR layer stay exactly as they were. Only if that cannot reach your limit does it fall back to redrawing each page as an image — which always gets smaller, and always costs the text.",
+    keptText: "Done without touching the text — it is still selectable and searchable.",
+    becameImages: "The pictures alone were not enough, so the pages were redrawn. Still legible, but the text is now part of the image.",
+    download: "Download",
+    fileLabel: "File",
+    whenToUse: "When this is what you need",
+    whenToUseBody: "Visa portals, universities and banks state a limit in megabytes and refuse the upload without saying which file broke it. The usual culprit is a scan photographed at full camera resolution. Everything here runs in your browser, so the document never reaches us — the reason to care is that the files people compress are passports, bank statements and contracts, and every other tool for this asks you to upload exactly those.",
+  },
+
   autoFaq: {
     size: ({ doc }) => `What size is a ${doc}, in cm and inches?`,
     sizeA: ({ mm, cm, inch }) =>
