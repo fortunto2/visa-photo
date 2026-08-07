@@ -9,6 +9,7 @@ directory is never submitted to twice.
 |------|-----------|--------|------|
 | 2026-08-07 | Launching Next | submitted, in review (`#143751`) | https://www.launchingnext.com/ |
 | 2026-08-07 | SaaSHub | submitted, free queue (up to 32 days) | https://www.saashub.com/visayes |
+| 2026-08-07 | opensourcealternative.to | page live, awaiting review | https://opensourcealternative.to/project/visayes |
 
 On SaaSHub the listing was filed against four real competitors — AiPassportPhotos,
 PassportPhoto.app, Passport Size Photo Maker, onlinepassport.photo — plus
@@ -37,12 +38,11 @@ the face never leaves the tab — not the country coverage.
 
 ## The open-source directories, now reachable
 
-The project is **AGPL-3.0** as of 2026-08-07, which is an OSI-approved open-source licence, so
-these three now qualify. They verify by opening the repo, so they need the LICENSE commit
-**pushed** first:
+The project is **AGPL-3.0** as of 2026-08-07 and the licence is live on GitHub, which is what
+these directories check. opensourcealternative.to is done — filed as the open alternative to
+Passport Photo Online, which is the comparison worth owning. Still open:
 
-- opensourcealternative.to — free waitlist, exactly our shape (free alternative to paid tools)
-- OpenAlternative — same, needs an account
+- OpenAlternative — same idea, needs an account
 - awesome-privacy and similar GitHub lists — pull request, and they check the licence
 
 Describe it as "open source (AGPL-3.0)". Do not describe it as "free to use however you like":
