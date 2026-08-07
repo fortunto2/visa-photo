@@ -43,6 +43,12 @@ const graph = [
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
 
+    {/* Declared rather than left to the /favicon.ico convention, so the vector one wins where
+        it can and the tab stays sharp on a high-density screen. */}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="/icon-512.png" />
+
     {alternates(segments).map((alt) => (
       <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />
     ))}
