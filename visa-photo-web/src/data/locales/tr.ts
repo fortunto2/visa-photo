@@ -300,6 +300,7 @@ const tr: Dict = {
     unitMm: "mm",
     unitPx: "piksel",
     unitLabel: "Birim",
+    fileSize: "En fazla dosya boyutu",
     dpi: "Çözünürlük",
     presetHint: "Sizin ölçünüz",
     common: "En çok sorulan ölçüler:",

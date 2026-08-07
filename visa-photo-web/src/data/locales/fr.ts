@@ -304,6 +304,7 @@ const fr: Dict = {
     unitMm: "mm",
     unitPx: "pixels",
     unitLabel: "Unité",
+    fileSize: "Poids maximal",
     dpi: "Résolution",
     presetHint: "Votre format",
     common: "Les formats les plus demandés :",

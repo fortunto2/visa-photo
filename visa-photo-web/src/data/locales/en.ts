@@ -276,6 +276,7 @@ const en: Dict = {
     unitMm: "mm",
     unitPx: "px",
     unitLabel: "Units",
+    fileSize: "Max file size",
     dpi: "Resolution",
     presetHint: "Your size",
     common: "Sizes people ask for most:",

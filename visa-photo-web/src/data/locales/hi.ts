@@ -303,6 +303,7 @@ const hi: Dict = {
     unitMm: "मिमी",
     unitPx: "पिक्सेल",
     unitLabel: "इकाई",
+    fileSize: "फ़ाइल का अधिकतम आकार",
     dpi: "रिज़ॉल्यूशन",
     presetHint: "आपका साइज़",
     common: "जो साइज़ सबसे ज़्यादा पूछे जाते हैं:",

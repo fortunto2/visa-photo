@@ -418,6 +418,8 @@ export interface Dict {
     unitPx: string;
     /** label for the unit selector — the options themselves come from `unit` above */
     unitLabel: string;
+    /** the weight limit a form states, which is what most of them argue about */
+    fileSize: string;
     dpi: string;
     presetHint: string;
     common: string;

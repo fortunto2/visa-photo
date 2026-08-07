@@ -286,6 +286,7 @@ const ru: Dict = {
     unitMm: "мм",
     unitPx: "px",
     unitLabel: "Единицы",
+    fileSize: "Вес файла, не больше",
     dpi: "Разрешение",
     presetHint: "Ваш размер",
     common: "Размеры, которые спрашивают чаще всего:",

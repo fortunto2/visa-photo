@@ -286,6 +286,7 @@ const zh: Dict = {
     unitMm: "毫米",
     unitPx: "像素",
     unitLabel: "单位",
+    fileSize: "文件大小上限",
     dpi: "分辨率",
     presetHint: "你的尺寸",
     common: "问得最多的尺寸：",

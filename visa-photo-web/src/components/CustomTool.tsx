@@ -11,6 +11,7 @@ export interface CustomStrings {
   dpi: string;
   presetHint: string;
   unitLabel: string;
+  fileSize: string;
   units: Record<Unit, string>;
   common: string;
 }
@@ -70,6 +71,15 @@ export default function CustomTool({ strings, custom, modelsHref, ctx, base }: P
   const [w, setW] = useState(35);
   const [h, setH] = useState(45);
   const [dpi, setDpi] = useState(300);
+  /**
+   * A weight limit, because that is what the forms actually argue about.
+   *
+   * "in kb" is the most repeated modifier in the search data — "pan card photo size in kb",
+   * "photo size reducer in kb", "50kb" — and separate tools exist that do nothing but shrink a
+   * file to a number. The export here already compresses to whatever limit a preset carries;
+   * this is only that number, made typeable.
+   */
+  const [maxKb, setMaxKb] = useState(500);
 
   /** Millimetres are what the crop is expressed in, whatever the reader typed. */
   const toMm = (v: number) =>
@@ -103,6 +113,7 @@ export default function CustomTool({ strings, custom, modelsHref, ctx, base }: P
     print_height_mm: Math.round(mmH * 10) / 10,
     digital_width: pxW,
     digital_height: pxH,
+    max_file_size_kb: maxKb,
   };
 
   return (
@@ -137,6 +148,13 @@ export default function CustomTool({ strings, custom, modelsHref, ctx, base }: P
             <option value="600">600</option>
           </select>
         </label>
+        <label class="field">
+          <span>{custom.fileSize}</span>
+          <input type="number" min="20" max="5000" step="10" value={maxKb} data-testid="custom-kb"
+            onInput={(e) => setMaxKb(clamp(Number((e.target as HTMLInputElement).value) || 500, 20, 5000))} />
+          <b>KB</b>
+        </label>
+
         {/* The other two readings of the same photo, so nobody has to convert to check it. */}
         <p class="hint" data-testid="custom-echo">
           {pxW} × {pxH} {custom.units.px}

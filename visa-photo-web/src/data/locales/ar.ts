@@ -323,6 +323,7 @@ const ar: Dict = {
     unitMm: "مم",
     unitPx: "بكسل",
     unitLabel: "الوحدة",
+    fileSize: "أقصى حجم للملف",
     dpi: "الدقة",
     presetHint: "مقاسك",
     common: "المقاسات الأكثر سؤالًا:",

@@ -300,6 +300,7 @@ const pt: Dict = {
     unitMm: "mm",
     unitPx: "pixels",
     unitLabel: "Unidade",
+    fileSize: "Peso máximo",
     dpi: "Resolução",
     presetHint: "Seu tamanho",
     common: "Os tamanhos mais pedidos:",
