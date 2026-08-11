@@ -8,7 +8,7 @@ directory is never submitted to twice.
 | Date | Directory | Status | Link |
 |------|-----------|--------|------|
 | 2026-08-07 | Launching Next | submitted, in review (`#143751`) | https://www.launchingnext.com/ |
-| 2026-08-07 | SaaSHub | submitted, free queue (up to 32 days) | https://www.saashub.com/visayes |
+| 2026-08-07 | SaaSHub | live, details verified; correction submitted 2026-08-11 | https://www.saashub.com/visayes-app |
 | 2026-08-07 | opensourcealternative.to | page live, awaiting review | https://opensourcealternative.to/project/visayes |
 
 On SaaSHub the listing was filed against four real competitors — AiPassportPhotos,
@@ -19,6 +19,23 @@ tool that uploads.
 
 VisaHQ and Passport.js were offered as competitors and deliberately left unchecked: one is a
 visa agency, the other is a Node authentication library.
+
+**SaaSHub invented a product.** Its listing went live under the name "VisaYes App" with an
+auto-generated "Features & Specs" block describing something we are not: "Simplified Visa
+Guidance", "step-by-step guidance tailored to their nationality", and "Being an app, it offers
+the convenience of ... tracking application status on the go". Five specific false claims on a
+page that ranks, none of which anyone here wrote.
+
+A correction was filed through /product-changes/visayes-app/new on 2026-08-11 — real
+description, name without "App", open-source flag with the AGPL, real release date — with a
+change note spelling out what the generated text got wrong. Edits need approval, so the page
+will keep saying it until a moderator acts.
+
+The Features block has no public edit path; it is generated. If it survives the approved
+correction, write to contacts@saashub.com, which their contact page lists and which explicitly
+welcomes "website copy corrections". Worth checking back rather than assuming: a directory that
+invents capabilities is a liability, not just an inaccuracy, because the claims are about a
+document tool and the people reading them are filing immigration paperwork.
 
 ## Needs an account, so it needs you
 
