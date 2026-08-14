@@ -294,8 +294,8 @@ const tr: Dict = {
   },
 
   customPage: {
-    title: "Her ölçüde fotoğraf — mm, cm, inç veya piksel, ücretsiz",
-    h1: "Ölçüyü kendiniz girin",
+    title: "Biyometrik fotoğraf ölçüsü — 35x45, 3.5x4.5 cm veya piksel, ücretsiz",
+    h1: "Her ölçüde fotoğraf: 35x45 mm, 3.5x4.5 cm, piksel",
     lead: "Yukarıdaki sayfaların kapsamadığı bir ölçü için: formunuzdaki sayıyı yazın, ona göre kırpalım. Milimetre, santimetre, inç ya da piksel — form hangisini istiyorsa. Her şey tarayıcınızda çalışır.",
     width: "Genişlik",
     height: "Yükseklik",
