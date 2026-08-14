@@ -66,7 +66,15 @@ launchctl bootout gui/$(id -u)/co.superduperai.visayes.seo-watch
 rm ~/Library/LaunchAgents/co.superduperai.visayes.seo-watch.plist
 ```
 
-A Claude session may also schedule the same script, to think about what it found rather than
-only collect it. The overlap is harmless: the archive is written per date, so a second run the
-same day rewrites an identical file, and the comparison deliberately skips today's snapshot so
-a re-run never compares with itself.
+There is deliberately no second, session-bound schedule. One was tried and removed: it ran the
+same fetch, only when a Claude session happened to be alive and idle, and produced analysis of
+a file that had nothing in it yet. Analysis does not need a timer — the data is cumulative and
+can be asked for at any moment:
+
+```bash
+node scripts/seo-watch.mjs          # today, against the last archived day
+cd ~/startups/shared/seo-cli && uv run seo analytics --days 28
+```
+
+What genuinely has to happen on a schedule is the collecting, because a day not archived is a
+day that has to be re-fetched to reconstruct. That is the whole job of the agent above.
