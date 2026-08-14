@@ -39,3 +39,34 @@ concluding anything.
 # how one query has moved
 jq -r '.date + " " + (.queries["dv photo checker"].position|tostring)' history/*.json
 ```
+
+## How it is scheduled
+
+A launchd agent, `~/Library/LaunchAgents/co.superduperai.visayes.seo-watch.plist`, at 09:23
+daily. Off the hour deliberately, and launchd catches up after a missed slot, so a laptop
+asleep at 09:23 still gets that day rather than skipping it.
+
+It calls `scripts/seo-watch-cron.sh` rather than node directly. launchd starts with almost no
+PATH — not the shell's, not the login one — so node and uv are invisible to it unless said
+outright, and keeping that in the wrapper means the schedule and the environment are fixed in
+one place while the script stays runnable by hand.
+
+Output appends to `docs/seo/watch.log`, which is gitignored: the dated files in `history/` are
+the record, the log is only a readable trail.
+
+```bash
+# check it is registered
+launchctl list | grep visayes
+
+# run it now rather than waiting for 09:23
+launchctl kickstart -p gui/$(id -u)/co.superduperai.visayes.seo-watch
+
+# remove it
+launchctl bootout gui/$(id -u)/co.superduperai.visayes.seo-watch
+rm ~/Library/LaunchAgents/co.superduperai.visayes.seo-watch.plist
+```
+
+A Claude session may also schedule the same script, to think about what it found rather than
+only collect it. The overlap is harmless: the archive is written per date, so a second run the
+same day rewrites an identical file, and the comparison deliberately skips today's snapshot so
+a re-run never compares with itself.

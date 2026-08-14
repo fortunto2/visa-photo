@@ -11,3 +11,9 @@ tools/rembg-vision
 
 # Playwright MCP scratch output (snapshots/console logs from competitor research)
 .playwright-mcp/
+
+# SEO watch: the dated archive in docs/seo/history/ is the record and is committed.
+# These are churn — a readable trail and launchd's own plumbing.
+docs/seo/watch.log
+docs/seo/launchd.out
+docs/seo/launchd.err
