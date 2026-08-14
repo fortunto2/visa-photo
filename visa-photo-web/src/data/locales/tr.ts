@@ -131,6 +131,14 @@ const tr: Dict = {
     decline: "Gerek yok",
   },
 
+  guides: {
+    title: "Rehberler",
+    h1: "Fotoğraf kuruma nasıl ulaşıyor",
+    lead: "Bunlar vize kuralları değil. Konu şu: sizden bir dosya isteniyor mu isten miyor mu — nerede yerinde fotoğraf çekiliyor, nerede evde hazırladığınız kabul edilmiyor, ve aynı adı taşıyan iki yol nerede farklı şeyler istiyor.",
+    scope: "Bilerek dar tutuldu: burada hak, gerekçe, harç veya süre hakkında tavsiye yok. Onlar sürekli değişiyor ve burada onları denetleyen hiçbir şey yok. Her sayfa yalnızca kurumun fotoğrafla ne yaptığını, kaynağı ve okunduğu tarihi söyler.",
+    forDocs: "İlgili belgeler",
+  },
+
   seo: {
     requirements: "Fotoğraf şartları",
     requirementsIntro: (doc) => `Kabul edilen bir ${doc.toLocaleLowerCase("tr")} fotoğrafının karşılaması gereken her şey.`,

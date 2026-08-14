@@ -120,6 +120,14 @@ const en: Dict = {
     decline: "No thanks",
   },
 
+  guides: {
+    title: "Guides",
+    h1: "How the photograph reaches the authority",
+    lead: "Not visa rules. Whether anyone wants a file from you at all — which office takes the picture, which one refuses the one you made, and where two routes under the same name want different things.",
+    scope: "Deliberately narrow: nothing here is advice about entitlement, eligibility, fees or duration. Those change constantly and are checked here by nothing. What each page states is what an authority does with the photograph, the source it was read from, and the date it was read.",
+    forDocs: "The documents this concerns",
+  },
+
   seo: {
     requirements: "Photo requirements",
     requirementsIntro: (doc) => `Everything an accepted ${doc} photo has to satisfy.`,

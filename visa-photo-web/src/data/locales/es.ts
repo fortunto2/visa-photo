@@ -132,6 +132,14 @@ const es: Dict = {
     decline: "No, gracias",
   },
 
+  guides: {
+    title: "Guías",
+    h1: "Cómo llega la fotografía a la administración",
+    lead: "No son reglas de visado. Va de si alguien quiere un archivo tuyo siquiera: dónde te fotografían allí mismo, dónde no aceptan el que hiciste en casa, y dónde dos rutas con el mismo nombre piden cosas distintas.",
+    scope: "Estrecho a propósito: aquí no hay consejos sobre derecho de entrada, requisitos, tasas ni plazos. Eso cambia constantemente y aquí no lo verifica nada. Cada página dice sólo qué hace la administración con la fotografía, de qué fuente se leyó y en qué fecha.",
+    forDocs: "Los documentos a los que afecta",
+  },
+
   seo: {
     requirements: "Requisitos de la foto",
     requirementsIntro: (doc) => `Todo lo que debe cumplir una foto de ${doc} para ser aceptada.`,

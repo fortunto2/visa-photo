@@ -1,0 +1,98 @@
+---
+import Page from "../../../layouts/Page.astro";
+import { GUIDES } from "../../../data/guides";
+import { guideText, guideSlugs, guideLangs } from "../../../data/guideText";
+import { CATALOG, idOf } from "../../../data/catalog";
+import { dict, type ActiveLang } from "../../../data/locales";
+import { absolute, path } from "../../../lib/site";
+
+/**
+ * One guide. Not visa rules — how the photograph reaches this authority, which is the thing the
+ * catalogue audit turned up and nobody else publishes.
+ *
+ * Every page carries the source it was read from and the date it was read, the same discipline
+ * the document pages use, because a claim about what an office does now is only worth what its
+ * date is worth.
+ */
+export function getStaticPaths() {
+  return guideLangs().flatMap((lang) =>
+    guideSlugs(lang).map((slug) => ({ params: { lang, slug } })));
+}
+
+const { lang, slug } = Astro.params as { lang: ActiveLang; slug: string };
+const t = dict(lang);
+const guide = GUIDES.find((g) => g.slug === slug)!;
+const text = guideText(lang, slug)!;
+
+/** The documents this guide is about, so the reader can go straight to the one they need. */
+const docs = guide.docs
+  .map((d) => CATALOG.find((e) => e.country === d.country && e.doc === d.doc))
+  .filter((e): e is NonNullable<typeof e> => Boolean(e));
+
+const checked = new Intl.DateTimeFormat(t.dateLocale, { day: "numeric", month: "long", year: "numeric" })
+  .format(new Date(guide.checked));
+
+const schema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: text.h1,
+    description: text.lead,
+    inLanguage: lang,
+    dateModified: guide.checked,
+    url: absolute(path(lang, "guides", slug)),
+    citation: guide.source.url,
+  },
+];
+---
+
+<Page lang={lang} t={t} title={text.title} description={text.lead}
+  segments={["guides", slug]} schema={schema}>
+  <p class="crumb">
+    <a href={path(lang)}>{t.nav.countries}</a> · <a href={path(lang, "guides")}>{t.guides.h1}</a>
+  </p>
+
+  <h1>{text.h1}</h1>
+  <p class="answer">{text.lead}</p>
+  <p class="verified">
+    <svg width="16" height="16" aria-hidden="true"><use href="#ic-check" /></svg>
+    {t.verified({ date: checked, source: guide.source.label })}
+  </p>
+
+  <div class="seo prose" style="margin-top:26px">
+    {text.body.map((p) => <p>{p}</p>)}
+
+    <p class="takeaway">{text.takeaway}</p>
+  </div>
+
+  {/* Both directions from one declaration: the guide names its documents, and each document
+      page draws a link back here. */}
+  <section class="tools-section">
+    <h2>{t.guides.forDocs}</h2>
+    <ul class="tool-grid">
+      {docs.map((entry) => (
+        <li>
+          <a class="tool-card" href={path(lang, entry.country, entry.doc)}>
+            <span class="tool-ico"><svg width="22" height="22" aria-hidden="true"><use href="#ic-ruler" /></svg></span>
+            <span class="nm">{t.docTitle[idOf(entry)]}</span>
+            <span class="blurb">{t.docNotes[idOf(entry)]}</span>
+          </a>
+        </li>
+      ))}
+      <li>
+        <a class="tool-card" href={path(lang, "photo-checker")}>
+          <span class="tool-ico"><svg width="22" height="22" aria-hidden="true"><use href="#ic-check" /></svg></span>
+          <span class="nm">{t.check.title}</span>
+          <span class="blurb">{t.check.lead}</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <div class="seo" style="margin-top:34px">
+    <section>
+      <p class="disclaimer">{t.seo.disclaimer}</p>
+      <p><a href={guide.source.url} rel="noopener">{guide.source.label}</a></p>
+    </section>
+  </div>
+</Page>

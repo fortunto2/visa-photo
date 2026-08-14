@@ -132,6 +132,14 @@ const fr: Dict = {
     decline: "Non merci",
   },
 
+  guides: {
+    title: "Guides",
+    h1: "Comment la photo parvient à l'administration",
+    lead: "Ce ne sont pas les règles de visa. Il s'agit de savoir si un fichier vous est demandé : où l'on vous photographie sur place, où l'on refuse celle que vous avez faite, et où deux voies portant le même nom réclament des choses différentes.",
+    scope: "Volontairement étroit : rien ici ne conseille sur le droit d'entrée, les conditions, les frais ou les durées. Cela change sans cesse et rien ici ne le vérifie. Chaque page indique seulement ce que l'administration fait de la photo, la source lue et la date de lecture.",
+    forDocs: "Les documents concernés",
+  },
+
   seo: {
     requirements: "Exigences pour la photo d'identité",
     requirementsIntro: (doc) => `Tout ce qu'une photo de ${doc.toLowerCase()} doit respecter pour être acceptée.`,

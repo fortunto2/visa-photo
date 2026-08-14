@@ -828,3 +828,16 @@ h1 {
   background: repeating-conic-gradient(#d8d8dc 0% 25%, #f4f4f6 0% 50%) 50% / 18px 18px;
 }
 .sig-preview img { max-inline-size: 100%; max-block-size: 40vh; display: block; }
+
+/* A guide link on a document page can change whether the tool below is needed at all,
+   so it sits above the specification rather than in a related-links footer. */
+.guide-note {
+  display: flex; align-items: center; gap: 9px; margin: 14px 0 0;
+  padding: 11px 14px; border-radius: var(--r-md);
+  background: var(--amber-soft); color: var(--amber); font-size: 15px; font-weight: 600;
+}
+.guide-note a { color: inherit; }
+.takeaway {
+  margin-top: 22px; padding: 14px 18px; border-inline-start: 3px solid var(--teal);
+  background: var(--teal-soft); border-radius: var(--r-md); font-weight: 600;
+}

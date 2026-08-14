@@ -3,6 +3,7 @@ import "../styles/site.css";
 import Sprite from "../components/Sprite.astro";
 import Consent from "../components/Consent.astro";
 import { toolsFor } from "../data/tools";
+import { guideLangs } from "../data/guideText";
 import { SITE, absolute, alternates, path } from "../lib/site";
 import { LANG_LABEL, LANG_TAG, dirOf } from "../data/i18n";
 import type { Dict } from "../data/i18n";
@@ -22,6 +23,8 @@ interface Props {
 const { lang, t, title, description, segments = [], schema = [] } = Astro.props;
 
 const canonical = absolute(path(lang, ...segments));
+/** Only where an article actually exists; the labels are translated everywhere, the prose is not. */
+const hasGuides = (l: typeof lang) => guideLangs().includes(l);
 const dir = dirOf(lang);
 
 const graph = [
@@ -120,6 +123,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <span class="nav-links">
           <a href={path(lang)}>{t.nav.countries}</a>
           <a href={`${path(lang)}#tools`}>{t.nav.tools}</a>
+          {hasGuides(lang) && <a href={path(lang, "guides")}>{t.guides.h1}</a>}
         </span>
         {/* A disclosure rather than a row: nine languages do not fit a header, and this needs
             no JavaScript and stays keyboard-reachable. The links are still real links, so a

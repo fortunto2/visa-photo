@@ -207,6 +207,19 @@ export interface Dict {
     decline: string;
   };
 
+  /**
+   * The guides section. Every language gets these five labels; the articles themselves live in
+   * ./guideText and a language simply has the ones it has.
+   */
+  guides: {
+    title: string;
+    h1: string;
+    lead: string;
+    /** what this section deliberately does not cover, said before anything else */
+    scope: string;
+    forDocs: string;
+  };
+
   /** SEO zone below the tool */
   seo: {
     requirements: string;

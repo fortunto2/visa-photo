@@ -10,6 +10,8 @@ import PhotoChecker from "./PhotoChecker.tsx";
 import ModeTabs from "./ModeTabs.tsx";
 import { DEFAULT_LANG, dict, hasSection, type ActiveLang } from "../data/locales";
 import { absolute, path } from "../lib/site";
+import { guideForDoc } from "../data/guides";
+import { guideText } from "../data/guideText";
 import { ltr } from "../lib/bidi";
 import { LANG_TAG } from "../data/i18n";
 
@@ -100,6 +102,14 @@ const schema = [
       ]
     : []),
 ];
+/**
+ * The guide that concerns this document, if one exists in this language. Someone reading a
+ * specification is exactly the person who needs to know that this authority photographs
+ * applicants itself, or wants a receipt code no file can carry.
+ */
+const guide = guideForDoc(entry.country, entry.doc);
+const guideCopy = guide ? guideText(lang, guide.slug) : undefined;
+
 ---
 
 <Page
@@ -129,6 +139,12 @@ const schema = [
       : t.countryPage.docHeadline({ title: docTitle, size: headlineSize })}
   </h1>
 
+  {guide && guideCopy && (
+    <p class="guide-note">
+      <svg width="18" height="18" aria-hidden="true"><use href="#ic-question" /></svg>
+      <a href={path(lang, "guides", guide.slug)}>{guideCopy.h1}</a>
+    </p>
+  )}
   <p class="answer">{mode === "check" ? t.check.lead : answer}</p>
 
   {entry.warnings && entry.warnings.length > 0 && (

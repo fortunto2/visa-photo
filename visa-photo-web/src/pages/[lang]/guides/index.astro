@@ -1,0 +1,57 @@
+---
+import Page from "../../../layouts/Page.astro";
+import { GUIDES } from "../../../data/guides";
+import { guideText, guideSlugs, guideLangs } from "../../../data/guideText";
+import { dict, type ActiveLang } from "../../../data/locales";
+import { absolute, path } from "../../../lib/site";
+
+export function getStaticPaths() {
+  return guideLangs().map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: ActiveLang };
+const t = dict(lang);
+const mine = new Set(guideSlugs(lang));
+const items = GUIDES.filter((g) => mine.has(g.slug))
+  .map((g) => ({ guide: g, text: guideText(lang, g.slug)! }));
+
+const schema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: t.guides.h1,
+    numberOfItems: items.length,
+    itemListElement: items.map((x, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: x.text.h1,
+      url: absolute(path(lang, "guides", x.guide.slug)),
+    })),
+  },
+];
+---
+
+<Page lang={lang} t={t} title={`${t.guides.h1} — ${t.guides.title}`} description={t.guides.lead}
+  segments={["guides"]} schema={schema}>
+  <p class="crumb"><a href={path(lang)}>{t.nav.countries}</a></p>
+
+  <h1>{t.guides.h1}</h1>
+  <p class="answer">{t.guides.lead}</p>
+  <p class="hint caveat" style="max-width:70ch">{t.guides.scope}</p>
+
+  <ul class="tool-grid" style="margin-top:26px">
+    {items.map((x) => (
+      <li>
+        <a class="tool-card" href={path(lang, "guides", x.guide.slug)}>
+          <span class="tool-ico"><svg width="22" height="22" aria-hidden="true"><use href="#ic-question" /></svg></span>
+          <span class="nm">{x.text.h1}</span>
+          <span class="blurb">{x.text.lead}</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+
+  <div class="seo" style="margin-top:44px">
+    <section><p class="disclaimer">{t.seo.disclaimer}</p></section>
+  </div>
+</Page>

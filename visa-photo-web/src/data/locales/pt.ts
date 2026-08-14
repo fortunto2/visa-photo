@@ -131,6 +131,14 @@ const pt: Dict = {
     decline: "Não, obrigado",
   },
 
+  guides: {
+    title: "Guias",
+    h1: "Como a fotografia chega ao órgão",
+    lead: "Não são regras de visto. É sobre se alguém quer um arquivo seu: onde fotografam na hora, onde não aceitam o que você fez em casa, e onde dois caminhos com o mesmo nome pedem coisas diferentes.",
+    scope: "Estreito de propósito: aqui não há conselhos sobre direito de entrada, requisitos, taxas ou prazos. Isso muda o tempo todo e nada aqui verifica. Cada página diz apenas o que o órgão faz com a fotografia, de que fonte foi lido e em que data.",
+    forDocs: "Os documentos de que se trata",
+  },
+
   seo: {
     requirements: "Requisitos da foto",
     requirementsIntro: (doc) => `Tudo o que uma foto de ${doc} precisa cumprir para ser aceita.`,

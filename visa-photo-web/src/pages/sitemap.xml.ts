@@ -2,6 +2,7 @@ import type { APIRoute } from "astro";
 import { CATALOG, countryGroups } from "../data/catalog";
 import { absolute, alternates, path } from "../lib/site";
 import { langsFor } from "../data/locales";
+import { guideSlugs, guideLangs } from "../data/guideText";
 
 /**
  * Written by hand rather than via @astrojs/sitemap because every URL needs its full
@@ -22,6 +23,12 @@ export const GET: APIRoute = () => {
     ["scans-to-pdf"],
     ["signature"],
     ["photo-rejected"],
+    // Guides exist per language rather than everywhere, so they are enumerated from the text
+    // that exists rather than from the registry.
+    ...guideLangs().flatMap((lang) => [
+      ["guides"],
+      ...guideSlugs(lang).map((slug) => ["guides", slug]),
+    ]),
     ...countryGroups().map((g) => [g.slug]), // /{lang}/{country}/
     ...CATALOG.map((e) => [e.country, e.doc]),
     // the checker has its own address, and its own search
