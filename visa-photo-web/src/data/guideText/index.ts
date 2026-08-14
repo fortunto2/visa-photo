@@ -1,6 +1,13 @@
 import type { ActiveLang } from "../locales";
 import en from "./en";
 import ru from "./ru";
+import hi from "./hi";
+import zh from "./zh";
+import ar from "./ar";
+import es from "./es";
+import tr from "./tr";
+import pt from "./pt";
+import fr from "./fr";
 
 /**
  * Guide prose, kept out of the locale dictionaries on purpose.
@@ -10,9 +17,11 @@ import ru from "./ru";
  * not written it yet. Here a language simply has the guides it has, and the route is generated
  * only where the text exists.
  *
- * English and Russian to begin with. These are specific factual claims about what an authority
- * does — a rough translation of one is worse than not publishing it, and the wording for the
- * other seven should come from the same autocomplete work the titles came from.
+ * Which guide goes into which language is a product decision, not a completeness exercise.
+ * The USCIS change is in all nine, because US immigration paperwork is filed in every one of
+ * them. The PSK guide is in Hindi and English, the receipt-code guide in Chinese and English,
+ * because those concern the citizens of those countries and a Turkish page about an Indian
+ * passport centre would be a page nobody wants. Russia's three routes stay in Russian.
  */
 export interface GuideText {
   title: string;
@@ -24,7 +33,9 @@ export interface GuideText {
   takeaway: string;
 }
 
-const TEXT: Partial<Record<ActiveLang, Record<string, GuideText>>> = { en, ru };
+const TEXT: Partial<Record<ActiveLang, Record<string, GuideText>>> = {
+  en, ru, hi, zh, ar, es, tr, pt, fr,
+};
 
 export function guideText(lang: ActiveLang, slug: string): GuideText | undefined {
   return TEXT[lang]?.[slug];
