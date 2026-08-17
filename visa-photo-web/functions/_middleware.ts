@@ -35,11 +35,18 @@ function quality(accept: string, type: string): number {
   return best;
 }
 
-/** `/en/schengen/visa/` and `/en/schengen/visa` both twin to `/en/schengen/visa.md`. */
+/**
+ * `/en/schengen/visa/` and `/en/schengen/visa` both twin to `/en/schengen/visa.md`.
+ *
+ * The root is the case that was missing, and it was the expensive one: `/` trimmed to nothing
+ * and returned null, so the one address every agent and every scanner tries first was the one
+ * address that never negotiated. It twins to `/index.md`, the same way a directory serves
+ * index.html.
+ */
 function markdownPath(pathname: string): string | null {
   if (pathname.includes(".")) return null;
   const trimmed = pathname.endsWith("/") ? pathname.slice(0, -1) : pathname;
-  if (!trimmed) return null;
+  if (!trimmed) return "/index.md";
   return `${trimmed}.md`;
 }
 
@@ -51,6 +58,35 @@ function markdownPath(pathname: string): string | null {
 function withVary(response: Response): Response {
   const out = new Response(response.body, response);
   out.headers.set("vary", "Accept");
+  return out;
+}
+
+/**
+ * Roughly four characters to the token, which is the usual approximation for English and
+ * close enough for a hint. Stated as a hint rather than a promise: the header exists so an
+ * agent can decide whether to fetch, not so it can budget to the token.
+ */
+function estimateTokens(text: string): number {
+  return Math.ceil(text.length / 4);
+}
+
+/**
+ * The negotiated response, built from the twin's body but answering for the page's own URL.
+ *
+ * The header that has to be removed is the one the twin carries on purpose. `_headers` marks
+ * every `*.md` file noindex, because a twin at its own address is a duplicate of the page it
+ * mirrors. That reasoning does not survive the move: this body is being served AT the
+ * canonical URL, and leaving the header on would tell any crawler that asked for markdown to
+ * drop the page itself from the index. It rode along because Pages applies `_headers` to the
+ * asset being fetched, not to the request that ended up returning it.
+ */
+async function asNegotiated(twin: Response): Promise<Response> {
+  const body = await twin.text();
+  const out = new Response(body, twin);
+  out.headers.set("vary", "Accept");
+  out.headers.set("content-type", "text/markdown; charset=utf-8");
+  out.headers.set("x-markdown-tokens", String(estimateTokens(body)));
+  out.headers.delete("x-robots-tag");
   return out;
 }
 
@@ -97,7 +133,7 @@ export const onRequest = async ({ request, next }: PagesContext): Promise<Respon
     const twinUrl = new URL(url);
     twinUrl.pathname = twin;
     const markdown = await next(new Request(twinUrl.toString(), request));
-    if (markdown.status === 200) return withVary(markdown);
+    if (markdown.status === 200) return asNegotiated(markdown);
     // No twin for this path — index pages, the app, anything that is not a document. Falling
     // back to HTML is the honest answer: a 404 would claim the page does not exist, which is
     // not what happened.
