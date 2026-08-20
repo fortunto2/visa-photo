@@ -25,6 +25,19 @@ Ten impressions is the floor because a query seen four times says nothing about 
 click-through rate, and the position attached to it is an average over too few samples to be a
 position.
 
+## The trap that already caught it
+
+The first week of snapshots each held exactly 25 queries, and between two days a week apart only
+2 of them were the same. That is not churn, it is a row limit: `seo-cli` fetched a hard 25 rows,
+so a site with five hundred queries returned an arbitrary twenty-five and a different twenty-five
+next time. The watcher duly reported queries as "lost" that had never moved in Google, and the
+totals — 25 queries, 33 impressions — were a fifth of a per cent of the truth. The real figure
+was 536 queries and 902 impressions.
+
+Two fixes. The limit is now 1000 in seo-cli. And the membership rules here, `new` and `lost`,
+are suppressed whenever the two snapshots differ in size by more than a factor of two, because
+absence only means absence when both sides are the whole population.
+
 ## The trap this is built to avoid
 
 A zero-click query is not automatically a bad title. `dv photo checker` had 17 impressions and

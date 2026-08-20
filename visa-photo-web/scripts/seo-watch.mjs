@@ -68,8 +68,25 @@ function previous() {
   return { date: prev.date, queries: prev.queries ?? {} };
 }
 
+/**
+ * Membership rules — "new" and "lost" — only mean something when both snapshots are the whole
+ * population. seo-cli used to fetch a hard 25 rows, so a young site with five hundred queries
+ * returned an arbitrary twenty-five of them and a different twenty-five next time; the watcher
+ * duly reported queries appearing and vanishing that had never moved in Google. If the two
+ * sides are not the same order of size, one of them was truncated and only per-query
+ * comparisons survive.
+ */
+function comparable(now, prev) {
+  if (!prev) return false;
+  const a = Object.keys(now).length;
+  const b = Object.keys(prev.queries).length;
+  if (a === 0 || b === 0) return false;
+  return Math.max(a, b) / Math.min(a, b) < 2;
+}
+
 function findings(now, prev) {
   const out = [];
+  const membership = comparable(now, prev);
 
   for (const [query, cur] of Object.entries(now)) {
     const before = prev?.queries?.[query];
@@ -100,7 +117,7 @@ function findings(now, prev) {
     }
 
     // Something new that is already visible. Check the landing page matches the intent.
-    if (!before && cur.impressions >= MIN_IMPRESSIONS) {
+    if (membership && !before && cur.impressions >= MIN_IMPRESSIONS) {
       out.push({
         kind: "new",
         query,
@@ -124,8 +141,8 @@ function findings(now, prev) {
     }
   }
 
-  // Anything that was being clicked and now is not.
-  for (const [query, before] of Object.entries(prev?.queries ?? {})) {
+  // Anything that was being clicked and now is not — only where absence means absence.
+  for (const [query, before] of (membership ? Object.entries(prev.queries) : [])) {
     if (!now[query] && before.clicks > 0) {
       out.push({
         kind: "lost",
@@ -150,11 +167,13 @@ const totals = Object.values(now).reduce(
 );
 
 const items = findings(now, prev);
+const skipped = prev && !comparable(now, prev);
 
 if (!items.length) {
   if (!QUIET) {
     console.log(`seo-watch ${today}: ${Object.keys(now).length} queries, ` +
-      `${totals.clicks} clicks, ${totals.impressions} impressions. Nothing over the floor.`);
+      `${totals.clicks} clicks, ${totals.impressions} impressions. Nothing over the floor.` +
+      (skipped ? " (new/lost suppressed: snapshot sizes differ)" : ""));
     console.log(`archived ${path}`);
   }
   process.exit(0);
@@ -163,6 +182,9 @@ if (!items.length) {
 console.log(`seo-watch ${today} — ${SITE}`);
 console.log(`${Object.keys(now).length} queries · ${totals.clicks} clicks · ${totals.impressions} impressions` +
   (prev ? ` · compared with ${prev.date}` : " · no earlier snapshot"));
+if (skipped) {
+  console.log("new/lost suppressed: the two snapshots are different sizes, so one was truncated");
+}
 console.log("");
 for (const f of items) {
   console.log(`[${f.kind}] ${f.query}`);
