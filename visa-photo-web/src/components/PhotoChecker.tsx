@@ -84,6 +84,10 @@ export default function PhotoChecker({ preset, strings, ctx, editingForbidden = 
         ...ctx,
         outcome: result.failed ? "fail" : result.warned ? "warn" : "pass",
         source: name,
+        // Which rules, not just how many: 68 % of checks failed in September and the count
+        // alone could not say whether people bring bad photos or the rule is wrong.
+        failed_checks: result.findings.filter((f) => f.verdict === "fail").map((f) => f.id).join(","),
+        warned_checks: result.findings.filter((f) => f.verdict === "warn").map((f) => f.id).join(","),
       }, { failed: result.failed });
       // The picker was open a moment ago; the model may already be on its way.
       isFaceModelCached().then((ready) => ready && void measureFace());

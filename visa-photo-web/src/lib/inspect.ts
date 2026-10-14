@@ -43,8 +43,13 @@ interface BackgroundStats {
  * the top edge and the shoulders reach the sides, so a border strip measures hair and clothing
  * and reports a "patterned background" on a photo whose background is plain white. The corners
  * are the only region that is background at every legal crop.
+ *
+ * And only as deep as the space above the crown. A fixed 14 % failed every correct UAE photo:
+ * the head fills 75 % of a 40x60 frame, so the hair reaches the sides well within the top
+ * seventh, and a perfectly white backdrop measured a spread of 26 against a limit of 12. The
+ * preset's own top margin is the band that is background by definition.
  */
-function sampleBackground(img: HTMLImageElement): BackgroundStats {
+function sampleBackground(img: HTMLImageElement, topMarginPercent: number): BackgroundStats {
   const w = 160;
   const h = Math.max(1, Math.round((img.naturalHeight / img.naturalWidth) * w));
   const canvas = document.createElement("canvas");
@@ -69,7 +74,8 @@ function sampleBackground(img: HTMLImageElement): BackgroundStats {
 
   const tally = new Map<string, number>();
   const cornerW = Math.max(3, Math.round(w * 0.18));
-  const cornerH = Math.max(3, Math.round(h * 0.14));
+  const depth = Math.min(0.14, Math.max(0.03, (topMarginPercent / 100) * 0.8));
+  const cornerH = Math.max(3, Math.round(h * depth));
   for (let y = 0; y < cornerH; y++) {
     for (let x = 0; x < cornerW; x++) push(x, y);
     for (let x = w - cornerW; x < w; x++) push(x, y);
@@ -148,15 +154,17 @@ export function inspectPhoto({ img, fileSizeKb, mimeType, preset, editingForbidd
     preset.format,
   );
 
-  const bg = sampleBackground(img);
+  const bg = sampleBackground(img, preset.face_top_margin_percent);
   const wantsWhite = preset.background === "white";
   // 200/255 is a light wall; below that a "white" background reads grey in print.
   const brightEnough = wantsWhite ? bg.brightness >= 200 : bg.brightness >= 150;
   add(
     "bg-brightness",
     brightEnough ? "pass" : "fail",
-    `${Math.round((bg.brightness / 255) * 100)} %`,
-    wantsWhite ? "≥ 78 %" : "≥ 59 %",
+    // One decimal, not rounded: 199/255 and the 200/255 limit both rounded to "78 %", so the
+    // page said "78 %, needs ≥ 78 %, fail" and left people nothing to act on.
+    `${((bg.brightness / 255) * 100).toFixed(1)} %`,
+    wantsWhite ? "≥ 78.4 %" : "≥ 58.8 %",
   );
 
   // Spread above ~12 means a pattern, a gradient or a shadow rather than a plain wall.

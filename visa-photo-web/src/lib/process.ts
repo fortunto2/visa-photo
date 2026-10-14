@@ -125,11 +125,12 @@ export async function cropAndExport(
    * is evidence of a heavily processed one. Quality is raised until the file is big enough,
    * which costs nothing in fidelity because it only ever adds detail back.
    */
-  if (preset.min_file_size_kb) {
-    for (const quality of [1, 0.99, 0.98]) {
-      if (blob.size >= preset.min_file_size_kb * 1024) break;
-      blob = await encode(quality);
-    }
+  // Quality 1 is the largest a JPEG gets. The loop used to try 1, then 0.99, then 0.98, and
+  // when even 1 fell short it kept the last and smallest — under the minimum, so our own
+  // checker failed our own export.
+  if (preset.min_file_size_kb && blob.size < preset.min_file_size_kb * 1024) {
+    const largest = await encode(1);
+    if (largest.size > blob.size) blob = largest;
   }
 
   // The pixel count was always right; the metadata said 72 dpi, which some forms read as
