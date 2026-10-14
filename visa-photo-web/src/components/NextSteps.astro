@@ -1,0 +1,57 @@
+---
+import type { ActiveLang } from "../data/locales";
+import type { CatalogEntry } from "../data/catalog";
+import { PARTNER_COPY, partnersFor, showsPartners } from "../data/partners";
+
+/**
+ * The step after the photo, sold by someone else. Plain links, no script and no cookie on this
+ * site: the partner sets its own cookie on its own domain after the click, so the privacy page
+ * stays true. Each click is counted by the analytics snippet through `data-sda-event`.
+ */
+interface Props { lang: ActiveLang; entry: CatalogEntry }
+const { lang, entry } = Astro.props as Props;
+
+const show = showsPartners(entry);
+const copy = PARTNER_COPY[lang];
+const partners = partnersFor(lang);
+---
+
+{show && (
+  <aside class="next-steps" data-testid="next-steps">
+    <p class="next-steps-head">{copy.heading}</p>
+    <ul>
+      {partners.map((partner) => {
+        const item = copy.items[partner.id];
+        return (
+          <li>
+            <strong>{item.title}</strong>
+            <span>{item.body}</span>
+            <a
+              href={partner.href}
+              rel="sponsored noopener"
+              target="_blank"
+              data-sda-event="partner_clicked"
+              data-sda-placement={`${partner.id}:${entry.country}:${entry.doc}`}
+            >{item.cta}</a>
+            {partner.adLabel && <small class="ad-label">{partner.adLabel}</small>}
+          </li>
+        );
+      })}
+    </ul>
+    <p class="next-steps-note">{copy.disclosure}</p>
+  </aside>
+)}
+
+<style>
+  .next-steps {
+    margin: 22px 0 0; padding: 16px 18px;
+    border: 1px solid var(--line-soft); border-radius: var(--r-md);
+  }
+  .next-steps-head { margin: 0 0 10px; font-weight: 700; font-size: 16.5px; }
+  .next-steps ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 14px; }
+  .next-steps li { display: flex; flex-direction: column; gap: 4px; }
+  .next-steps li span { color: var(--ink-soft); font-size: 15px; line-height: 1.5; }
+  .next-steps li a { font-weight: 700; color: var(--teal); }
+  .ad-label { color: var(--ink-soft); font-size: 12.5px; }
+  .next-steps-note { margin: 12px 0 0; color: var(--ink-soft); font-size: 13px; }
+</style>

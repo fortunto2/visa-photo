@@ -7,6 +7,7 @@ import { docView } from "../data/docView";
 import { agentCard, agentPrompt } from "../data/agentCard";
 import CopyButton from "./CopyButton.tsx";
 import PhotoChecker from "./PhotoChecker.tsx";
+import NextSteps from "./NextSteps.astro";
 import ModeTabs from "./ModeTabs.tsx";
 import { DEFAULT_LANG, dict, hasSection, type ActiveLang } from "../data/locales";
 import { absolute, path } from "../lib/site";
@@ -313,6 +314,8 @@ const guideCopy = guide ? guideText(lang, guide.slug) : undefined;
   </div>
 
   </ModeTabs>
+
+  <NextSteps lang={lang} entry={entry} />
 
   <div class="provenance">
   <p class="verified">
