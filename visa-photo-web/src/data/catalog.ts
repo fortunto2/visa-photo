@@ -243,7 +243,7 @@ export const CATALOG: CatalogEntry[] = [
     native: { w: 2, h: 2, unit: "in" },
     form: { name: "DV Entry Form", online: true, url: "https://dvprogram.state.gov/" },
     source: { label: "U.S. Department of State — DV programme", url: "https://travel.state.gov/content/travel/en/us-visas/immigrate/diversity-visa-program-entry.html" },
-    checked: "2026-08-05",
+    checked: "2026-10-14",
   },
   {
     preset: "in_visa",

@@ -837,6 +837,15 @@ h1 {
   background: var(--amber-soft); color: var(--amber); font-size: 15px; font-weight: 600;
 }
 .guide-note a { color: inherit; }
+.notice {
+  margin: 14px 0 0; padding: 13px 16px; border-radius: var(--r-md);
+  background: var(--amber-soft); border-inline-start: 3px solid var(--amber); font-size: 15px;
+}
+.notice p { margin: 0; }
+.notice p + p { margin-top: 7px; }
+.notice-title svg { flex-shrink: 0; }
+.notice-title { display: flex; align-items: center; gap: 9px; color: var(--amber); font-weight: 700; }
+.notice-links { display: flex; flex-wrap: wrap; gap: 6px 18px; font-weight: 600; }
 .takeaway {
   margin-top: 22px; padding: 14px 18px; border-inline-start: 3px solid var(--teal);
   background: var(--teal-soft); border-radius: var(--r-md); font-weight: 600;

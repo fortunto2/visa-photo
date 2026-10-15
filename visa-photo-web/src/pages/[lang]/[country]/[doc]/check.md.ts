@@ -4,6 +4,7 @@ import { CATALOG, type CatalogEntry } from "../../../../data/catalog";
 import { docView } from "../../../../data/docView";
 import { absolute, path } from "../../../../lib/site";
 import { LANGS, dict, type ActiveLang } from "../../../../data/locales";
+import { noticeFor } from "../../../../data/notices";
 
 /**
  * The markdown twin of the checker page, at the same path plus `.md`.
@@ -38,8 +39,14 @@ export const GET: APIRoute = ({ params, props }) => {
   out.push(`# ${t.check.h1(v.title)}`);
   out.push("");
   out.push(t.check.lead);
-
   out.push("");
+  const notice = noticeFor(entry.country, entry.doc, lang);
+  if (notice) {
+    out.push(`> **${notice.copy.title}**`);
+    out.push(">");
+    out.push(`> ${notice.copy.body} [${notice.copy.sourceLabel}](${notice.source}) · [${notice.official.label}](${notice.official.url})`);
+    out.push("");
+  }
   out.push("| | |");
   out.push("|---|---|");
   out.push(`| Print size | ${v.headlineSize} (${v.altUnits}) |`);

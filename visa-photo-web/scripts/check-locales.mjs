@@ -110,7 +110,9 @@ for (const file of readdirSync(join(root, "src/data/locales"))) {
     if (!preset) continue;
 
     const allowed = allowedNumbers(preset);
-    for (const raw of text.match(/\d+(?:[.,]\d+)?/g) ?? []) {
+    // "DV-2027", "DS-160" are programme and form names, not measurements.
+    const prose = text.replace(/\b[A-Z]{2,}-\d+\b/g, "");
+    for (const raw of prose.match(/\d+(?:[.,]\d+)?/g) ?? []) {
       const n = Number(raw.replace(",", "."));
       if (n <= SMALL || allowed.has(n) || allowed.has(Math.round(n)) || formNumbers.has(n)) continue;
       problems.push(`${lang}.${block}.${key}: "${raw}" is not a number ${key} can produce`);

@@ -768,7 +768,7 @@ const en: Dict = {
     ie_passport: "Irish Passport Photo Size — 715x951 px minimum, free tool",
     nz_passport: "New Zealand Passport Photo — 3:4, 900x1200 px minimum, free tool",
     in_visa: "India Visa Photo Size — 2x2 inch (51x51 mm), free tool",
-    us_dv: "US DV Lottery Photo Tool — 2x2 inch, 600x600 px, free checker",
+    us_dv: "DV-2027 Lottery Photo — 600x600 px, 2x2 inch, free checker",
     turkey: "Turkey Residence Permit Photo (ikamet) — 50x60 mm, free tool",
     eu_schengen: "Schengen Visa Photo Size — 35x45 mm, requirements & free tool",
     us_visa: "US Visa Photo Tool — 2x2 inch, 600x600 px, DS-160 ready, free",
