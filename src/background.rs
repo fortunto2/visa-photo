@@ -47,8 +47,6 @@ impl BgRemover {
         })
     }
 
-    pub fn model_id(&self) -> &str { &self.model_id }
-
     /// Remove background and replace with white.
     pub fn remove_bg(&self, img: &DynamicImage) -> Result<DynamicImage, String> {
         let (orig_w, orig_h) = img.dimensions();

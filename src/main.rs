@@ -35,10 +35,10 @@ fn ensure_configs() {
 
 fn load_embedded_presets() -> HashMap<String, Preset> {
     let path = project_dir().join("presets.toml");
-    if let Ok(content) = std::fs::read_to_string(&path) {
-        if let Ok(p) = toml::from_str(&content) {
-            return p;
-        }
+    if let Ok(content) = std::fs::read_to_string(&path)
+        && let Ok(p) = toml::from_str(&content)
+    {
+        return p;
     }
     toml::from_str(DEFAULT_PRESETS).expect("Invalid embedded presets.toml")
 }
@@ -48,16 +48,6 @@ struct ThumbInfo {
     data_uri: String,
     orig_w: u32,
     orig_h: u32,
-}
-
-/// Tiny thumbnail for sidebar list (60px)
-fn make_mini_thumb(path: &PathBuf) -> Option<String> {
-    let img = image::open(path).ok()?;
-    let thumb = img.thumbnail(60, 60);
-    let mut buf = std::io::Cursor::new(Vec::new());
-    thumb.write_to(&mut buf, image::ImageFormat::Jpeg).ok()?;
-    let b64 = base64::engine::general_purpose::STANDARD.encode(buf.into_inner());
-    Some(format!("data:image/jpeg;base64,{b64}"))
 }
 
 fn make_thumbnail(path: &PathBuf, rotation: u32) -> Option<ThumbInfo> {
@@ -155,7 +145,7 @@ fn main() {
 }
 
 fn app() -> Element {
-    let mut presets = use_signal(|| load_embedded_presets());
+    let mut presets = use_signal(load_embedded_presets);
     let preset_keys: Vec<String> = {
         let p = presets.read();
         let mut keys: Vec<String> = p.keys().cloned().collect();
@@ -167,13 +157,13 @@ fn app() -> Element {
     let mut photos: Signal<Vec<PathBuf>> = use_signal(Vec::new);
     let mut selected_photo: Signal<Option<usize>> = use_signal(|| None);
     let mut current_thumb: Signal<Option<ThumbInfo>> = use_signal(|| None);
-    let mut available_models = use_signal(|| models::load_models());
+    let mut available_models = use_signal(models::load_models);
     let mut results: Signal<Vec<String>> = use_signal(Vec::new);
     let mut status: Signal<String> = use_signal(|| "Ready".to_string());
     let mut crop_cx: Signal<f64> = use_signal(|| 0.5);
     let mut crop_cy: Signal<f64> = use_signal(|| 0.4);
     let mut dragging: Signal<bool> = use_signal(|| false);
-    let mut person_name: Signal<String> = use_signal(|| String::new());
+    let mut person_name: Signal<String> = use_signal(String::new);
     let mut brightness: Signal<f32> = use_signal(|| 0.0);
     let mut contrast: Signal<f32> = use_signal(|| 0.0);
     let mut shadows: Signal<f32> = use_signal(|| 0.0);
@@ -213,11 +203,11 @@ fn app() -> Element {
         let key = selected_preset.read();
         let mut pr = p.get(&*key).cloned();
         // Override custom preset dimensions from input fields
-        if *key == "custom" {
-            if let Some(ref mut preset) = pr {
-                if let Ok(w) = custom_w.read().parse::<u32>() { preset.digital_width = w; }
-                if let Ok(h) = custom_h.read().parse::<u32>() { preset.digital_height = h; }
-            }
+        if *key == "custom"
+            && let Some(ref mut preset) = pr
+        {
+            if let Ok(w) = custom_w.read().parse::<u32>() { preset.digital_width = w; }
+            if let Ok(h) = custom_h.read().parse::<u32>() { preset.digital_height = h; }
         }
         pr
     };
