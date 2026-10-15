@@ -14,25 +14,32 @@ const { lang, entry } = Astro.props as Props;
 const show = showsPartners(entry);
 const copy = PARTNER_COPY[lang];
 const partners = partnersFor(lang);
+/** One glyph per kind of thing sold, so the card reads before its words do. */
+const ICON: Record<string, string> = { airalo: "ic-globe", cherehapa: "ic-shield", aviasales: "ic-plane" };
 ---
 
 {show && (
   <aside class="next-steps" data-testid="next-steps">
-    <p class="next-steps-head">{copy.heading}</p>
+    <p class="next-steps-head">
+      <svg width="20" height="20" aria-hidden="true"><use href="#ic-check" /></svg>
+      {copy.heading}
+    </p>
     <ul>
       {partners.map((partner) => {
         const item = copy.items[partner.id];
         return (
           <li>
+            <span class="ns-icon"><svg width="24" height="24" aria-hidden="true"><use href={`#${ICON[partner.id] ?? "ic-spark"}`} /></svg></span>
             <strong>{item.title}</strong>
-            <span>{item.body}</span>
+            <span class="ns-body">{item.body}</span>
             <a
+              class="ns-cta"
               href={partner.href}
               rel="sponsored noopener"
               target="_blank"
               data-sda-event="partner_clicked"
               data-sda-placement={`${partner.id}:${entry.country}:${entry.doc}`}
-            >{item.cta}</a>
+            >{item.cta}<svg width="18" height="18" aria-hidden="true"><use href="#ic-arrow" /></svg></a>
             {partner.adLabel && <small class="ad-label">{partner.adLabel}</small>}
           </li>
         );
@@ -44,14 +51,35 @@ const partners = partnersFor(lang);
 
 <style>
   .next-steps {
-    margin: 22px 0 0; padding: 16px 18px;
-    border: 1px solid var(--line-soft); border-radius: var(--r-md);
+    margin: 26px 0 0; padding: 20px;
+    background: var(--teal-soft); border: 1px solid var(--teal-line); border-radius: var(--r-lg, 18px);
   }
-  .next-steps-head { margin: 0 0 10px; font-weight: 700; font-size: 16.5px; }
-  .next-steps ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 14px; }
-  .next-steps li { display: flex; flex-direction: column; gap: 4px; }
-  .next-steps li span { color: var(--ink-soft); font-size: 15px; line-height: 1.5; }
-  .next-steps li a { font-weight: 700; color: var(--teal); }
-  .ad-label { color: var(--ink-soft); font-size: 12.5px; }
+  .next-steps-head {
+    display: flex; align-items: center; gap: 9px;
+    margin: 0 0 14px; font-weight: 800; font-size: 19px; color: var(--teal);
+  }
+  .next-steps-head svg { flex-shrink: 0; }
+  .next-steps ul {
+    margin: 0; padding: 0; list-style: none;
+    display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
+  .next-steps li {
+    display: flex; flex-direction: column; gap: 6px;
+    padding: 16px; background: var(--surface); border-radius: var(--r-md); box-shadow: var(--sh-sm);
+  }
+  .ns-icon {
+    display: grid; place-items: center; width: 42px; height: 42px; margin-bottom: 4px;
+    border-radius: 12px; background: var(--teal-soft); color: var(--teal);
+  }
+  .next-steps li strong { font-size: 17px; }
+  .ns-body { color: var(--ink-soft); font-size: 15px; line-height: 1.5; flex: 1; }
+  .ns-cta {
+    display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 6px;
+    padding: 12px 18px; border-radius: var(--r-pill);
+    background: var(--teal); color: var(--on-teal); font-weight: 700; text-decoration: none;
+  }
+  .ns-cta:hover { filter: brightness(1.08); }
+  .ns-cta svg { flex-shrink: 0; }
+  .ad-label { color: var(--ink-soft); font-size: 12px; }
   .next-steps-note { margin: 12px 0 0; color: var(--ink-soft); font-size: 13px; }
 </style>
