@@ -488,10 +488,17 @@ const fr: Dict = {
 
   // Generated from the catalogue and presets.toml — see ../docText.ts.
   country: {},
-  docTitle: {},
-  docShort: {},
+  docTitle: {
+    us_dv: "Photo pour la loterie DV (carte verte) des États-Unis",
+  },
+  docShort: {
+    us_dv: "Loterie DV",
+    jp_passport_online: "Passeport · en ligne",
+  },
   docNotes: {},
-  pageTitle: {},
+  pageTitle: {
+    us_dv: "Photo loterie carte verte DV-2027 — 600×600 px, vérification gratuite",
+  },
   faq: {},
 };
 

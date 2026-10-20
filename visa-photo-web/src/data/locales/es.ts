@@ -485,10 +485,17 @@ const es: Dict = {
 
   // Generated from the catalogue and presets.toml — see ../docText.ts.
   country: {},
-  docTitle: {},
-  docShort: {},
+  docTitle: {
+    us_dv: "Foto para la lotería de visas DV (Green Card) de EE. UU.",
+  },
+  docShort: {
+    us_dv: "Lotería DV",
+    jp_passport_online: "Pasaporte · en línea",
+  },
   docNotes: {},
-  pageTitle: {},
+  pageTitle: {
+    us_dv: "Foto para la lotería Green Card DV-2027 — 600×600 px, verificador gratis",
+  },
   faq: {},
 };
 

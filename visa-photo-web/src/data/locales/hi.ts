@@ -488,10 +488,18 @@ const hi: Dict = {
     // Latin-script locales search the word untranslated; these three do not.
     eu_schengen: "शेंगेन",
   },
-  docTitle: {},
-  docShort: {},
+  docTitle: {
+    jp_passport_online: "जापान पासपोर्ट फ़ोटो — ऑनलाइन आवेदन (Mynaportal)",
+    us_dv: "अमेरिका DV लॉटरी (ग्रीन कार्ड) फ़ोटो",
+  },
+  docShort: {
+    us_dv: "DV लॉटरी",
+    jp_passport_online: "पासपोर्ट · ऑनलाइन",
+  },
   docNotes: {},
-  pageTitle: {},
+  pageTitle: {
+    us_dv: "DV-2027 ग्रीन कार्ड लॉटरी फ़ोटो — 600×600 px, मुफ़्त जाँच",
+  },
   faq: {},
 };
 

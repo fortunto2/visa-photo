@@ -464,10 +464,17 @@ const zh: Dict = {
     // Latin-script locales search the word untranslated; these three do not.
     eu_schengen: "申根",
   },
-  docTitle: {},
-  docShort: {},
+  docTitle: {
+    us_dv: "美国 DV 绿卡抽签照片",
+  },
+  docShort: {
+    us_dv: "DV 绿卡抽签",
+    jp_passport_online: "护照 · 网上申请",
+  },
   docNotes: {},
-  pageTitle: {},
+  pageTitle: {
+    us_dv: "美国绿卡抽签 DV-2027 照片 — 600×600 像素，免费检查",
+  },
   faq: {},
 };
 

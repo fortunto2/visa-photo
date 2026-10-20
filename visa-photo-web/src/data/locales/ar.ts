@@ -506,10 +506,18 @@ const ar: Dict = {
     // Latin-script locales search the word untranslated; these three do not.
     eu_schengen: "شنغن",
   },
-  docTitle: {},
-  docShort: {},
+  docTitle: {
+    jp_passport_online: "صورة جواز السفر الياباني للتقديم أونلاين (Mynaportal)",
+    us_dv: "صورة اللوتري الأمريكي (الهجرة العشوائية DV)",
+  },
+  docShort: {
+    us_dv: "اللوتري الأمريكي (DV)",
+    jp_passport_online: "جواز سفر · أونلاين",
+  },
   docNotes: {},
-  pageTitle: {},
+  pageTitle: {
+    us_dv: "صورة اللوتري الأمريكي DV-2027 (الهجرة العشوائية) — ⁦600 × 600⁩ بكسل، فحص مجاني",
+  },
   faq: {},
 };
 

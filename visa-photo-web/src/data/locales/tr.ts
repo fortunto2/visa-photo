@@ -481,10 +481,17 @@ const tr: Dict = {
 
   // Generated from the catalogue and presets.toml — see ../docText.ts.
   country: {},
-  docTitle: {},
-  docShort: {},
+  docTitle: {
+    us_dv: "ABD DV Green Card çekilişi fotoğrafı",
+  },
+  docShort: {
+    us_dv: "DV Green Card çekilişi",
+    jp_passport_online: "Pasaport · online",
+  },
   docNotes: {},
-  pageTitle: {},
+  pageTitle: {
+    us_dv: "Green Card çekilişi DV-2027 fotoğrafı — 600×600 piksel, ücretsiz kontrol",
+  },
   faq: {},
 };
 
