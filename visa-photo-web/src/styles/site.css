@@ -213,7 +213,7 @@ h1 {
 
 .result {
   background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--r-md);
-  min-height: 340px; padding: 24px; position: relative;
+  min-height: 340px; padding: 24px; position: relative; min-width: 0;
   display: flex; flex-direction: column; align-items: center; gap: 14px;
 }
 .verdict {

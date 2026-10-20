@@ -3,10 +3,12 @@ import type { Preset } from "./presets";
 const MAX_W = 500;
 const MAX_H = 620;
 
-export function containerForImage(imgW: number, imgH: number): [number, number] {
+/** `room` is the width the page actually has: a 390 px phone cannot hold a 500 px stage. */
+export function containerForImage(imgW: number, imgH: number, room: number = MAX_W): [number, number] {
   const ratio = imgW / imgH;
-  if (ratio > MAX_W / MAX_H) {
-    return [MAX_W, MAX_W / ratio];
+  const maxW = Math.max(160, Math.min(MAX_W, room));
+  if (ratio > maxW / MAX_H) {
+    return [maxW, maxW / ratio];
   }
   return [MAX_H * ratio, MAX_H];
 }

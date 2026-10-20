@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "preact/hooks";
+import { useCallback, useEffect, useRef, useState } from "preact/hooks";
 import type { Preset } from "../lib/presets";
 import { containerForImage, calcGuides } from "../lib/crop";
 import {
@@ -159,6 +159,24 @@ export default function PhotoTool({
 
   const imgRef = useRef<HTMLImageElement>(null);
   const boxRef = useRef<HTMLDivElement>(null);
+  // The stage is sized in pixels so the guides can be, so it has to know the room it has.
+  // Without this a portrait photo made a 413 px stage on a 390 px phone and pushed the
+  // whole tool sideways — DV lottery visitors are mostly on phones. A callback ref, because
+  // the editor appears only after a file is picked, long after mount.
+  const [room, setRoom] = useState(500);
+  const roRef = useRef<ResizeObserver | null>(null);
+  const resultRef = useCallback((el: HTMLDivElement | null) => {
+    roRef.current?.disconnect();
+    roRef.current = null;
+    if (!el) return;
+    const measure = () => {
+      const cs = getComputedStyle(el);
+      setRoom(el.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight));
+    };
+    measure();
+    roRef.current = new ResizeObserver(measure);
+    roRef.current.observe(el);
+  }, []);
   const objectUrls = useRef<string[]>([]);
 
   useEffect(() => {
@@ -247,8 +265,8 @@ export default function PhotoTool({
 
   const img = imgRef.current;
   const [contW, contH] = img && ready
-    ? containerForImage(img.naturalWidth, img.naturalHeight)
-    : [420, 520];
+    ? containerForImage(img.naturalWidth, img.naturalHeight, room)
+    : [Math.min(420, room), 520];
   const guides = ready ? calcGuides(cx, cy, preset, contW, contH, scale) : null;
 
   const moveTo = (clientX: number, clientY: number) => {
@@ -388,7 +406,7 @@ export default function PhotoTool({
   const state = busy ? "busy" : bgDone ? "background-removed" : ready ? "ready" : "loading";
 
   return (
-    <div class="result" data-testid="editor" data-state={state} data-hydrated="true">
+    <div class="result" ref={resultRef} data-testid="editor" data-state={state} data-hydrated="true">
       <span class={`verdict${busy ? " is-busy" : ""}`}>
         <svg width="17" height="17" aria-hidden="true"><use href={busy ? "#ic-spark" : "#ic-check"} /></svg>
         {busy ?? (bgDone ? strings.bgDone : strings.framedTo)}
