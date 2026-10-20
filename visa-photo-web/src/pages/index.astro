@@ -1,8 +1,6 @@
 ---
 import Home from "../components/Home.astro";
-import { DEFAULT_LANG, LANGS, dict } from "../data/locales";
-import { LANG_TAG } from "../data/i18n";
-import { path } from "../lib/site";
+import { DEFAULT_LANG } from "../data/locales";
 
 /**
  * The English hub, served from the root itself.
@@ -11,45 +9,10 @@ import { path } from "../lib/site";
  * things were wrong with that. The page carried noindex and a canonical at the same time,
  * which are contradictory instructions, and an automatic redirect on language is the one
  * thing Google asks sites not to do — it stops both people and crawlers from reaching the
- * other versions. So the root is now the page, and a language offer is a bar you can dismiss.
+ * other versions. So the root is now the page, and the language offer (in Page.astro) is a bar
+ * you can dismiss.
  */
-const offers = LANGS.filter((lang) => lang !== DEFAULT_LANG).map((lang) => ({
-  lang,
-  href: path(lang),
-  tag: LANG_TAG[lang],
-  label: dict(lang).readHere,
-}));
 ---
 
 <Home lang={DEFAULT_LANG}>
-  <div class="lang-offer" hidden data-lang-offer>
-    {offers.map((offer) => (
-      <a class="lang-offer-link" hidden data-offer={offer.lang} href={offer.href} hreflang={offer.tag}>
-        {offer.label} →
-      </a>
-    ))}
-    <button type="button" class="lang-offer-close" data-offer-close aria-label="Dismiss">×</button>
-  </div>
 </Home>
-
-<script is:inline define:vars={{ langs: LANGS as string[] }}>
-  (function () {
-    const KEY = "visayes:lang-offer-dismissed";
-    const bar = document.querySelector("[data-lang-offer]");
-    if (!bar || localStorage.getItem(KEY)) return;
-
-    const wanted = (navigator.languages || [navigator.language || ""])
-      .map((tag) => tag.split("-")[0])
-      .find((tag) => langs.includes(tag) && tag !== "en");
-    if (!wanted) return;
-
-    const link = bar.querySelector(`[data-offer="${wanted}"]`);
-    if (!link) return;
-    link.hidden = false;
-    bar.hidden = false;
-    bar.querySelector("[data-offer-close]")?.addEventListener("click", () => {
-      localStorage.setItem(KEY, "1");
-      bar.hidden = true;
-    });
-  })();
-</script>

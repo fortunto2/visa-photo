@@ -7,7 +7,7 @@ import { guideLangs } from "../data/guideText";
 import { SITE, absolute, alternates, path } from "../lib/site";
 import { LANG_LABEL, LANG_TAG, dirOf } from "../data/i18n";
 import type { Dict } from "../data/i18n";
-import { LANGS, type ActiveLang, hasSection} from "../data/locales";
+import { LANGS, type ActiveLang, dict, hasSection } from "../data/locales";
 
 interface Props {
   lang: ActiveLang;
@@ -147,6 +147,18 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     </header>
 
     <main class="wrap">
+      {/* Every page, not only the root: most DV lottery visitors arrive from Egypt and Saudi
+          Arabia straight onto /en/ pages, and the Arabic copy existed with no way to find it. */}
+      <div class="lang-offer" hidden data-lang-offer data-lang={lang}>
+        {LANGS.filter((other) => other !== lang).map((other) => (
+          <a class="lang-offer-link" hidden data-offer={other} href={path(other, ...segments)}
+            hreflang={LANG_TAG[other]} lang={LANG_TAG[other]} dir={dirOf(other)}
+            data-sda-event="lang_offer_clicked" data-sda-placement={`${lang}>${other}`}>
+            {dict(other).readHere} {dirOf(other) === "rtl" ? "←" : "→"}
+          </a>
+        ))}
+        <button type="button" class="lang-offer-close" data-offer-close aria-label="Dismiss">×</button>
+      </div>
       <slot />
     </main>
 
@@ -167,5 +179,28 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     </footer>
 
     <Consent t={t} privacyHref={hasSection(lang, "privacy") ? path(lang, "privacy") : undefined} />
+    <script is:inline define:vars={{ langs: LANGS as string[] }}>
+      (function () {
+        const KEY = "visayes:lang-offer-dismissed";
+        const bar = document.querySelector("[data-lang-offer]");
+        let dismissed = false;
+        try { dismissed = !!localStorage.getItem(KEY); } catch {}
+        if (!bar || dismissed) return;
+
+        const wanted = (navigator.languages || [navigator.language || ""])
+          .map((tag) => tag.split("-")[0])
+          .find((tag) => langs.includes(tag));
+        if (!wanted || wanted === bar.dataset.lang) return;
+
+        const link = bar.querySelector(`[data-offer="${wanted}"]`);
+        if (!link) return;
+        link.hidden = false;
+        bar.hidden = false;
+        bar.querySelector("[data-offer-close]")?.addEventListener("click", () => {
+          try { localStorage.setItem(KEY, "1"); } catch {}
+          bar.hidden = true;
+        });
+      })();
+    </script>
   </body>
 </html>
