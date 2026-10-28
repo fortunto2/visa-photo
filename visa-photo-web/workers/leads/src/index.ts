@@ -87,8 +87,16 @@ export function recipients(lead: Lead, env: Secrets): { to: string; cc?: string 
 }
 
 /** Plain text: it is read in a mail client and forwarded to a partner, not rendered. */
-export function mailBody(id: number, lead: Lead, origin: string, ipCountry: string | null, at: string): string {
+export function mailBody(
+  id: number,
+  lead: Lead,
+  origin: string,
+  ipCountry: string | null,
+  at: string,
+  note?: string,
+): string {
   return [
+    ...(note ? [note, ""] : []),
     `Заявка на консультацию #${id}`,
     "",
     `Куда: ${lead.destination}`,
@@ -107,24 +115,41 @@ export function mailBody(id: number, lead: Lead, origin: string, ipCountry: stri
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+function describe(e: unknown): string {
+  const err = e as { code?: string; message?: string };
+  return `${err.code ?? "error"}: ${err.message ?? String(e)}`.slice(0, 500);
+}
+
 async function notify(env: Bindings, id: number, lead: Lead, ipCountry: string | null, at: string): Promise<void> {
   const rcpt = recipients(lead, env);
+  const send = (to: { to: string; cc?: string }, note?: string) =>
+    env.EMAIL.send({
+      from: { email: env.LEAD_FROM, name: "visayes" },
+      ...to,
+      // Replying from the mail client then reaches the applicant, when they left an e-mail.
+      ...(EMAIL_RE.test(lead.contact) ? { replyTo: lead.contact } : {}),
+      subject: `Заявка #${id}: ${lead.destination}, ${lead.name}`,
+      text: mailBody(id, lead, env.ALLOWED_ORIGIN, ipCountry, at, note),
+    });
+
   let error: string | null = null;
   if (!rcpt) {
     error = "LEAD_TO is not set";
   } else {
     try {
-      await env.EMAIL.send({
-        from: { email: env.LEAD_FROM, name: "visayes" },
-        ...rcpt,
-        // Replying from the mail client then reaches the applicant, when they left an e-mail.
-        ...(EMAIL_RE.test(lead.contact) ? { replyTo: lead.contact } : {}),
-        subject: `Заявка #${id}: ${lead.destination}, ${lead.name}`,
-        text: mailBody(id, lead, env.ALLOWED_ORIGIN, ipCountry, at),
-      });
+      await send(rcpt);
     } catch (e) {
-      const err = e as { code?: string; message?: string };
-      error = `${err.code ?? "error"}: ${err.message ?? String(e)}`.slice(0, 500);
+      error = describe(e);
+      // One recipient Cloudflare refuses (an unverified copy address) fails the whole mail, so
+      // without this the US requests would not reach LEAD_TO either. Send it alone and say why.
+      if (rcpt.cc) {
+        try {
+          await send({ to: rcpt.to }, `Копия на ${rcpt.cc} не ушла (${error}). Перешли вручную.`);
+          error = null;
+        } catch (e2) {
+          error = describe(e2);
+        }
+      }
     }
   }
   if (error) console.error(`lead ${id}: mail failed: ${error}`);
