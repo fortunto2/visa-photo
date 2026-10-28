@@ -8,6 +8,7 @@ import { agentCard, agentPrompt } from "../data/agentCard";
 import CopyButton from "./CopyButton.tsx";
 import PhotoChecker from "./PhotoChecker.tsx";
 import NextSteps from "./NextSteps.astro";
+import ConsultForm from "./ConsultForm.astro";
 import ModeTabs from "./ModeTabs.tsx";
 import { DEFAULT_LANG, dict, hasSection, type ActiveLang } from "../data/locales";
 import { absolute, path } from "../lib/site";
@@ -332,6 +333,7 @@ const notice = noticeFor(entry.country, entry.doc, lang);
   </ModeTabs>
 
   <NextSteps lang={lang} entry={entry} />
+  <ConsultForm lang={lang} entry={entry} t={t} />
 
   <div class="provenance">
   <p class="verified">

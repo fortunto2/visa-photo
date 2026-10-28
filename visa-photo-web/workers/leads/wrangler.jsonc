@@ -1,0 +1,42 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "visayes-leads",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-08-06",
+
+  // One path on the site's own domain, so the form posts same-origin and needs no CORS.
+  // A Worker route runs before the Pages project behind the same hostname.
+  "routes": [{ "pattern": "visayes.app/api/lead", "zone_name": "visayes.app" }],
+  "workers_dev": false,
+
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "visayes-leads",
+      // An id, not a secret: committed so every machine talks to the same database.
+      "database_id": "543cc209-8a8f-42c6-b53a-b34efdbb8fb7"
+    }
+  ],
+
+  // Pages Functions cannot hold this binding, which is the reason this is a Worker at all.
+  // Without a paid Email Sending plan it delivers only to addresses verified in Email Routing
+  // for visayes.app, which is exactly the two inboxes the leads go to.
+  "send_email": [{ "name": "EMAIL" }],
+
+  // Five requests a minute per IP. Counted at the edge, so no IP address is ever stored.
+  "ratelimits": [{ "name": "LIMITER", "namespace_id": "1001", "simple": { "limit": 5, "period": 60 } }],
+
+  // Hourly: retry mail that did not go out, delete requests older than a year (the privacy page
+  // says so). Both in src/index.ts, `scheduled`.
+  "triggers": { "crons": ["17 * * * *"] },
+
+  "vars": {
+    "ALLOWED_ORIGIN": "https://visayes.app",
+    "LEAD_FROM": "leads@visayes.app"
+  },
+  // Secrets, set with `wrangler secret put`: the repo is public and these are people's inboxes.
+  //   LEAD_TO     where every request goes
+  //   LEAD_CC_US  copied on requests about the United States
+
+  "observability": { "enabled": true }
+}

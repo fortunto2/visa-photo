@@ -323,6 +323,9 @@ export interface Dict {
     googleP: string;
     storedH: string;
     storedP: string;
+    /** The consultant request form — the one place the site takes personal data. */
+    leadH: string;
+    leadP: string;
     hostingH: string;
     hostingP: string;
     rightsH: string;

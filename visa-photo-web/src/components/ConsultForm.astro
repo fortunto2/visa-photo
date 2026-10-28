@@ -1,0 +1,186 @@
+---
+import type { ActiveLang } from "../data/locales";
+import type { CatalogEntry } from "../data/catalog";
+import type { Dict } from "../data/i18n";
+import { CONSULT_COPY, consultDestinations, showsConsult } from "../data/consult";
+import { path } from "../lib/site";
+
+/**
+ * The request form for a visa consultant (see src/data/consult.ts for what it is and is not).
+ *
+ * Folded into a <details> so the page stays a photo page: the form costs one line until someone
+ * opens it, and opening needs no script. Sending does — it posts JSON to /api/lead, which the
+ * `visayes-leads` Worker answers on the same origin.
+ */
+interface Props { lang: ActiveLang; entry: CatalogEntry; t: Dict }
+const { lang, entry, t } = Astro.props as Props;
+
+const show = showsConsult(entry);
+const c = CONSULT_COPY[lang];
+const destinations = consultDestinations();
+---
+
+{show && (
+  <details class="consult" data-testid="consult">
+    <summary data-sda-event="consult_opened" data-sda-placement={`${entry.country}:${entry.doc}`}>
+      <span class="consult-icon"><svg width="24" height="24" aria-hidden="true"><use href="#ic-question" /></svg></span>
+      <span class="consult-text">
+        <strong>{c.heading}</strong>
+        <span>{c.open}</span>
+      </span>
+      <svg class="consult-chevron" width="18" height="18" aria-hidden="true"><use href="#ic-arrow" /></svg>
+    </summary>
+
+    <form
+      class="consult-form"
+      novalidate
+      data-lang={lang}
+      data-country={entry.country}
+      data-doc={entry.doc}
+      data-sending={c.sending}
+      data-sent={c.sent}
+      data-failed={c.failed}
+    >
+      <p class="consult-body">{c.body}</p>
+
+      <label class="consult-half">
+        <span>{c.name}</span>
+        <input name="name" required maxlength="100" autocomplete="name" />
+      </label>
+      <label class="consult-half">
+        <span>{c.contact}</span>
+        <input name="contact" required minlength="3" maxlength="200" autocomplete="email" />
+      </label>
+      <label>
+        <span>{c.destination}</span>
+        <select name="destination">
+          {destinations.map((d) => (
+            <option value={d.slug} selected={d.slug === entry.country}>{t.country[d.nameKey] ?? d.slug}</option>
+          ))}
+          <option value="other">{c.other}</option>
+        </select>
+      </label>
+      <label>
+        <span>{c.message}</span>
+        <textarea name="message" rows="3" maxlength="2000" placeholder={c.messageHint}></textarea>
+      </label>
+
+      {/* Never shown to people; a bot that fills every field fills this one too. */}
+      <label class="consult-trap" aria-hidden="true">
+        Website <input name="website" tabindex="-1" autocomplete="off" />
+      </label>
+
+      <label class="consult-consent">
+        <input type="checkbox" name="consent" required />
+        <span>{c.consent} <a href={path(lang, "privacy")} target="_blank" rel="noopener">{c.privacy}</a></span>
+      </label>
+
+      <button class="consult-submit" type="submit">{c.submit}</button>
+      <p class="consult-status" role="status" aria-live="polite"></p>
+    </form>
+  </details>
+)}
+
+<script>
+  import { track } from "../lib/analytics";
+
+  for (const form of document.querySelectorAll<HTMLFormElement>(".consult-form")) {
+    const status = form.querySelector<HTMLElement>(".consult-status")!;
+    const button = form.querySelector<HTMLButtonElement>(".consult-submit")!;
+    const d = form.dataset;
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      // The browser's own messages, in the visitor's language, for empty or unticked fields.
+      if (!form.reportValidity()) return;
+
+      const data = new FormData(form);
+      const body = {
+        name: String(data.get("name") ?? ""),
+        contact: String(data.get("contact") ?? ""),
+        destination: String(data.get("destination") ?? ""),
+        message: String(data.get("message") ?? ""),
+        website: String(data.get("website") ?? ""),
+        consent: data.get("consent") === "on",
+        lang: d.lang,
+        page: location.pathname,
+      };
+
+      button.disabled = true;
+      status.dataset.state = "";
+      status.textContent = d.sending ?? "";
+      try {
+        const res = await fetch("/api/lead", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify(body),
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        status.dataset.state = "sent";
+        status.textContent = d.sent ?? "";
+        form.querySelectorAll("label, .consult-submit").forEach((el) => el.remove());
+        track("consult_requested", {
+          country: d.country ?? "",
+          doc: d.doc ?? "",
+          destination: body.destination,
+        });
+      } catch {
+        status.dataset.state = "failed";
+        status.textContent = d.failed ?? "";
+        button.disabled = false;
+      }
+    });
+  }
+</script>
+
+<style>
+  .consult {
+    margin: 16px 0 0;
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg, 18px);
+    box-shadow: var(--sh-sm);
+  }
+  .consult summary {
+    display: flex; align-items: center; gap: 14px; padding: 16px 20px;
+    cursor: pointer; list-style: none;
+  }
+  .consult summary::-webkit-details-marker { display: none; }
+  .consult-icon {
+    display: grid; place-items: center; flex-shrink: 0; width: 42px; height: 42px;
+    border-radius: 12px; background: var(--amber-soft); color: var(--amber);
+  }
+  .consult-text { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+  .consult-text strong { font-size: 17px; }
+  .consult-text span { color: var(--teal); font-weight: 700; font-size: 15px; }
+  .consult-chevron { flex-shrink: 0; color: var(--ink-faint); transform: rotate(90deg); transition: transform .15s; }
+  .consult[open] .consult-chevron { transform: rotate(-90deg); }
+
+  .consult-form { display: grid; gap: 12px; padding: 0 20px 20px; }
+  .consult-form > * { grid-column: 1 / -1; }
+  @media (min-width: 640px) {
+    .consult-form { grid-template-columns: 1fr 1fr; }
+    .consult-form > .consult-half { grid-column: auto; }
+  }
+  .consult-body { margin: 0; color: var(--ink-soft); font-size: 15px; line-height: 1.5; }
+  .consult-form label { display: grid; gap: 5px; font-size: 14px; color: var(--ink-soft); }
+  .consult-form input:not([type="checkbox"]), .consult-form select, .consult-form textarea {
+    width: 100%; box-sizing: border-box; padding: 11px 12px;
+    font: inherit; font-size: 16px; color: var(--ink);
+    background: var(--bg); border: 1px solid var(--line); border-radius: var(--r-sm);
+  }
+  .consult-form textarea { resize: vertical; }
+  .consult-form :is(input, select, textarea):focus { border-color: var(--teal); outline: none; }
+  .consult-form .consult-consent { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; line-height: 1.45; }
+  .consult-consent input { margin: 2px 0 0; width: 18px; height: 18px; flex-shrink: 0; accent-color: var(--teal); }
+  /* Clipped in place, not pushed off-screen: in an RTL page an element at left:-9999px is
+     scrollable, and the Arabic pages grew a sideways scroll. */
+  .consult-trap { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .consult-submit {
+    justify-self: start; padding: 12px 22px; border: 0; border-radius: var(--r-pill);
+    background: var(--teal); color: var(--on-teal); font: inherit; font-weight: 700; cursor: pointer;
+  }
+  .consult-submit:disabled { opacity: .6; cursor: progress; }
+  .consult-status { margin: 0; font-size: 15px; color: var(--ink-soft); }
+  .consult-status:empty { display: none; }
+  .consult-status[data-state="sent"] { color: var(--ok); font-weight: 700; }
+  .consult-status[data-state="failed"] { color: var(--amber); }
+</style>
