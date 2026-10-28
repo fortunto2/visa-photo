@@ -19,8 +19,9 @@ import { countryGroups, type CatalogEntry } from "./catalog";
  *
  * The United States has a partner who answers, and her work is the ordinary B1/B2 tourist visa,
  * so those pages get an open banner labelled as a partner's offer rather than a folded line.
- * The DV lottery page gets it too, but it never sells help with the lottery: entry is free, and
- * the State Department's standing warning is that paid "DV agents" are the usual scam. It says
+ * The DV lottery page gets it too, but it never sells help with the lottery: the only cost of an
+ * entry is the State Department's own $1 fee (from DV-2027), and its standing warning is that paid
+ * "DV agents" are the usual scam. It says
  * that first and offers the tourist visa. Every other visa page keeps the folded form; those
  * requests reach visayes and wait for a partner.
  */
@@ -61,8 +62,9 @@ interface Copy {
   failed: string;
   /** Says the US banner is someone else's paid service, not a step of the checker. */
   partnerTag: string;
-  usVisa: { heading: string; body: string };
-  usDv: { heading: string; body: string };
+  /** `short` is the teaser beside the headline; `body` is the banner with the form. */
+  usVisa: { heading: string; body: string; short: string };
+  usDv: { heading: string; body: string; short: string };
   usHint: string;
 }
 
@@ -87,10 +89,12 @@ export const CONSULT_COPY: Record<ActiveLang, Copy> = {
     usVisa: {
       heading: "US tourist visa, with a consultant",
       body: "The photo is our part. For the rest of a B1/B2 visa (the DS-160 form, the interview appointment, getting ready for the interview) a partner visa consultant can help. It is a paid service: the consultant names the price before starting. No one can promise a visa; the consulate decides.",
+      short: "Help with the DS-160, the appointment and the interview. Paid; no one can promise a visa.",
     },
     usDv: {
       heading: "Want a regular US tourist visa?",
-      body: "Entering the DV lottery is free and you do it yourself at dvprogram.state.gov: you don't need to pay anyone for it. If you want to visit the US as a tourist, a partner visa consultant can help with the B1/B2 visa: the DS-160 form, the appointment, the interview. It is a paid service; you agree the price with the consultant.",
+      body: "Entering the DV lottery costs $1, a State Department fee paid at dvprogram.state.gov, and you file the entry yourself: no agent is needed. If you want to visit the US as a tourist, a partner visa consultant can help with the B1/B2 visa: the DS-160 form, the appointment, the interview. It is a paid service; you agree the price with the consultant.",
+      short: "The lottery costs $1, a State Department fee, and needs no agent. For a B1/B2 tourist visa, a partner consultant can help; it is paid.",
     },
     usHint: "Citizenship, when you plan to travel, any past refusals",
   },
@@ -114,10 +118,12 @@ export const CONSULT_COPY: Record<ActiveLang, Copy> = {
     usVisa: {
       heading: "Туристическая виза в США с консультантом",
       body: "Фото делаем мы. С остальным для визы B1/B2 (анкета DS-160, запись на собеседование, подготовка к нему) поможет визовый консультант-партнёр. Услуга платная: цену консультант называет до начала работы. Гарантировать визу не может никто, решение принимает консул.",
+      short: "Анкета DS-160, запись и подготовка к собеседованию. Платно, визу не гарантирует никто.",
     },
     usDv: {
       heading: "Нужна обычная туристическая виза в США?",
-      body: "Участие в DV-лотерее бесплатное, и подаёте вы сами на dvprogram.state.gov: платить за это никому не нужно. А если хотите поехать в США туристом, с визой B1/B2 (анкета DS-160, запись, собеседование) поможет визовый консультант-партнёр. Услуга платная, цену обсуждаете с ним.",
+      body: "Участие в DV-лотерее стоит $1 (сбор Госдепа, платится на dvprogram.state.gov), и подаёте вы сами: посредник не нужен. А если хотите поехать в США туристом, с визой B1/B2 (анкета DS-160, запись, собеседование) поможет визовый консультант-партнёр. Услуга платная, цену обсуждаете с ним.",
+      short: "Участие стоит $1, это сбор Госдепа, посредник не нужен. С туристической визой B1/B2 поможет консультант-партнёр, платно.",
     },
     usHint: "Гражданство, когда планируете поездку, были ли отказы",
   },
@@ -141,10 +147,12 @@ export const CONSULT_COPY: Record<ActiveLang, Copy> = {
     usVisa: {
       heading: "Visa de turista para EE. UU., con un asesor",
       body: "La foto es cosa nuestra. Para el resto de la visa B1/B2 (el formulario DS-160, la cita de la entrevista y la preparación) te ayuda un asesor de visados colaborador. Es un servicio de pago: el asesor te dice el precio antes de empezar. Nadie puede garantizar la visa; decide el consulado.",
+      short: "Ayuda con el DS-160, la cita y la entrevista. De pago; nadie puede garantizar la visa.",
     },
     usDv: {
       heading: "¿Necesitas una visa de turista normal para EE. UU.?",
-      body: "Participar en la lotería DV es gratis y lo haces tú mismo en dvprogram.state.gov: no hace falta pagar a nadie. Si quieres viajar a EE. UU. como turista, un asesor de visados colaborador te ayuda con la visa B1/B2: el formulario DS-160, la cita y la entrevista. Es de pago; el precio lo acuerdas con él.",
+      body: "Participar en la lotería DV cuesta 1 USD, una tasa del Departamento de Estado que se paga en dvprogram.state.gov, y lo haces tú mismo: no hace falta intermediario. Si quieres viajar a EE. UU. como turista, un asesor de visados colaborador te ayuda con la visa B1/B2: el formulario DS-160, la cita y la entrevista. Es de pago; el precio lo acuerdas con él.",
+      short: "La lotería cuesta 1 USD, una tasa del Departamento de Estado, y no necesita intermediarios. Con la visa de turista B1/B2 te ayuda un asesor colaborador, de pago.",
     },
     usHint: "Nacionalidad, cuándo piensas viajar, si te han negado alguna visa",
   },
@@ -168,10 +176,12 @@ export const CONSULT_COPY: Record<ActiveLang, Copy> = {
     usVisa: {
       heading: "Visa touristique pour les États-Unis, avec un consultant",
       body: "La photo, c'est nous. Pour le reste du visa B1/B2 (le formulaire DS-160, le rendez-vous et la préparation de l'entretien), un consultant en visas partenaire peut vous aider. Le service est payant : le consultant annonce son prix avant de commencer. Personne ne peut garantir un visa, c'est le consulat qui décide.",
+      short: "Aide pour le DS-160, le rendez-vous et l'entretien. Payant ; personne ne peut garantir un visa.",
     },
     usDv: {
       heading: "Besoin d'un visa touristique classique pour les États-Unis ?",
-      body: "La participation à la loterie DV est gratuite et se fait vous-même sur dvprogram.state.gov : inutile de payer qui que ce soit. Si vous voulez aller aux États-Unis en touriste, un consultant en visas partenaire peut vous aider pour le visa B1/B2 : formulaire DS-160, rendez-vous, entretien. Le service est payant, le prix se convient avec lui.",
+      body: "La participation à la loterie DV coûte 1 $, une taxe du Département d'État payée sur dvprogram.state.gov, et se fait vous-même : aucun intermédiaire n'est nécessaire. Si vous voulez aller aux États-Unis en touriste, un consultant en visas partenaire peut vous aider pour le visa B1/B2 : formulaire DS-160, rendez-vous, entretien. Le service est payant, le prix se convient avec lui.",
+      short: "La loterie coûte 1 $, une taxe du Département d'État, et ne demande aucun intermédiaire. Pour un visa touristique B1/B2, un consultant partenaire peut vous aider, c'est payant.",
     },
     usHint: "Nationalité, date de voyage prévue, refus éventuels",
   },
@@ -195,10 +205,12 @@ export const CONSULT_COPY: Record<ActiveLang, Copy> = {
     usVisa: {
       heading: "Visto de turista para os EUA, com um consultor",
       body: "A foto é com a gente. Para o resto do visto B1/B2 (o formulário DS-160, o agendamento da entrevista e a preparação), um consultor de vistos parceiro pode ajudar. O serviço é pago: o consultor informa o preço antes de começar. Ninguém pode garantir o visto; quem decide é o consulado.",
+      short: "Ajuda com o DS-160, o agendamento e a entrevista. Pago; ninguém pode garantir o visto.",
     },
     usDv: {
       heading: "Precisa de um visto de turista comum para os EUA?",
-      body: "Participar da loteria DV é gratuito e você mesmo se inscreve em dvprogram.state.gov: não precisa pagar ninguém. Se quiser ir aos EUA como turista, um consultor de vistos parceiro ajuda com o visto B1/B2: formulário DS-160, agendamento e entrevista. O serviço é pago; o preço você combina com ele.",
+      body: "Participar da loteria DV custa US$ 1, uma taxa do Departamento de Estado paga em dvprogram.state.gov, e você mesmo se inscreve: não precisa de intermediário. Se quiser ir aos EUA como turista, um consultor de vistos parceiro ajuda com o visto B1/B2: formulário DS-160, agendamento e entrevista. O serviço é pago; o preço você combina com ele.",
+      short: "A loteria custa US$ 1, uma taxa do Departamento de Estado, e não precisa de intermediário. Com o visto de turista B1/B2, um consultor parceiro ajuda; é pago.",
     },
     usHint: "Nacionalidade, quando pretende viajar, se já teve visto negado",
   },
@@ -222,10 +234,12 @@ export const CONSULT_COPY: Record<ActiveLang, Copy> = {
     usVisa: {
       heading: "Danışman desteğiyle ABD turist vizesi",
       body: "Fotoğraf bizden. B1/B2 vizesinin geri kalanı için (DS-160 formu, mülakat randevusu ve mülakata hazırlık) iş ortağımız olan bir vize danışmanı yardımcı olabilir. Hizmet ücretlidir: danışman ücreti işe başlamadan söyler. Vizeyi kimse garanti edemez, kararı konsolosluk verir.",
+      short: "DS-160, randevu ve mülakat için destek. Ücretlidir; vizeyi kimse garanti edemez.",
     },
     usDv: {
       heading: "Normal bir ABD turist vizesi mi lazım?",
-      body: "DV piyangosuna katılım ücretsizdir ve başvuruyu dvprogram.state.gov üzerinden kendiniz yaparsınız: kimseye para ödemeniz gerekmez. ABD'ye turist olarak gitmek istiyorsanız, iş ortağımız olan bir vize danışmanı B1/B2 vizesinde yardımcı olur: DS-160 formu, randevu, mülakat. Hizmet ücretlidir, ücreti danışmanla konuşursunuz.",
+      body: "DV piyangosuna katılım 1 dolardır; bu ücret dvprogram.state.gov üzerinden ABD Dışişleri Bakanlığına ödenir ve başvuruyu kendiniz yaparsınız: aracıya gerek yoktur. ABD'ye turist olarak gitmek istiyorsanız, iş ortağımız olan bir vize danışmanı B1/B2 vizesinde yardımcı olur: DS-160 formu, randevu, mülakat. Hizmet ücretlidir, ücreti danışmanla konuşursunuz.",
+      short: "Piyangoya katılım 1 dolardır, ABD Dışişleri Bakanlığının ücretidir ve aracı gerekmez. B1/B2 turist vizesinde iş ortağımız olan bir danışman ücretli olarak yardımcı olur.",
     },
     usHint: "Vatandaşlık, ne zaman seyahat etmeyi düşündüğünüz, daha önce ret alıp almadığınız",
   },
@@ -249,10 +263,12 @@ export const CONSULT_COPY: Record<ActiveLang, Copy> = {
     usVisa: {
       heading: "تأشيرة سياحية إلى الولايات المتحدة بمساعدة مستشار",
       body: "نحن نجهّز الصورة. أما بقية خطوات تأشيرة B1/B2 (استمارة DS-160، وحجز موعد المقابلة، والتحضير لها) فيساعدك فيها مستشار تأشيرات شريك. الخدمة مدفوعة: يحدد المستشار السعر قبل البدء. لا أحد يستطيع ضمان التأشيرة، فالقرار للقنصلية.",
+      short: "مساعدة في استمارة DS-160 والموعد والمقابلة. خدمة مدفوعة، ولا أحد يضمن التأشيرة.",
     },
     usDv: {
       heading: "هل تحتاج تأشيرة سياحية عادية إلى الولايات المتحدة؟",
-      body: "المشاركة في قرعة DV مجانية، وتقدّم بنفسك عبر dvprogram.state.gov، ولا داعي للدفع لأي أحد. وإذا أردت السفر إلى الولايات المتحدة سائحًا، يساعدك مستشار تأشيرات شريك في تأشيرة B1/B2: استمارة DS-160 والموعد والمقابلة. الخدمة مدفوعة، وتتفق معه على السعر.",
+      body: "المشاركة في قرعة DV تكلّف دولارًا واحدًا رسومًا لوزارة الخارجية الأمريكية تُدفع عبر dvprogram.state.gov، وتقدّم بنفسك دون حاجة إلى وسيط. وإذا أردت السفر إلى الولايات المتحدة سائحًا، يساعدك مستشار تأشيرات شريك في تأشيرة B1/B2: استمارة DS-160 والموعد والمقابلة. الخدمة مدفوعة، وتتفق معه على السعر.",
+      short: "المشاركة في القرعة بدولار واحد رسومًا لوزارة الخارجية الأمريكية، ولا تحتاج إلى وسيط. أما تأشيرة B1/B2 السياحية فيساعدك فيها مستشار شريك مقابل أجر.",
     },
     usHint: "الجنسية، موعد السفر المتوقع، وهل سبق رفض طلبك",
   },
@@ -276,10 +292,12 @@ export const CONSULT_COPY: Record<ActiveLang, Copy> = {
     usVisa: {
       heading: "अमेरिका का टूरिस्ट वीज़ा, कंसल्टेंट की मदद से",
       body: "फ़ोटो हम बनाते हैं। B1/B2 वीज़ा के बाकी काम (DS-160 फ़ॉर्म, इंटरव्यू अपॉइंटमेंट और उसकी तैयारी) में हमारे पार्टनर वीज़ा कंसल्टेंट मदद कर सकते हैं। यह पेड सर्विस है: कंसल्टेंट काम शुरू करने से पहले फ़ीस बताते हैं। वीज़ा की गारंटी कोई नहीं दे सकता, फ़ैसला कॉन्सुलेट करता है।",
+      short: "DS-160, अपॉइंटमेंट और इंटरव्यू में मदद। पेड सर्विस; वीज़ा की गारंटी कोई नहीं दे सकता।",
     },
     usDv: {
       heading: "अमेरिका का सामान्य टूरिस्ट वीज़ा चाहिए?",
-      body: "DV लॉटरी में हिस्सा लेना मुफ़्त है और आप खुद dvprogram.state.gov पर आवेदन करते हैं: इसके लिए किसी को पैसे देने की ज़रूरत नहीं। अगर आप टूरिस्ट बनकर अमेरिका जाना चाहते हैं, तो B1/B2 वीज़ा (DS-160 फ़ॉर्म, अपॉइंटमेंट, इंटरव्यू) में हमारे पार्टनर वीज़ा कंसल्टेंट मदद करेंगे। सर्विस पेड है, फ़ीस आप उन्हीं से तय करें।",
+      body: "DV लॉटरी में हिस्सा लेने की फ़ीस $1 है, जो dvprogram.state.gov पर अमेरिकी विदेश विभाग को दी जाती है, और आवेदन आप खुद करते हैं: किसी एजेंट की ज़रूरत नहीं। अगर आप टूरिस्ट बनकर अमेरिका जाना चाहते हैं, तो B1/B2 वीज़ा (DS-160 फ़ॉर्म, अपॉइंटमेंट, इंटरव्यू) में हमारे पार्टनर वीज़ा कंसल्टेंट मदद करेंगे। सर्विस पेड है, फ़ीस आप उन्हीं से तय करें।",
+      short: "लॉटरी की फ़ीस $1 है, जो अमेरिकी विदेश विभाग लेता है; किसी एजेंट की ज़रूरत नहीं। B1/B2 टूरिस्ट वीज़ा में पार्टनर कंसल्टेंट मदद करेंगे, यह पेड है।",
     },
     usHint: "नागरिकता, यात्रा कब करनी है, पहले कभी वीज़ा रिजेक्ट हुआ या नहीं",
   },
@@ -303,10 +321,12 @@ export const CONSULT_COPY: Record<ActiveLang, Copy> = {
     usVisa: {
       heading: "美国旅游签证，请顾问协助",
       body: "照片由我们负责。B1/B2 签证的其余部分（DS-160 表格、面签预约和面签准备）可由合作签证顾问协助。这是付费服务：顾问会在开始前报价。任何人都无法保证签证获批，决定权在领事馆。",
+      short: "协助 DS-160、预约和面签。付费服务，任何人都无法保证签证获批。",
     },
     usDv: {
       heading: "需要普通的美国旅游签证吗？",
-      body: "参加 DV 抽签是免费的，你可以自己在 dvprogram.state.gov 上提交，不需要付钱给任何人。如果你想以游客身份去美国，合作签证顾问可以协助办理 B1/B2 签证：DS-160 表格、预约和面签。服务收费，价格与顾问商定。",
+      body: "参加 DV 抽签需支付 1 美元，这是美国国务院在 dvprogram.state.gov 上收取的费用，由你自己提交，不需要中介。如果你想以游客身份去美国，合作签证顾问可以协助办理 B1/B2 签证：DS-160 表格、预约和面签。服务收费，价格与顾问商定。",
+      short: "抽签费用 1 美元，由美国国务院收取，无需中介。B1/B2 旅游签证可由合作顾问协助，需付费。",
     },
     usHint: "国籍、计划出行时间、是否被拒签过",
   },

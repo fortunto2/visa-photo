@@ -24,7 +24,7 @@ const destinations = consultDestinations();
 ---
 
 {offer && (
-  <details class:list={["consult", { "consult-partner": partner }]} data-testid="consult" data-offer={offer}>
+  <details id="consult" class:list={["consult", { "consult-partner": partner }]} data-testid="consult" data-offer={offer}>
     <summary data-sda-event="consult_opened" data-sda-placement={`${entry.country}:${entry.doc}`}>
       {partner ? (
         <>

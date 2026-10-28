@@ -139,6 +139,18 @@ h1 {
   line-height: 1.06; margin: 0 0 16px; text-wrap: balance; max-width: 20ch;
 }
 .answer { font-size: 19px; line-height: 1.55; color: var(--ink-soft); margin: 0 0 14px; max-width: 58ch; }
+/* A US page puts the partner's card in the column the headline leaves empty, so the tool below
+   keeps its full width. Everything else stays in the first column, in document order. */
+@media (min-width: 1024px) {
+  /* The closing 1fr row takes whatever height the card has beyond the text, so a tall card never
+     spreads the headline and the answer apart. */
+  .doc-hero.has-offer {
+    display: grid; grid-template-columns: minmax(0, 1fr) 330px; grid-template-rows: repeat(7, auto) 1fr;
+    column-gap: 40px; align-items: start;
+  }
+  .doc-hero.has-offer > * { grid-column: 1; }
+  .doc-hero.has-offer > .teaser { grid-column: 2; grid-row: 1 / -1; }
+}
 .answer b { color: var(--ink); font-weight: 650; }
 .verified {
   display: inline-flex; align-items: center; gap: 8px;
