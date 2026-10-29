@@ -25,7 +25,7 @@ const destinations = consultDestinations();
 
 {offer && (
   <details id="consult" class:list={["consult", { "consult-partner": partner }]} data-testid="consult" data-offer={offer}>
-    <summary data-sda-event="consult_opened" data-sda-placement={`${entry.country}:${entry.doc}`}>
+    <summary>
       {partner ? (
         <>
           <span class="consult-tag">
@@ -107,15 +107,32 @@ const destinations = consultDestinations();
 <script>
   import { track } from "../lib/analytics";
 
-  for (const form of document.querySelectorAll<HTMLFormElement>(".consult-form")) {
+  /*
+   * The funnel: consult_teaser_clicked (the card at the top, counted by markup) → consult_opened →
+   * consult_requested. A send that does not happen is its own event with a reason, because silence
+   * after opening looks the same whether the person changed their mind, could not tick the box, or
+   * the request failed.
+   */
+  for (const details of document.querySelectorAll<HTMLDetailsElement>("details.consult")) {
+    const form = details.querySelector<HTMLFormElement>(".consult-form")!;
     const status = form.querySelector<HTMLElement>(".consult-status")!;
     const button = form.querySelector<HTMLButtonElement>(".consult-submit")!;
     const d = form.dataset;
+    const placement = `${d.country}:${d.doc}`;
+
+    // On `toggle`, not a click on <summary>: a click also closes it, and the teaser opens it by script.
+    details.addEventListener("toggle", () => {
+      if (details.open) track("consult_opened", { placement });
+    });
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
       // The browser's own messages, in the visitor's language, for empty or unticked fields.
-      if (!form.reportValidity()) return;
+      if (!form.reportValidity()) {
+        const field = form.querySelector<HTMLInputElement>(":invalid")?.name ?? "unknown";
+        track("consult_invalid", { placement, field });
+        return;
+      }
 
       const data = new FormData(form);
       const body = {
@@ -143,11 +160,14 @@ const destinations = consultDestinations();
         status.textContent = d.sent ?? "";
         form.querySelectorAll("label, .consult-submit").forEach((el) => el.remove());
         track("consult_requested", {
+          placement,
           country: d.country ?? "",
           doc: d.doc ?? "",
           destination: body.destination,
         });
-      } catch {
+      } catch (e) {
+        // An HTTP status (403 origin, 429 rate, 400 field, 500 store) or "network".
+        track("consult_failed", { placement, reason: /^\d{3}$/.test(String((e as Error).message)) ? (e as Error).message : "network" });
         status.dataset.state = "failed";
         status.textContent = d.failed ?? "";
         button.disabled = false;
