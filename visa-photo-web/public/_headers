@@ -1,4 +1,12 @@
+# Link headers (RFC 8288): how an agent finds the machine-readable side of the site without
+# parsing HTML first. Same set and rels as rustman.org, for what exists here.
 /*
+  Link: </llms.txt>; rel="describedby"; type="text/plain"
+  Link: </llms-full.txt>; rel="alternate"; type="text/plain"; title="Full text of every document"
+  Link: </sitemap.xml>; rel="sitemap"; type="application/xml"
+  Link: </specs.json>; rel="service-desc"; type="application/json"; title="Photo specifications"
+  Link: </.well-known/agent-skills/index.json>; rel="service-desc"; type="application/json"; title="Agent skills"
+  Link: </.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json"
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: geolocation=(), microphone=(), camera=(self)
@@ -6,8 +14,11 @@
 
 # Cloudflare Pages types extensionless files as octet-stream, which hides what these are
 # from the agents they exist for.
+/.well-known/*
+  Access-Control-Allow-Origin: *
+
 /.well-known/api-catalog
-  Content-Type: application/linkset+json
+  Content-Type: application/linkset+json; profile="https://www.rfc-editor.org/info/rfc9727"
   Cache-Control: public, max-age=3600
 
 /llms.txt

@@ -21,6 +21,11 @@ export const GET: APIRoute = () => {
             type: "application/json",
             title: "Photo specifications for every supported document",
           },
+          {
+            href: absolute("/.well-known/agent-skills/index.json"),
+            type: "application/json",
+            title: "Agent skills",
+          },
         ],
         "service-doc": [
           {

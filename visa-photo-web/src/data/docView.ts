@@ -89,7 +89,7 @@ export function docView(entry: CatalogEntry, t: Dict): DocView {
       ? [{
           q: t.autoFaq.checked({ doc: title }),
           a: t.checkerVerified({
-            date: new Intl.DateTimeFormat(t.dateLocale, { day: "numeric", month: "long", year: "numeric" })
+            date: new Intl.DateTimeFormat(t.dateLocale, { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })
               .format(new Date(entry.checkerVerified)),
           }),
         }]

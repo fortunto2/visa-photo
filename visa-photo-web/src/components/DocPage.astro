@@ -52,6 +52,9 @@ const checkedOn = new Intl.DateTimeFormat(t.dateLocale, {
   day: "numeric",
   month: "long",
   year: "numeric",
+  // The date is a calendar day, parsed as UTC midnight; formatted in the build machine's zone
+  // (PDT) it showed the day before.
+  timeZone: "UTC",
 }).format(new Date(entry.checked));
 
 const kindIcon = KIND_ICON[entry.kind];
@@ -86,8 +89,12 @@ const schema = [
   },
   {
     "@context": "https://schema.org",
-    "@type": "WebApplication",
+    // Product too, because it carries an Offer; rustman's software-ld types its apps the same way.
+    "@type": ["WebApplication", "Product"],
     name: mode === "check" ? t.check.h1(docTitle) : `${docTitle} maker`,
+    image: absolute(`/og/${lang}/${entry.country}/${entry.doc}.png`),
+    // When the specification was last checked against the authority, not when the site was built.
+    dateModified: entry.checked,
     applicationCategory: "MultimediaApplication",
     operatingSystem: "Any browser",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
@@ -375,7 +382,7 @@ const notice = noticeFor(entry.country, entry.doc, lang);
     <p class="verified" data-testid="checker-verified">
       <svg width="16" height="16" aria-hidden="true"><use href="#ic-shield" /></svg>
       {t.checkerVerified({
-        date: new Intl.DateTimeFormat(t.dateLocale, { day: "numeric", month: "long", year: "numeric" })
+        date: new Intl.DateTimeFormat(t.dateLocale, { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })
           .format(new Date(entry.checkerVerified)),
       })}
     </p>

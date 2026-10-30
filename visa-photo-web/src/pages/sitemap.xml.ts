@@ -3,6 +3,7 @@ import { CATALOG, countryGroups } from "../data/catalog";
 import { absolute, alternates, path } from "../lib/site";
 import { langsFor } from "../data/locales";
 import { guideSlugs, guideLangs } from "../data/guideText";
+import { GUIDES } from "../data/guides";
 
 /**
  * Written by hand rather than via @astrojs/sitemap because every URL needs its full
@@ -35,6 +36,19 @@ export const GET: APIRoute = () => {
     ...CATALOG.map((e) => [e.country, e.doc, "check"]),
   ];
 
+  /**
+   * The date the facts on a page were last checked against their source, where there is one:
+   * a document's `checked`, the latest of a country's documents, a guide's own date. Pages with
+   * no such date get no lastmod rather than the build date, which would claim a change that
+   * did not happen.
+   */
+  const checkedOf = (segments: string[]): string | undefined => {
+    const [a, b] = segments;
+    if (a === "guides") return GUIDES.find((g) => g.slug === b)?.checked;
+    const docs = CATALOG.filter((e) => e.country === a && (b === undefined || e.doc === b));
+    return docs.map((e) => e.checked).sort().at(-1);
+  };
+
   const urls = groups.flatMap((segments) =>
     // A language that has not translated the models or skills page simply has no such URL.
     langsFor(segments).map((lang) => {
@@ -46,6 +60,7 @@ export const GET: APIRoute = () => {
       return [
         "  <url>",
         `    <loc>${loc}</loc>`,
+        ...(checkedOf(segments) ? [`    <lastmod>${checkedOf(segments)}</lastmod>`] : []),
         ...alts,
         `    <changefreq>monthly</changefreq>`,
         `    <priority>${segments.length ? "0.8" : "1.0"}</priority>`,
