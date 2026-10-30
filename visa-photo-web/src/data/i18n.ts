@@ -597,6 +597,12 @@ export interface Dict {
     copyFile: string;
     endpoints: string;
     endpointsBody: string;
+    /** The MCP server (functions/mcp.ts): how to connect it and what its tools do. */
+    mcp: string;
+    mcpBody: string;
+    /** Sending a person to the visa-help chat: the ?ask= link and the WebMCP form. */
+    chat: string;
+    chatBody: string;
   };
 
   /** hub */

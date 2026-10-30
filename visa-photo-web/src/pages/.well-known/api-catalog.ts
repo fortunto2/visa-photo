@@ -26,6 +26,11 @@ export const GET: APIRoute = () => {
             type: "application/json",
             title: "Agent skills",
           },
+          {
+            href: absolute("/.well-known/mcp/server-card.json"),
+            type: "application/json",
+            title: "MCP server (POST /mcp, no auth)",
+          },
         ],
         "service-doc": [
           {

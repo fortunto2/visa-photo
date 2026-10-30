@@ -319,7 +319,20 @@ const en: Dict = {
     copyFile: "Copy the skill",
     endpoints: "Endpoints your agent can call directly",
     endpointsBody:
-      "No key, no sign-up, no rate limit worth mentioning. These are static files.",
+      "No key, no sign-up, no rate limit worth mentioning. These are static files, and any " +
+      "document page also answers Accept: text/markdown with its Markdown twin.",
+    mcp: "Connect over MCP",
+    mcpBody:
+      "A remote MCP server at https://visayes.app/mcp, no key and no account. Four tools: " +
+      "get_photo_spec (one document's specification with its source and date), search, read (any " +
+      "page as Markdown) and ask_link. Add it to your client:",
+    chat: "When the question is not about the photo",
+    chatBody:
+      "Each visa page has a chat for the application, the appointment or a refusal: an AI assistant " +
+      "answers, and if the person leaves an e-mail, phone or Telegram, a visa consultant follows up " +
+      "(consultants are paid). An agent cannot send a request for someone; it can open the chat with " +
+      "their question typed in, by link or with ask_link, and in Chrome the chat form is also the " +
+      "WebMCP tool ask_visa_question. The person reads it and presses send.",
   },
 
   hub: {

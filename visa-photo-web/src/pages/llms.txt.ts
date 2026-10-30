@@ -39,6 +39,13 @@ export const GET: APIRoute = () => {
   lines.push(`- [API catalog](${absolute("/.well-known/api-catalog")})`);
   lines.push("");
 
+  lines.push("## MCP server");
+  lines.push("");
+  lines.push(`Streamable HTTP at ${absolute("/mcp")}, no authentication. Tools: get_photo_spec, search, read,`);
+  lines.push("ask_link. In Claude Code: `claude mcp add --transport http visayes https://visayes.app/mcp`.");
+  lines.push(`Card: ${absolute("/.well-known/mcp/server-card.json")}`);
+  lines.push("");
+
   lines.push("## Asking about a visa");
   lines.push("");
   lines.push("Every visa page has a chat for what the specifications do not answer: the application,");

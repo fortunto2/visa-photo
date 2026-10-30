@@ -6,7 +6,7 @@
  * is addressable on its own; this only means an agent that asks for `text/markdown` at the
  * ordinary URL gets it without having to know the convention.
  *
- * The site is otherwise static, and this is the only Function. It must stay cheap: one header
+ * The site is otherwise static; the other Function is the MCP server (functions/mcp.ts). It must stay cheap: one header
  * parse per request, and a second fetch only for requests that actually asked for markdown.
  */
 
