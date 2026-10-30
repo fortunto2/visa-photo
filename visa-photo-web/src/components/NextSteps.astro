@@ -1,7 +1,7 @@
 ---
 import type { ActiveLang } from "../data/locales";
 import type { CatalogEntry } from "../data/catalog";
-import { PARTNER_COPY, partnersFor, showsPartners } from "../data/partners";
+import { PARTNER_COPY, PARTNER_ICON, partnersFor, showsPartners } from "../data/partners";
 
 /**
  * The step after the photo, sold by someone else. Plain links, no script and no cookie on this
@@ -14,8 +14,6 @@ const { lang, entry } = Astro.props as Props;
 const show = showsPartners(entry);
 const copy = PARTNER_COPY[lang];
 const partners = partnersFor(lang);
-/** One glyph per kind of thing sold, so the card reads before its words do. */
-const ICON: Record<string, string> = { airalo: "ic-globe", cherehapa: "ic-shield", aviasales: "ic-plane" };
 ---
 
 {show && (
@@ -29,7 +27,7 @@ const ICON: Record<string, string> = { airalo: "ic-globe", cherehapa: "ic-shield
         const item = copy.items[partner.id];
         return (
           <li>
-            <span class="ns-icon"><svg width="24" height="24" aria-hidden="true"><use href={`#${ICON[partner.id] ?? "ic-spark"}`} /></svg></span>
+            <span class="ns-icon"><svg width="24" height="24" aria-hidden="true"><use href={`#${PARTNER_ICON[partner.id] ?? "ic-spark"}`} /></svg></span>
             <strong>{item.title}</strong>
             <span class="ns-body">{item.body}</span>
             <a

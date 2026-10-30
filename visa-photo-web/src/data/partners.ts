@@ -49,9 +49,14 @@ export function partnersFor(lang: ActiveLang): Partner[] {
   return lang === "ru" ? [CHEREHAPA, AVIASALES] : [AIRALO];
 }
 
+/** One glyph per kind of thing sold, so a card reads before its words do. */
+export const PARTNER_ICON: Record<string, string> = { airalo: "ic-globe", cherehapa: "ic-shield", aviasales: "ic-plane" };
+
 interface Copy {
   heading: string;
   disclosure: string;
+  /** The label on the card beside the headline: it is an ad, and says so in one word. */
+  tag: string;
   items: Record<string, { title: string; body: string; cta: string }>;
 }
 
@@ -61,11 +66,13 @@ export const PARTNER_COPY: Record<ActiveLang, Copy> = {
   en: {
     heading: "Photo done. Next: the trip",
     disclosure: "Partner link: if you buy, we may earn a commission. Your price stays the same.",
+    tag: "Ad",
     items: ESIM("eSIM for the trip", "Mobile data from the moment you land, no roaming and no SIM shop at the airport.", "Pick an eSIM on Airalo"),
   },
   ru: {
     heading: "Фото готово. Дальше поездка",
     disclosure: "Партнёрские ссылки: если купите, мы можем получить комиссию. Цена для вас та же.",
+    tag: "Реклама",
     items: {
       cherehapa: {
         title: "Страховка для визы",
@@ -82,36 +89,43 @@ export const PARTNER_COPY: Record<ActiveLang, Copy> = {
   es: {
     heading: "Foto lista. Ahora, el viaje",
     disclosure: "Enlace de afiliado: si compras, podemos recibir una comisión. Tu precio no cambia.",
+    tag: "Publicidad",
     items: ESIM("eSIM para el viaje", "Datos móviles desde que aterrizas, sin roaming ni tienda de SIM en el aeropuerto.", "Elegir una eSIM en Airalo"),
   },
   fr: {
     heading: "Photo prête. Ensuite, le voyage",
     disclosure: "Lien partenaire : si vous achetez, nous pouvons toucher une commission. Votre prix reste le même.",
+    tag: "Publicité",
     items: ESIM("eSIM pour le voyage", "Des données mobiles dès l'atterrissage, sans roaming ni boutique SIM à l'aéroport.", "Choisir une eSIM sur Airalo"),
   },
   pt: {
     heading: "Foto pronta. Agora, a viagem",
     disclosure: "Link de parceiro: se você comprar, podemos receber uma comissão. Seu preço não muda.",
+    tag: "Publicidade",
     items: ESIM("eSIM para a viagem", "Dados móveis desde o pouso, sem roaming e sem loja de chip no aeroporto.", "Escolher um eSIM na Airalo"),
   },
   tr: {
     heading: "Fotoğraf hazır. Sırada yolculuk var",
     disclosure: "Ortaklık bağlantısı: satın alırsanız komisyon alabiliriz. Sizin için fiyat değişmez.",
+    tag: "Reklam",
     items: ESIM("Yolculuk için eSIM", "İndiğiniz andan itibaren mobil veri, dolaşım ücreti ve havalimanında SIM kuyruğu yok.", "Airalo'da eSIM seçin"),
   },
   ar: {
     heading: "الصورة جاهزة. الخطوة التالية: الرحلة",
     disclosure: "رابط شريك: إذا اشتريت، قد نحصل على عمولة. السعر بالنسبة لك لا يتغير.",
+    tag: "إعلان",
     items: ESIM("شريحة eSIM للرحلة", "بيانات الجوال منذ لحظة الهبوط، بلا تجوال وبلا متجر شرائح في المطار.", "اختر eSIM من Airalo"),
   },
   hi: {
     heading: "फ़ोटो तैयार। अब यात्रा",
     disclosure: "पार्टनर लिंक: अगर आप खरीदते हैं, तो हमें कमीशन मिल सकता है। आपकी क़ीमत वही रहती है।",
+    tag: "विज्ञापन",
     items: ESIM("यात्रा के लिए eSIM", "उतरते ही मोबाइल डेटा, बिना रोमिंग और बिना एयरपोर्ट पर सिम की दुकान के।", "Airalo पर eSIM चुनें"),
   },
   zh: {
     heading: "照片已完成。下一步：出行",
     disclosure: "合作链接：如果您购买，我们可能获得佣金。您支付的价格不变。",
+    tag: "广告",
     items: ESIM("出行用 eSIM", "落地即可上网，无需漫游，也不用在机场排队买 SIM 卡。", "在 Airalo 选择 eSIM"),
   },
 };

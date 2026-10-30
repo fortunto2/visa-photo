@@ -10,6 +10,8 @@ import PhotoChecker from "./PhotoChecker.tsx";
 import NextSteps from "./NextSteps.astro";
 import ConsultForm from "./ConsultForm.astro";
 import ConsultTeaser from "./ConsultTeaser.astro";
+import PartnerTeaser from "./PartnerTeaser.astro";
+import { showsPartners } from "../data/partners";
 import { consultOffer } from "../data/consult";
 import ModeTabs from "./ModeTabs.tsx";
 import { DEFAULT_LANG, dict, hasSection, type ActiveLang } from "../data/locales";
@@ -55,6 +57,8 @@ const checkedOn = new Intl.DateTimeFormat(t.dateLocale, {
 const kindIcon = KIND_ICON[entry.kind];
 const offer = consultOffer(entry);
 const partnerConsult = offer === "us-visa" || offer === "us-dv";
+/** The column beside the headline holds one offer: the consultant where one answers, else the travel partner. */
+const sideOffer = partnerConsult || showsPartners(entry);
 const segments = mode === "check"
   ? [entry.country, entry.doc, "check"]
   : [entry.country, entry.doc];
@@ -129,7 +133,7 @@ const notice = noticeFor(entry.country, entry.doc, lang);
   segments={segments}
   schema={schema}
 >
-  <div class:list={["doc-hero", { "has-offer": partnerConsult }]}>
+  <div class:list={["doc-hero", { "has-offer": sideOffer }]}>
   <p class="crumb">
     <a href={path(lang)}>{t.nav.countries}</a>
     <span class="doc-pill">
@@ -148,7 +152,7 @@ const notice = noticeFor(entry.country, entry.doc, lang);
       ? t.check.h1(docTitle)
       : t.countryPage.docHeadline({ title: docTitle, size: headlineSize })}
   </h1>
-  <ConsultTeaser lang={lang} entry={entry} />
+  {partnerConsult ? <ConsultTeaser lang={lang} entry={entry} /> : <PartnerTeaser lang={lang} entry={entry} />}
 
   {notice && (
     <aside class="notice" role="note">

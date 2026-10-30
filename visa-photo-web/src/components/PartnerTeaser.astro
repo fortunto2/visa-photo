@@ -1,0 +1,34 @@
+---
+import type { ActiveLang } from "../data/locales";
+import type { CatalogEntry } from "../data/catalog";
+import { PARTNER_COPY, PARTNER_ICON, partnersFor, showsPartners } from "../data/partners";
+import SideOffer from "./SideOffer.astro";
+
+/**
+ * The first travel partner for this language, beside the headline of a visa page. The same links
+ * sit after the tool in NextSteps, where 8 people clicked in two weeks: nobody scrolls there
+ * before they have a photo. `:top` in the placement tells the two apart.
+ */
+interface Props { lang: ActiveLang; entry: CatalogEntry }
+const { lang, entry } = Astro.props as Props;
+
+const copy = PARTNER_COPY[lang];
+const partner = partnersFor(lang)[0];
+const item = partner && copy.items[partner.id];
+---
+
+{showsPartners(entry) && partner && item && (
+  <SideOffer
+    href={partner.href}
+    sponsored
+    testid="partner-teaser"
+    event="partner_clicked"
+    placement={`${partner.id}:${entry.country}:${entry.doc}:top`}
+    tag={copy.tag}
+    icon={PARTNER_ICON[partner.id]}
+    heading={item.title}
+    short={item.body}
+    cta={item.cta}
+    adLabel={partner.adLabel}
+  />
+)}
