@@ -11,10 +11,13 @@
  * the database with `email_error` set, and `make leads` lists it.
  */
 
+import { handleChat } from "./chat";
+
 /** Set with `wrangler secret put`; kept out of wrangler.jsonc because the repo is public. */
 interface Secrets {
   LEAD_TO?: string;
   LEAD_CC_US?: string;
+  ANTHROPIC_API_KEY?: string;
 }
 
 type Bindings = Env & Secrets;
@@ -28,6 +31,8 @@ export interface Lead {
   message: string;
   lang: string;
   page: string;
+  /** The form, or a chat that turned into a request when the person typed a contact. */
+  source?: "form" | "chat";
 }
 
 const LIMITS = { name: 100, contact: 200, message: 2000, page: 300 } as const;
@@ -101,14 +106,14 @@ export function mailBody(
 ): string {
   return [
     ...(note ? [note, ""] : []),
-    `Заявка на консультацию #${id}`,
+    `Заявка на консультацию #${id}${lead.source === "chat" ? " (из чата)" : ""}`,
     "",
     `Куда: ${lead.destination}`,
     `Тема: ${lead.topic || "(нет)"}`,
     `Имя: ${lead.name}`,
     `Контакт: ${lead.contact}`,
     "",
-    "Вопрос:",
+    lead.source === "chat" ? "Переписка:" : "Вопрос:",
     lead.message || "(не написал)",
     "",
     `Язык страницы: ${lead.lang}`,
@@ -194,18 +199,21 @@ async function handle(request: Request, env: Bindings, ctx: ExecutionContext): P
     return lead.error === "spam" ? json(200, { ok: true }) : json(400, { ok: false, error: lead.error });
   }
 
-  const ipCountry = request.headers.get("cf-ipcountry");
-  const row = await env.DB.prepare(
-    `INSERT INTO leads (name, contact, destination, topic, message, lang, page, ip_country)
-     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8) RETURNING id, created_at`,
-  )
-    .bind(lead.name, lead.contact, lead.destination, lead.topic, lead.message, lead.lang, lead.page, ipCountry)
-    .first<{ id: number; created_at: string }>();
-  if (!row) return json(500, { ok: false, error: "store" });
+  const id = await storeLead(env, ctx, lead, request.headers.get("cf-ipcountry"));
+  return id ? json(200, { ok: true }) : json(500, { ok: false, error: "store" });
+}
 
-  // The visitor has nothing to wait for once the row exists.
+/** Writes the row, then mails it in the background: the visitor has nothing to wait for once it exists. */
+async function storeLead(env: Bindings, ctx: ExecutionContext, lead: Lead, ipCountry: string | null): Promise<number> {
+  const row = await env.DB.prepare(
+    `INSERT INTO leads (name, contact, destination, topic, message, lang, page, ip_country, source)
+     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9) RETURNING id, created_at`,
+  )
+    .bind(lead.name, lead.contact, lead.destination, lead.topic, lead.message, lead.lang, lead.page, ipCountry, lead.source ?? "form")
+    .first<{ id: number; created_at: string }>();
+  if (!row) return 0;
   ctx.waitUntil(notify(env, row.id, lead, ipCountry, row.created_at));
-  return json(200, { ok: true });
+  return row.id;
 }
 
 /** How long an unsent request keeps being retried. A lead older than a week is cold anyway. */
@@ -214,14 +222,19 @@ const RETRY_DAYS = 7;
 type Row = Lead & { id: number; ip_country: string | null; created_at: string };
 
 export default {
-  fetch: handle,
+  fetch(request, env, ctx) {
+    if (new URL(request.url).pathname === "/api/chat") {
+      return handleChat(request, env, (lead, ipCountry) => storeLead(env, ctx, lead, ipCountry));
+    }
+    return handle(request, env, ctx);
+  },
   /**
    * Hourly. Retries mail that did not go out — so requests that arrive while mail is broken or
    * not yet set up are delivered once it works — and deletes requests past the retention period.
    */
   async scheduled(_event, env) {
     const { results } = await env.DB.prepare(
-      `SELECT id, name, contact, destination, topic, message, lang, page, ip_country, created_at FROM leads
+      `SELECT id, name, contact, destination, topic, message, lang, page, ip_country, created_at, source FROM leads
        WHERE emailed_at IS NULL AND created_at > strftime('%Y-%m-%dT%H:%M:%SZ', 'now', ?1)
        ORDER BY id LIMIT 20`,
     )
@@ -229,8 +242,10 @@ export default {
       .all<Row>();
     for (const row of results) await notify(env, row.id, row, row.ip_country, row.created_at);
 
-    await env.DB.prepare(`DELETE FROM leads WHERE created_at < strftime('%Y-%m-%dT%H:%M:%SZ', 'now', ?1)`)
-      .bind(`-${KEEP_DAYS} days`)
-      .run();
+    for (const table of ["leads", "chats"]) {
+      await env.DB.prepare(`DELETE FROM ${table} WHERE created_at < strftime('%Y-%m-%dT%H:%M:%SZ', 'now', ?1)`)
+        .bind(`-${KEEP_DAYS} days`)
+        .run();
+    }
   },
 } satisfies ExportedHandler<Bindings>;

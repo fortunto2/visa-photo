@@ -22,6 +22,7 @@
     "leads": "wrangler d1 execute visayes-leads --remote --config workers/leads/wrangler.jsonc --command \"SELECT id, created_at, destination, name, contact, message, lang, ip_country, emailed_at, email_error, status FROM leads ORDER BY id DESC LIMIT 50\""
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^1.3.0",
     "@astrojs/preact": "^5.1.1",
     "@mediapipe/tasks-vision": "^1.0.1",
     "@tailwindcss/vite": "^4.2.2",

@@ -8,7 +8,7 @@ import { agentCard, agentPrompt } from "../data/agentCard";
 import CopyButton from "./CopyButton.tsx";
 import PhotoChecker from "./PhotoChecker.tsx";
 import NextSteps from "./NextSteps.astro";
-import ConsultForm from "./ConsultForm.astro";
+import ConsultChat from "./ConsultChat.astro";
 import ConsultTeaser from "./ConsultTeaser.astro";
 import PartnerTeaser from "./PartnerTeaser.astro";
 import { showsPartners } from "../data/partners";
@@ -344,9 +344,9 @@ const notice = noticeFor(entry.country, entry.doc, lang);
   </ModeTabs>
 
   {/* A partner who answers goes straight under the tool; the folded form waits below the links. */}
-  {partnerConsult && <ConsultForm lang={lang} entry={entry} t={t} />}
+  {partnerConsult && <ConsultChat lang={lang} entry={entry} t={t} />}
   <NextSteps lang={lang} entry={entry} />
-  {!partnerConsult && <ConsultForm lang={lang} entry={entry} t={t} />}
+  {!partnerConsult && <ConsultChat lang={lang} entry={entry} t={t} />}
 
   <div class="provenance">
   <p class="verified">

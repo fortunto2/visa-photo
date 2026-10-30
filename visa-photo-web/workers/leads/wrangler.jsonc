@@ -6,7 +6,10 @@
 
   // One path on the site's own domain, so the form posts same-origin and needs no CORS.
   // A Worker route runs before the Pages project behind the same hostname.
-  "routes": [{ "pattern": "visayes.app/api/lead", "zone_name": "visayes.app" }],
+  "routes": [
+    { "pattern": "visayes.app/api/lead", "zone_name": "visayes.app" },
+    { "pattern": "visayes.app/api/chat", "zone_name": "visayes.app" }
+  ],
   "workers_dev": false,
 
   "d1_databases": [
@@ -24,7 +27,11 @@
   "send_email": [{ "name": "EMAIL" }],
 
   // Five requests a minute per IP. Counted at the edge, so no IP address is ever stored.
-  "ratelimits": [{ "name": "LIMITER", "namespace_id": "1001", "simple": { "limit": 5, "period": 60 } }],
+  "ratelimits": [
+    { "name": "LIMITER", "namespace_id": "1001", "simple": { "limit": 5, "period": 60 } },
+    // A chat message is cheaper to send than a form and a person types several in a row.
+    { "name": "CHAT_LIMITER", "namespace_id": "1002", "simple": { "limit": 10, "period": 60 } }
+  ],
 
   // Hourly: retry mail that did not go out, delete requests older than a year (the privacy page
   // says so). Both in src/index.ts, `scheduled`.
