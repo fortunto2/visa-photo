@@ -18,9 +18,11 @@ interface Props {
   segments?: string[];
   /** extra JSON-LD blocks, already shaped */
   schema?: unknown[];
+  /** Site path of the link-preview image; the site-wide card where a page has none of its own. */
+  ogImage?: string;
 }
 
-const { lang, t, title, description, segments = [], schema = [] } = Astro.props;
+const { lang, t, title, description, segments = [], schema = [], ogImage = "/og.png" } = Astro.props;
 
 const canonical = absolute(path(lang, ...segments));
 /** Only where an article actually exists; the labels are translated everywhere, the prose is not. */
@@ -63,7 +65,7 @@ const graph = [
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:site_name" content={SITE.name} />
-    <meta property="og:image" content={absolute("/og.png")} />
+    <meta property="og:image" content={absolute(ogImage)} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />

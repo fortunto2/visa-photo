@@ -146,6 +146,7 @@ const notice = noticeFor(entry.country, entry.doc, lang);
   description={mode === "check" ? t.check.seoDescription(docTitle) : answer}
   segments={segments}
   schema={schema}
+  ogImage={`/og/${lang}/${entry.country}/${entry.doc}.png`}
 >
   <div class:list={["doc-hero", { "has-offer": sideOffer }]}>
   <p class="crumb">
