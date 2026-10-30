@@ -1,17 +1,19 @@
 ---
 import type { ActiveLang } from "../data/locales";
-import type { CatalogEntry } from "../data/catalog";
+import { idOf, type CatalogEntry } from "../data/catalog";
 import type { Dict } from "../data/i18n";
-import { CONSULT_COPY, consultDestinations, consultOffer } from "../data/consult";
+import { CONSULT_COPY, TOPICS, consultOffer } from "../data/consult";
 import { path } from "../lib/site";
 
 /**
- * The request form for a visa consultant (see src/data/consult.ts for what it is and is not).
+ * The request form for visa help (see src/data/consult.ts for what it is and is not).
  *
- * A <details>, so opening needs no script. Where a partner answers (the US pages) the closed state
- * is an open banner with the offer in full and a "Partner" tag, styled apart from the checker; on
- * other visa pages it is one folded line, so the page stays a photo page. Sending posts JSON to
- * /api/lead, which the `visayes-leads` Worker answers on the same origin.
+ * A <details>, so opening needs no script. Where a consultant answers (the US pages) the closed
+ * state is an open banner with the offer in full and a tag, styled apart from the checker; on
+ * other visa pages it is one folded line naming the country, so the page stays a photo page.
+ * The country is the page's, and the topics are the ones that fit it: a request from the Canada
+ * page is about Canada. Sending posts JSON to /api/lead, which the `visayes-leads` Worker answers
+ * on the same origin.
  */
 interface Props { lang: ActiveLang; entry: CatalogEntry; t: Dict }
 const { lang, entry, t } = Astro.props as Props;
@@ -20,7 +22,7 @@ const offer = consultOffer(entry);
 const partner = offer === "us-visa" || offer === "us-dv";
 const c = CONSULT_COPY[lang];
 const pitch = offer === "us-dv" ? c.usDv : c.usVisa;
-const destinations = consultDestinations();
+const countryName = t.country[idOf(entry)] ?? entry.country;
 ---
 
 {offer && (
@@ -30,7 +32,7 @@ const destinations = consultDestinations();
         <>
           <span class="consult-tag">
             <svg width="20" height="14" viewBox="0 0 32 22" aria-hidden="true"><use href={`#fl-${entry.flag}`} /></svg>
-            {c.partnerTag}
+            {c.tag}
           </span>
           <span class="consult-text">
             <strong>{pitch.heading}</strong>
@@ -42,7 +44,7 @@ const destinations = consultDestinations();
         <>
           <span class="consult-icon"><svg width="24" height="24" aria-hidden="true"><use href="#ic-question" /></svg></span>
           <span class="consult-text">
-            <strong>{c.heading}</strong>
+            <strong>{c.heading(countryName)}</strong>
             <span>{c.open}</span>
           </span>
           <svg class="consult-chevron" width="18" height="18" aria-hidden="true"><use href="#ic-arrow" /></svg>
@@ -62,6 +64,13 @@ const destinations = consultDestinations();
     >
       {!partner && <p class="consult-body">{c.body}</p>}
 
+      <label>
+        <span>{c.topic}</span>
+        <select name="topic" required>
+          <option value="" disabled selected>{c.choose}</option>
+          {offer && TOPICS[offer].map((k) => <option value={k}>{c.topics[k]}</option>)}
+        </select>
+      </label>
       <label class="consult-half">
         <span>{c.name}</span>
         <input name="name" required maxlength="100" autocomplete="name" />
@@ -70,22 +79,10 @@ const destinations = consultDestinations();
         <span>{c.contact}</span>
         <input name="contact" required minlength="3" maxlength="200" autocomplete="email" />
       </label>
-      {partner ? (
-        <input type="hidden" name="destination" value={entry.country} />
-      ) : (
-        <label>
-          <span>{c.destination}</span>
-          <select name="destination">
-            {destinations.map((d) => (
-              <option value={d.slug} selected={d.slug === entry.country}>{t.country[d.nameKey] ?? d.slug}</option>
-            ))}
-            <option value="other">{c.other}</option>
-          </select>
-        </label>
-      )}
+      <input type="hidden" name="destination" value={entry.country} />
       <label>
         <span>{c.message}</span>
-        <textarea name="message" rows="3" maxlength="2000" placeholder={partner ? c.usHint : c.messageHint}></textarea>
+        <textarea name="message" rows="3" maxlength="2000" placeholder={offer === "us-dv" ? c.usDv.hint : c.messageHint}></textarea>
       </label>
 
       {/* Never shown to people; a bot that fills every field fills this one too. */}
@@ -95,7 +92,7 @@ const destinations = consultDestinations();
 
       <label class="consult-consent">
         <input type="checkbox" name="consent" required />
-        <span>{c.consent} <a href={path(lang, "privacy")} target="_blank" rel="noopener">{c.privacy}</a></span>
+        <span>{c.consent}{" "}<a href={path(lang, "privacy")} target="_blank" rel="noopener">{c.privacy}</a></span>
       </label>
 
       <button class="consult-submit" type="submit">{c.submit}</button>
@@ -109,7 +106,7 @@ const destinations = consultDestinations();
 
   /*
    * The funnel: consult_teaser_clicked (the card at the top, counted by markup) → consult_opened →
-   * consult_requested. A send that does not happen is its own event with a reason, because silence
+   * consult_started (the first field touched) → consult_requested. A send that does not happen is its own event with a reason, because silence
    * after opening looks the same whether the person changed their mind, could not tick the box, or
    * the request failed.
    */
@@ -124,6 +121,8 @@ const destinations = consultDestinations();
     details.addEventListener("toggle", () => {
       if (details.open) track("consult_opened", { placement });
     });
+    // Tells "read it and left" from "began and gave up", which look the same without it.
+    form.addEventListener("input", () => track("consult_started", { placement }), { once: true });
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
@@ -139,6 +138,7 @@ const destinations = consultDestinations();
         name: String(data.get("name") ?? ""),
         contact: String(data.get("contact") ?? ""),
         destination: String(data.get("destination") ?? ""),
+        topic: String(data.get("topic") ?? ""),
         message: String(data.get("message") ?? ""),
         website: String(data.get("website") ?? ""),
         consent: data.get("consent") === "on",
@@ -164,6 +164,7 @@ const destinations = consultDestinations();
           country: d.country ?? "",
           doc: d.doc ?? "",
           destination: body.destination,
+          topic: body.topic,
         });
       } catch (e) {
         // An HTTP status (403 origin, 429 rate, 400 field, 500 store) or "network".

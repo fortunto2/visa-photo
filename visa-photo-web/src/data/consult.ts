@@ -1,29 +1,33 @@
 import type { ActiveLang } from "./locales";
-import { countryGroups, type CatalogEntry } from "./catalog";
+import type { CatalogEntry } from "./catalog";
 
 /**
- * "Need help with the visa itself?" — a request form that hands the person to a consultant.
+ * "Need help with the visa itself?" — a request form for the questions the site cannot answer.
  *
- * The site does photos and nothing else, and says so; the form is for the questions it cannot
- * answer (the application, the appointment, the interview, a refusal). It posts to the
- * `visayes-leads` Worker (workers/leads), which stores the request and mails it on; requests
- * about the United States are copied to the US partner.
+ * The site does photos and nothing else, and says so. The form takes the rest (the application,
+ * the appointment, the interview, a refusal) and posts to the `visayes-leads` Worker
+ * (workers/leads), which stores the request and mails it on. We answer first, with the help of
+ * an AI assistant; a request that needs a consultant is then passed to one who handles that
+ * country, and consultants may pay for that. The consent line and the privacy page say all
+ * three, because each is something the person agrees to by sending.
  *
- * This is the one place the site takes personal data, and only what the person types. The
- * privacy page has a section for it, and the consent line here names the transfer to a partner,
- * because that transfer is the whole point of sending it.
+ * It is also how demand is measured before there is a partner for every country: each page asks
+ * the topics that fit it, so a request says "Canada, study" rather than "Canada, something".
+ *
+ * Lines it does not cross, wherever it appears: no promise of a visa; no claim of a link to any
+ * government; no paid help with entering the DV lottery, which costs $1 and needs no agent. Where
+ * a country licenses visa advice (Canada, the UK, Australia, New Zealand), a request is passed
+ * only to a licensed adviser, and the copy promises that.
  */
 
 /**
- * How a page offers the consultant, or null where it does not.
+ * How a page offers the form, or null where it does not.
  *
- * The United States has a partner who answers, and her work is the ordinary B1/B2 tourist visa,
- * so those pages get an open banner labelled as a partner's offer rather than a folded line.
- * The DV lottery page gets it too, but it never sells help with the lottery: the only cost of an
- * entry is the State Department's own $1 fee (from DV-2027), and its standing warning is that paid
- * "DV agents" are the usual scam. It says
- * that first and offers the tourist visa. Every other visa page keeps the folded form; those
- * requests reach visayes and wait for a partner.
+ * The United States has a consultant who answers, so its pages get an open banner beside the
+ * checker instead of a folded line. On the DV page the banner is about what follows selection
+ * (the DS-260, the documents, the interview): the people there are entering the lottery, and the
+ * B1/B2 offer it showed first drew clicks from them and no requests. Every other visa page keeps
+ * the folded form.
  */
 export type ConsultOffer = "us-visa" | "us-dv" | "general";
 
@@ -36,22 +40,41 @@ export function consultOffer(entry: CatalogEntry): ConsultOffer | null {
   return "general";
 }
 
-/** Countries the select offers: those with a page the form appears on, in catalogue order. */
-export function consultDestinations(): { slug: string; nameKey: string }[] {
-  return countryGroups()
-    .filter((g) => g.entries.some((e) => consultOffer(e) !== null))
-    .map((g) => ({ slug: g.slug, nameKey: g.nameKey }));
+/** Stored as is in the `topic` column; the Worker accepts any lowercase slug. */
+export type Topic = "tourist" | "study" | "work" | "family" | "refusal" | "dv-selected" | "dv-entry" | "other";
+
+/** What each page asks about, most likely first. */
+export const TOPICS: Record<ConsultOffer, Topic[]> = {
+  "us-visa": ["tourist", "study", "work", "family", "refusal", "other"],
+  "us-dv": ["dv-selected", "dv-entry", "tourist", "other"],
+  general: ["tourist", "study", "work", "family", "refusal", "other"],
+};
+
+interface Pitch {
+  heading: string;
+  /** The banner with the form. */
+  body: string;
+  /** The teaser beside the headline. */
+  short: string;
+}
+
+/** The DV page asks for something else in the free text: nobody there is planning a trip yet. */
+interface DvPitch extends Pitch {
+  hint: string;
 }
 
 interface Copy {
-  heading: string;
+  /** The folded line on pages without a banner. */
+  heading: (country: string) => string;
   body: string;
   open: string;
   name: string;
   /** Names the messenger people in this language actually use, so the field reads as theirs. */
   contact: string;
-  destination: string;
-  other: string;
+  topic: string;
+  /** The empty first option, so nobody's topic is chosen for them. */
+  choose: string;
+  topics: Record<Topic, string>;
   message: string;
   messageHint: string;
   consent: string;
@@ -60,274 +83,362 @@ interface Copy {
   sending: string;
   sent: string;
   failed: string;
-  /** Says the US banner is someone else's paid service, not a step of the checker. */
-  partnerTag: string;
-  /** `short` is the teaser beside the headline; `body` is the banner with the form. */
-  usVisa: { heading: string; body: string; short: string };
-  usDv: { heading: string; body: string; short: string };
-  usHint: string;
+  /** The banner's label: someone else's service beside the checker, not a step of it. */
+  tag: string;
+  usVisa: Pitch;
+  usDv: DvPitch;
 }
 
 export const CONSULT_COPY: Record<ActiveLang, Copy> = {
   en: {
-    heading: "Need help with the visa itself?",
-    body: "We only do the photo. For the form, the appointment, the interview or a refusal, leave a request and we pass it to a visa consultant. They contact you directly, and you agree the price and terms with them.",
-    open: "Ask a consultant",
+    heading: (country) => `${country}: need help with the visa?`,
+    body: "We only do the photo. Tell us what you need with the visa: we answer every request, and when it takes a consultant, we put you in touch with one who handles this country, licensed where the country requires it. Their work is paid; no one can guarantee a visa.",
+    open: "Ask a question",
     name: "Name",
     contact: "E-mail, phone or WhatsApp",
-    destination: "Visa to",
-    other: "Another country",
-    message: "What do you need help with?",
-    messageHint: "Citizenship, type of visa, travel dates",
-    consent: "I agree that visayes passes these details to a partner consultant so they can contact me.",
-    privacy: "How we handle them",
-    submit: "Send request",
+    topic: "What is it about?",
+    choose: "Choose",
+    topics: {
+      tourist: "Tourist or business trip",
+      study: "Study",
+      work: "Work",
+      family: "Joining family, residence",
+      refusal: "I was refused a visa",
+      "dv-selected": "I was selected: DS-260 and the interview",
+      "dv-entry": "A question about my entry",
+      other: "Something else",
+    },
+    message: "Your situation in a few words",
+    messageHint: "Citizenship, when you plan to go, any past refusals",
+    consent: "I agree that visayes reviews my request, also with the help of an AI assistant, and may pass it to a visa consultant who will contact me.",
+    privacy: "How we handle it",
+    submit: "Send",
     sending: "Sending…",
-    sent: "Request sent. The consultant will write to the contact you gave.",
+    sent: "Sent. We will reply to the contact you gave.",
     failed: "Could not send. Try again in a minute, or write to info@superduperai.co.",
-    partnerTag: "Partner",
+    tag: "Visa help",
     usVisa: {
-      heading: "US tourist visa, with a consultant",
-      body: "The photo is our part. For the rest of a B1/B2 visa (the DS-160 form, the interview appointment, getting ready for the interview) a partner visa consultant can help. It is a paid service: the consultant names the price before starting. No one can promise a visa; the consulate decides.",
+      heading: "US visa, with a consultant",
+      body: "The photo is our part. For the rest (the DS-160 form, the interview appointment, getting ready for the interview) tell us your case: we answer, and put you in touch with a visa consultant if you need one. Their work is paid, and they name the price before starting. No one can promise a visa; the consulate decides.",
       short: "Help with the DS-160, the appointment and the interview. Paid; no one can promise a visa.",
     },
     usDv: {
-      heading: "Want a regular US tourist visa?",
-      body: "Entering the DV lottery costs $1, a State Department fee paid at dvprogram.state.gov, and you file the entry yourself: no agent is needed. If you want to visit the US as a tourist, a partner visa consultant can help with the B1/B2 visa: the DS-160 form, the appointment, the interview. It is a paid service; you agree the price with the consultant.",
-      short: "The lottery costs $1, a State Department fee, and needs no agent. For a B1/B2 tourist visa, a partner consultant can help; it is paid.",
+      heading: "Selected in the DV lottery?",
+      body: "Entering costs $1, a State Department fee paid at dvprogram.state.gov, and you file the entry yourself: no agent is needed, and we do not sell help with entering. After selection it gets harder: the DS-260 form, the documents, the interview at the consulate. Tell us your case: we answer, and put you in touch with a consultant if you need one; their work is paid. visayes is not affiliated with the US government.",
+      short: "After selection: the DS-260, documents and the interview. Entering costs $1 and needs no agent. Not affiliated with the US government.",
+      hint: "Citizenship and what is unclear",
     },
-    usHint: "Citizenship, when you plan to travel, any past refusals",
   },
   ru: {
-    heading: "Нужна помощь с самой визой?",
-    body: "Мы делаем только фото. С анкетой, записью, собеседованием или после отказа поможет визовый консультант: оставьте заявку, и мы её передадим. Он свяжется с вами сам, цену и условия обсуждаете с ним.",
-    open: "Спросить консультанта",
+    heading: (country) => `${country}: нужна помощь с визой?`,
+    body: "Мы делаем только фото. Расскажите, что нужно с визой: мы отвечаем на каждую заявку, а если нужен консультант, сведём с тем, кто работает с этой страной и имеет лицензию там, где она обязательна. Его услуги платные; визу не гарантирует никто.",
+    open: "Задать вопрос",
     name: "Имя",
     contact: "Почта, телефон или Telegram",
-    destination: "Виза в",
-    other: "Другая страна",
-    message: "С чем нужна помощь?",
-    messageHint: "Гражданство, тип визы, даты поездки",
-    consent: "Даю согласие передать эти данные консультанту-партнёру visayes, чтобы он со мной связался.",
-    privacy: "Как мы с ними обращаемся",
-    submit: "Отправить заявку",
+    topic: "О чём вопрос",
+    choose: "Выберите",
+    topics: {
+      tourist: "Туризм или деловая поездка",
+      study: "Учёба",
+      work: "Работа",
+      family: "Переезд к семье, ВНЖ",
+      refusal: "Был отказ в визе",
+      "dv-selected": "После выигрыша: DS-260 и собеседование",
+      "dv-entry": "Вопрос по участию",
+      other: "Другое",
+    },
+    message: "Коротко о ситуации",
+    messageHint: "Гражданство, когда планируете ехать, были ли отказы",
+    consent: "Разрешаю visayes разобрать заявку, в том числе с помощью ИИ-ассистента, и передать её визовому консультанту, который со мной свяжется.",
+    privacy: "Как мы с ней обращаемся",
+    submit: "Отправить",
     sending: "Отправляем…",
-    sent: "Заявка отправлена. Консультант напишет на указанный контакт.",
+    sent: "Отправлено. Ответим на указанный контакт.",
     failed: "Не отправилось. Попробуйте через минуту или напишите на info@superduperai.co.",
-    partnerTag: "Партнёр",
+    tag: "Помощь с визой",
     usVisa: {
-      heading: "Туристическая виза в США с консультантом",
-      body: "Фото делаем мы. С остальным для визы B1/B2 (анкета DS-160, запись на собеседование, подготовка к нему) поможет визовый консультант-партнёр. Услуга платная: цену консультант называет до начала работы. Гарантировать визу не может никто, решение принимает консул.",
+      heading: "Виза в США с консультантом",
+      body: "Фото делаем мы. С остальным (анкета DS-160, запись на собеседование, подготовка к нему) расскажите о ситуации: мы ответим и, если нужно, сведём с визовым консультантом. Его услуги платные, цену он называет до начала работы. Гарантировать визу не может никто, решение принимает консул.",
       short: "Анкета DS-160, запись и подготовка к собеседованию. Платно, визу не гарантирует никто.",
     },
     usDv: {
-      heading: "Нужна обычная туристическая виза в США?",
-      body: "Участие в DV-лотерее стоит $1 (сбор Госдепа, платится на dvprogram.state.gov), и подаёте вы сами: посредник не нужен. А если хотите поехать в США туристом, с визой B1/B2 (анкета DS-160, запись, собеседование) поможет визовый консультант-партнёр. Услуга платная, цену обсуждаете с ним.",
-      short: "Участие стоит $1, это сбор Госдепа, посредник не нужен. С туристической визой B1/B2 поможет консультант-партнёр, платно.",
+      heading: "Выиграли в DV-лотерее?",
+      body: "Участие стоит $1, это сбор Госдепа на dvprogram.state.gov, и подаёте вы сами: посредник не нужен, помощь с участием мы не продаём. После выигрыша сложнее: анкета DS-260, документы, собеседование в консульстве. Расскажите о ситуации: мы ответим и, если нужно, сведём с консультантом, его услуги платные. visayes не связан с правительством США.",
+      short: "После выигрыша: DS-260, документы, собеседование. Участие стоит $1, посредник не нужен. Мы не связаны с правительством США.",
+      hint: "Гражданство и что непонятно",
     },
-    usHint: "Гражданство, когда планируете поездку, были ли отказы",
   },
   es: {
-    heading: "¿Necesitas ayuda con el visado en sí?",
-    body: "Nosotros solo hacemos la foto. Para el formulario, la cita, la entrevista o tras una denegación, deja una solicitud y la pasamos a un asesor de visados. Te contacta directamente, y el precio y las condiciones los acuerdas con él.",
-    open: "Consultar a un asesor",
+    heading: (country) => `${country}: ¿necesitas ayuda con el visado?`,
+    body: "Nosotros solo hacemos la foto. Cuéntanos qué necesitas con el visado: respondemos a cada solicitud y, si hace falta un asesor, te ponemos en contacto con uno que lleve este país, con licencia donde el país la exige. Su trabajo es de pago; nadie puede garantizar un visado.",
+    open: "Hacer una pregunta",
     name: "Nombre",
     contact: "Correo, teléfono o WhatsApp",
-    destination: "Visado para",
-    other: "Otro país",
-    message: "¿En qué necesitas ayuda?",
-    messageHint: "Nacionalidad, tipo de visado, fechas del viaje",
-    consent: "Acepto que visayes pase estos datos a un asesor colaborador para que me contacte.",
-    privacy: "Cómo los tratamos",
-    submit: "Enviar solicitud",
+    topic: "¿De qué se trata?",
+    choose: "Elige",
+    topics: {
+      tourist: "Turismo o viaje de negocios",
+      study: "Estudios",
+      work: "Trabajo",
+      family: "Reunirme con mi familia, residencia",
+      refusal: "Me negaron un visado",
+      "dv-selected": "Me seleccionaron: DS-260 y entrevista",
+      "dv-entry": "Una duda sobre mi inscripción",
+      other: "Otra cosa",
+    },
+    message: "Tu situación en pocas palabras",
+    messageHint: "Nacionalidad, cuándo piensas viajar, si te han negado alguna visa",
+    consent: "Acepto que visayes revise mi solicitud, también con ayuda de un asistente de IA, y pueda pasarla a un asesor de visados que me contactará.",
+    privacy: "Cómo la tratamos",
+    submit: "Enviar",
     sending: "Enviando…",
-    sent: "Solicitud enviada. El asesor te escribirá al contacto que indicaste.",
+    sent: "Enviado. Te responderemos al contacto que indicaste.",
     failed: "No se pudo enviar. Inténtalo en un minuto o escribe a info@superduperai.co.",
-    partnerTag: "Colaborador",
+    tag: "Ayuda con el visado",
     usVisa: {
-      heading: "Visa de turista para EE. UU., con un asesor",
-      body: "La foto es cosa nuestra. Para el resto de la visa B1/B2 (el formulario DS-160, la cita de la entrevista y la preparación) te ayuda un asesor de visados colaborador. Es un servicio de pago: el asesor te dice el precio antes de empezar. Nadie puede garantizar la visa; decide el consulado.",
+      heading: "Visa para EE. UU., con un asesor",
+      body: "La foto es cosa nuestra. Para el resto (el formulario DS-160, la cita de la entrevista y la preparación) cuéntanos tu caso: te respondemos y, si hace falta, te ponemos en contacto con un asesor de visados. Su trabajo es de pago y te dice el precio antes de empezar. Nadie puede garantizar la visa; decide el consulado.",
       short: "Ayuda con el DS-160, la cita y la entrevista. De pago; nadie puede garantizar la visa.",
     },
     usDv: {
-      heading: "¿Necesitas una visa de turista normal para EE. UU.?",
-      body: "Participar en la lotería DV cuesta 1 USD, una tasa del Departamento de Estado que se paga en dvprogram.state.gov, y lo haces tú mismo: no hace falta intermediario. Si quieres viajar a EE. UU. como turista, un asesor de visados colaborador te ayuda con la visa B1/B2: el formulario DS-160, la cita y la entrevista. Es de pago; el precio lo acuerdas con él.",
-      short: "La lotería cuesta 1 USD, una tasa del Departamento de Estado, y no necesita intermediarios. Con la visa de turista B1/B2 te ayuda un asesor colaborador, de pago.",
+      heading: "¿Te seleccionaron en la lotería DV?",
+      body: "Participar cuesta 1 USD, una tasa del Departamento de Estado que se paga en dvprogram.state.gov, y lo haces tú mismo: no hace falta intermediario y no vendemos ayuda para inscribirse. Tras la selección se complica: el formulario DS-260, los documentos, la entrevista en el consulado. Cuéntanos tu caso: te respondemos y, si hace falta, te ponemos en contacto con un asesor; su trabajo es de pago. visayes no tiene relación con el gobierno de EE. UU.",
+      short: "Tras la selección: DS-260, documentos y entrevista. Participar cuesta 1 USD y no necesita intermediarios. Sin relación con el gobierno de EE. UU.",
+      hint: "Nacionalidad y qué no está claro",
     },
-    usHint: "Nacionalidad, cuándo piensas viajar, si te han negado alguna visa",
   },
   fr: {
-    heading: "Besoin d'aide pour le visa lui-même ?",
-    body: "Nous ne faisons que la photo. Pour le formulaire, le rendez-vous, l'entretien ou après un refus, laissez une demande : nous la transmettons à un consultant en visas. Il vous contacte directement, et vous convenez avec lui du prix et des conditions.",
-    open: "Demander à un consultant",
+    heading: (country) => `${country} : besoin d'aide pour le visa ?`,
+    body: "Nous ne faisons que la photo. Dites-nous ce qu'il vous faut pour le visa : nous répondons à chaque demande et, s'il faut un consultant, nous vous mettons en relation avec un consultant qui s'occupe de ce pays, agréé là où le pays l'exige. Son travail est payant ; personne ne peut garantir un visa.",
+    open: "Poser une question",
     name: "Nom",
     contact: "E-mail, téléphone ou WhatsApp",
-    destination: "Visa pour",
-    other: "Autre pays",
-    message: "Sur quoi avez-vous besoin d'aide ?",
-    messageHint: "Nationalité, type de visa, dates du voyage",
-    consent: "J'accepte que visayes transmette ces informations à un consultant partenaire pour qu'il me contacte.",
+    topic: "De quoi s'agit-il ?",
+    choose: "Choisissez",
+    topics: {
+      tourist: "Tourisme ou voyage d'affaires",
+      study: "Études",
+      work: "Travail",
+      family: "Rejoindre ma famille, titre de séjour",
+      refusal: "On m'a refusé un visa",
+      "dv-selected": "Après la sélection : DS-260 et entretien",
+      "dv-entry": "Une question sur ma participation",
+      other: "Autre chose",
+    },
+    message: "Votre situation en quelques mots",
+    messageHint: "Nationalité, date de voyage prévue, refus éventuels",
+    consent: "J'accepte que visayes examine ma demande, notamment à l'aide d'un assistant IA, et puisse la transmettre à un consultant en visas qui me contactera.",
     privacy: "Ce que nous en faisons",
-    submit: "Envoyer la demande",
+    submit: "Envoyer",
     sending: "Envoi…",
-    sent: "Demande envoyée. Le consultant vous écrira au contact indiqué.",
+    sent: "Envoyé. Nous répondrons au contact indiqué.",
     failed: "L'envoi a échoué. Réessayez dans une minute ou écrivez à info@superduperai.co.",
-    partnerTag: "Partenaire",
+    tag: "Aide visa",
     usVisa: {
-      heading: "Visa touristique pour les États-Unis, avec un consultant",
-      body: "La photo, c'est nous. Pour le reste du visa B1/B2 (le formulaire DS-160, le rendez-vous et la préparation de l'entretien), un consultant en visas partenaire peut vous aider. Le service est payant : le consultant annonce son prix avant de commencer. Personne ne peut garantir un visa, c'est le consulat qui décide.",
+      heading: "Visa pour les États-Unis, avec un consultant",
+      body: "La photo, c'est nous. Pour le reste (le formulaire DS-160, le rendez-vous et la préparation de l'entretien), décrivez votre situation : nous répondons et, si besoin, vous mettons en relation avec un consultant en visas. Son travail est payant et il annonce son prix avant de commencer. Personne ne peut garantir un visa, c'est le consulat qui décide.",
       short: "Aide pour le DS-160, le rendez-vous et l'entretien. Payant ; personne ne peut garantir un visa.",
     },
     usDv: {
-      heading: "Besoin d'un visa touristique classique pour les États-Unis ?",
-      body: "La participation à la loterie DV coûte 1 $, une taxe du Département d'État payée sur dvprogram.state.gov, et se fait vous-même : aucun intermédiaire n'est nécessaire. Si vous voulez aller aux États-Unis en touriste, un consultant en visas partenaire peut vous aider pour le visa B1/B2 : formulaire DS-160, rendez-vous, entretien. Le service est payant, le prix se convient avec lui.",
-      short: "La loterie coûte 1 $, une taxe du Département d'État, et ne demande aucun intermédiaire. Pour un visa touristique B1/B2, un consultant partenaire peut vous aider, c'est payant.",
+      heading: "Votre nom est sorti à la loterie DV ?",
+      body: "La participation coûte 1 $, une taxe du Département d'État payée sur dvprogram.state.gov, et se fait vous-même : aucun intermédiaire n'est nécessaire, et nous ne vendons pas d'aide pour s'inscrire. Après la sélection, c'est plus compliqué : le formulaire DS-260, les documents, l'entretien au consulat. Décrivez votre situation : nous répondons et, si besoin, vous mettons en relation avec un consultant ; son travail est payant. visayes n'a aucun lien avec le gouvernement américain.",
+      short: "Après la sélection : DS-260, documents, entretien. La participation coûte 1 $ et ne demande aucun intermédiaire. Aucun lien avec le gouvernement américain.",
+      hint: "Nationalité et ce qui n'est pas clair",
     },
-    usHint: "Nationalité, date de voyage prévue, refus éventuels",
   },
   pt: {
-    heading: "Precisa de ajuda com o visto em si?",
-    body: "Nós só fazemos a foto. Para o formulário, o agendamento, a entrevista ou depois de uma recusa, deixe um pedido e nós o passamos a um consultor de vistos. Ele entra em contato direto com você, e preço e condições você combina com ele.",
-    open: "Falar com um consultor",
+    heading: (country) => `${country}: precisa de ajuda com o visto?`,
+    body: "Nós só fazemos a foto. Conte o que você precisa com o visto: respondemos a cada pedido e, se for preciso um consultor, colocamos você em contato com um que atende este país, com licença onde o país exige. O trabalho dele é pago; ninguém pode garantir um visto.",
+    open: "Fazer uma pergunta",
     name: "Nome",
     contact: "E-mail, telefone ou WhatsApp",
-    destination: "Visto para",
-    other: "Outro país",
-    message: "Com o que você precisa de ajuda?",
-    messageHint: "Nacionalidade, tipo de visto, datas da viagem",
-    consent: "Concordo que a visayes repasse estes dados a um consultor parceiro para que ele entre em contato comigo.",
+    topic: "Qual é o assunto?",
+    choose: "Escolha",
+    topics: {
+      tourist: "Turismo ou viagem de negócios",
+      study: "Estudo",
+      work: "Trabalho",
+      family: "Morar com a família, residência",
+      refusal: "Tive um visto negado",
+      "dv-selected": "Ganhei na loteria: DS-260 e entrevista",
+      "dv-entry": "Uma dúvida sobre a inscrição",
+      other: "Outra coisa",
+    },
+    message: "Sua situação em poucas palavras",
+    messageHint: "Nacionalidade, quando pretende viajar, se já teve visto negado",
+    consent: "Concordo que a visayes analise meu pedido, inclusive com ajuda de um assistente de IA, e possa repassá-lo a um consultor de vistos que vai entrar em contato comigo.",
     privacy: "Como tratamos os dados",
-    submit: "Enviar pedido",
+    submit: "Enviar",
     sending: "Enviando…",
-    sent: "Pedido enviado. O consultor vai escrever para o contato informado.",
+    sent: "Enviado. Vamos responder no contato informado.",
     failed: "Não foi possível enviar. Tente de novo em um minuto ou escreva para info@superduperai.co.",
-    partnerTag: "Parceiro",
+    tag: "Ajuda com visto",
     usVisa: {
-      heading: "Visto de turista para os EUA, com um consultor",
-      body: "A foto é com a gente. Para o resto do visto B1/B2 (o formulário DS-160, o agendamento da entrevista e a preparação), um consultor de vistos parceiro pode ajudar. O serviço é pago: o consultor informa o preço antes de começar. Ninguém pode garantir o visto; quem decide é o consulado.",
+      heading: "Visto para os EUA, com um consultor",
+      body: "A foto é com a gente. Para o resto (o formulário DS-160, o agendamento da entrevista e a preparação), conte o seu caso: respondemos e, se for preciso, colocamos você em contato com um consultor de vistos. O serviço dele é pago, e ele informa o preço antes de começar. Ninguém pode garantir o visto; quem decide é o consulado.",
       short: "Ajuda com o DS-160, o agendamento e a entrevista. Pago; ninguém pode garantir o visto.",
     },
     usDv: {
-      heading: "Precisa de um visto de turista comum para os EUA?",
-      body: "Participar da loteria DV custa US$ 1, uma taxa do Departamento de Estado paga em dvprogram.state.gov, e você mesmo se inscreve: não precisa de intermediário. Se quiser ir aos EUA como turista, um consultor de vistos parceiro ajuda com o visto B1/B2: formulário DS-160, agendamento e entrevista. O serviço é pago; o preço você combina com ele.",
-      short: "A loteria custa US$ 1, uma taxa do Departamento de Estado, e não precisa de intermediário. Com o visto de turista B1/B2, um consultor parceiro ajuda; é pago.",
+      heading: "Ganhou na loteria DV?",
+      body: "Participar custa US$ 1, uma taxa do Departamento de Estado paga em dvprogram.state.gov, e você mesmo se inscreve: não precisa de intermediário, e não vendemos ajuda com a inscrição. Depois do sorteio fica mais difícil: o formulário DS-260, os documentos, a entrevista no consulado. Conte o seu caso: respondemos e, se for preciso, colocamos você em contato com um consultor; o serviço dele é pago. A visayes não tem ligação com o governo dos EUA.",
+      short: "Depois do sorteio: DS-260, documentos e entrevista. Participar custa US$ 1 e não precisa de intermediário. Sem ligação com o governo dos EUA.",
+      hint: "Nacionalidade e o que não está claro",
     },
-    usHint: "Nacionalidade, quando pretende viajar, se já teve visto negado",
   },
   tr: {
-    heading: "Vizenin kendisi için yardım mı lazım?",
-    body: "Biz yalnızca fotoğrafı yapıyoruz. Form, randevu, mülakat ya da ret sonrası için talep bırakın, bir vize danışmanına iletelim. Danışman sizinle doğrudan iletişime geçer; ücreti ve koşulları onunla konuşursunuz.",
-    open: "Danışmana sorun",
+    heading: (country) => `${country}: vize için yardım mı lazım?`,
+    body: "Biz yalnızca fotoğrafı yapıyoruz. Vizeyle ilgili neye ihtiyacınız olduğunu yazın: her talebe yanıt veriyoruz, danışman gerekirse sizi bu ülkeyle ilgilenen, ülkenin şart koştuğu yerde lisanslı bir danışmanla buluşturuyoruz. Danışmanlık ücretlidir; vizeyi kimse garanti edemez.",
+    open: "Soru sorun",
     name: "Adınız",
     contact: "E-posta, telefon veya WhatsApp",
-    destination: "Vize ülkesi",
-    other: "Başka bir ülke",
-    message: "Hangi konuda yardım gerekiyor?",
-    messageHint: "Vatandaşlık, vize türü, seyahat tarihleri",
-    consent: "Benimle iletişime geçebilmesi için visayes'in bu bilgileri iş ortağı bir danışmana iletmesini kabul ediyorum.",
+    topic: "Konu nedir?",
+    choose: "Seçin",
+    topics: {
+      tourist: "Turistik veya iş seyahati",
+      study: "Eğitim",
+      work: "Çalışma",
+      family: "Aile birleşimi, oturum izni",
+      refusal: "Vize reddi aldım",
+      "dv-selected": "Kazandım: DS-260 ve mülakat",
+      "dv-entry": "Başvurumla ilgili bir soru",
+      other: "Başka bir konu",
+    },
+    message: "Durumunuzu kısaca yazın",
+    messageHint: "Vatandaşlık, ne zaman seyahat etmeyi düşündüğünüz, daha önce ret alıp almadığınız",
+    consent: "visayes'in talebimi bir yapay zekâ asistanının da yardımıyla incelemesini ve benimle iletişime geçecek bir vize danışmanına iletebilmesini kabul ediyorum.",
     privacy: "Verileri nasıl kullanıyoruz",
-    submit: "Talebi gönder",
+    submit: "Gönder",
     sending: "Gönderiliyor…",
-    sent: "Talebiniz iletildi. Danışman verdiğiniz iletişim bilgisinden size yazacak.",
+    sent: "Gönderildi. Verdiğiniz iletişim bilgisinden yanıt vereceğiz.",
     failed: "Gönderilemedi. Bir dakika sonra tekrar deneyin ya da info@superduperai.co adresine yazın.",
-    partnerTag: "İş ortağı",
+    tag: "Vize desteği",
     usVisa: {
-      heading: "Danışman desteğiyle ABD turist vizesi",
-      body: "Fotoğraf bizden. B1/B2 vizesinin geri kalanı için (DS-160 formu, mülakat randevusu ve mülakata hazırlık) iş ortağımız olan bir vize danışmanı yardımcı olabilir. Hizmet ücretlidir: danışman ücreti işe başlamadan söyler. Vizeyi kimse garanti edemez, kararı konsolosluk verir.",
+      heading: "Danışman desteğiyle ABD vizesi",
+      body: "Fotoğraf bizden. Geri kalanı için (DS-160 formu, mülakat randevusu ve mülakata hazırlık) durumunuzu yazın: yanıt veririz, gerekirse sizi bir vize danışmanıyla buluştururuz. Danışmanlık ücretlidir; danışman ücreti işe başlamadan söyler. Vizeyi kimse garanti edemez, kararı konsolosluk verir.",
       short: "DS-160, randevu ve mülakat için destek. Ücretlidir; vizeyi kimse garanti edemez.",
     },
     usDv: {
-      heading: "Normal bir ABD turist vizesi mi lazım?",
-      body: "DV piyangosuna katılım 1 dolardır; bu ücret dvprogram.state.gov üzerinden ABD Dışişleri Bakanlığına ödenir ve başvuruyu kendiniz yaparsınız: aracıya gerek yoktur. ABD'ye turist olarak gitmek istiyorsanız, iş ortağımız olan bir vize danışmanı B1/B2 vizesinde yardımcı olur: DS-160 formu, randevu, mülakat. Hizmet ücretlidir, ücreti danışmanla konuşursunuz.",
-      short: "Piyangoya katılım 1 dolardır, ABD Dışişleri Bakanlığının ücretidir ve aracı gerekmez. B1/B2 turist vizesinde iş ortağımız olan bir danışman ücretli olarak yardımcı olur.",
+      heading: "DV piyangosunu kazandınız mı?",
+      body: "Katılım 1 dolardır; bu ücret dvprogram.state.gov üzerinden ABD Dışişleri Bakanlığına ödenir ve başvuruyu kendiniz yaparsınız: aracıya gerek yoktur, biz de katılım için yardım satmıyoruz. Kazandıktan sonrası daha zordur: DS-260 formu, belgeler, konsoloslukta mülakat. Durumunuzu yazın: yanıt veririz, gerekirse sizi ücretli çalışan bir danışmanla buluştururuz. visayes'in ABD hükümetiyle bir bağlantısı yoktur.",
+      short: "Kazandıktan sonra: DS-260, belgeler ve mülakat. Katılım 1 dolardır ve aracı gerekmez. ABD hükümetiyle bağlantımız yoktur.",
+      hint: "Vatandaşlık ve neyin net olmadığı",
     },
-    usHint: "Vatandaşlık, ne zaman seyahat etmeyi düşündüğünüz, daha önce ret alıp almadığınız",
   },
   ar: {
-    heading: "هل تحتاج مساعدة في التأشيرة نفسها؟",
-    body: "نحن نجهّز الصورة فقط. إذا احتجت مساعدة في الاستمارة أو الموعد أو المقابلة أو بعد الرفض، اترك طلبًا وسننقله إلى مستشار تأشيرات. سيتواصل معك مباشرة، وتتفق معه على السعر والشروط.",
-    open: "اسأل مستشارًا",
+    heading: (country) => `${country}: هل تحتاج مساعدة في التأشيرة؟`,
+    body: "نحن نجهّز الصورة فقط. أخبرنا بما تحتاجه في التأشيرة: نرد على كل طلب، وإذا احتجت إلى مستشار نوصلك بمستشار يختص بهذا البلد ويحمل ترخيصًا حيث يشترطه البلد. خدماته مدفوعة، ولا أحد يستطيع ضمان التأشيرة.",
+    open: "اطرح سؤالك",
     name: "الاسم",
     contact: "البريد الإلكتروني أو الهاتف أو واتساب",
-    destination: "التأشيرة إلى",
-    other: "بلد آخر",
-    message: "بماذا تحتاج المساعدة؟",
-    messageHint: "الجنسية، نوع التأشيرة، مواعيد السفر",
-    consent: "أوافق على أن ينقل الموقع هذه البيانات إلى مستشار شريك ليتواصل معي.",
-    privacy: "كيف نتعامل معها",
-    submit: "أرسل الطلب",
+    topic: "ما موضوع طلبك؟",
+    choose: "اختر",
+    topics: {
+      tourist: "سياحة أو رحلة عمل",
+      study: "دراسة",
+      work: "عمل",
+      family: "الالتحاق بالعائلة أو الإقامة",
+      refusal: "رُفضت لي تأشيرة من قبل",
+      "dv-selected": "بعد الفوز بالقرعة: DS-260 والمقابلة",
+      "dv-entry": "سؤال عن المشاركة",
+      other: "شيء آخر",
+    },
+    message: "صف وضعك باختصار",
+    messageHint: "الجنسية، موعد السفر المتوقع، وهل سبق رفض طلبك",
+    consent: "أوافق على أن يراجع الموقع طلبي، بمساعدة مساعد ذكاء اصطناعي أيضًا، وأن ينقله إلى مستشار تأشيرات يتواصل معي.",
+    privacy: "كيف نتعامل معه",
+    submit: "أرسل",
     sending: "جارٍ الإرسال…",
-    sent: "تم إرسال الطلب. سيكتب لك المستشار على وسيلة التواصل التي ذكرتها.",
+    sent: "تم الإرسال. سنرد على وسيلة التواصل التي ذكرتها.",
     failed: "تعذّر الإرسال. حاول بعد دقيقة أو راسلنا على info@superduperai.co.",
-    partnerTag: "شريك",
+    tag: "مساعدة في التأشيرة",
     usVisa: {
-      heading: "تأشيرة سياحية إلى الولايات المتحدة بمساعدة مستشار",
-      body: "نحن نجهّز الصورة. أما بقية خطوات تأشيرة B1/B2 (استمارة DS-160، وحجز موعد المقابلة، والتحضير لها) فيساعدك فيها مستشار تأشيرات شريك. الخدمة مدفوعة: يحدد المستشار السعر قبل البدء. لا أحد يستطيع ضمان التأشيرة، فالقرار للقنصلية.",
+      heading: "تأشيرة الولايات المتحدة بمساعدة مستشار",
+      body: "نحن نجهّز الصورة. أما بقية الخطوات (استمارة DS-160، وحجز موعد المقابلة، والتحضير لها) فأخبرنا بوضعك: نرد عليك، وإن لزم نوصلك بمستشار تأشيرات. خدماته مدفوعة ويحدد السعر قبل البدء. لا أحد يستطيع ضمان التأشيرة، فالقرار للقنصلية.",
       short: "مساعدة في استمارة DS-160 والموعد والمقابلة. خدمة مدفوعة، ولا أحد يضمن التأشيرة.",
     },
     usDv: {
-      heading: "هل تحتاج تأشيرة سياحية عادية إلى الولايات المتحدة؟",
-      body: "المشاركة في قرعة DV تكلّف دولارًا واحدًا رسومًا لوزارة الخارجية الأمريكية تُدفع عبر dvprogram.state.gov، وتقدّم بنفسك دون حاجة إلى وسيط. وإذا أردت السفر إلى الولايات المتحدة سائحًا، يساعدك مستشار تأشيرات شريك في تأشيرة B1/B2: استمارة DS-160 والموعد والمقابلة. الخدمة مدفوعة، وتتفق معه على السعر.",
-      short: "المشاركة في القرعة بدولار واحد رسومًا لوزارة الخارجية الأمريكية، ولا تحتاج إلى وسيط. أما تأشيرة B1/B2 السياحية فيساعدك فيها مستشار شريك مقابل أجر.",
+      heading: "هل فزت في قرعة DV؟",
+      body: "المشاركة تكلّف دولارًا واحدًا رسومًا لوزارة الخارجية الأمريكية تُدفع عبر dvprogram.state.gov، وتقدّم بنفسك دون حاجة إلى وسيط، ونحن لا نبيع مساعدة في التسجيل. بعد الفوز يصبح الأمر أصعب: استمارة DS-260 والوثائق والمقابلة في القنصلية. أخبرنا بوضعك: نرد عليك، وإن لزم نوصلك بمستشار خدماته مدفوعة. لا علاقة للموقع بالحكومة الأمريكية.",
+      short: "بعد الفوز: DS-260 والوثائق والمقابلة. المشاركة بدولار واحد ولا تحتاج إلى وسيط. لا علاقة لنا بالحكومة الأمريكية.",
+      hint: "الجنسية وما الذي ليس واضحًا",
     },
-    usHint: "الجنسية، موعد السفر المتوقع، وهل سبق رفض طلبك",
   },
   hi: {
-    heading: "वीज़ा में ही मदद चाहिए?",
-    body: "हम सिर्फ़ फ़ोटो बनाते हैं। फ़ॉर्म, अपॉइंटमेंट, इंटरव्यू या रिजेक्शन के बाद मदद के लिए अनुरोध छोड़ें, हम उसे वीज़ा कंसल्टेंट तक पहुँचा देंगे। कंसल्टेंट आपसे सीधे संपर्क करेंगे; फ़ीस और शर्तें आप उन्हीं से तय करें।",
-    open: "कंसल्टेंट से पूछें",
+    heading: (country) => `${country}: वीज़ा में मदद चाहिए?`,
+    body: "हम सिर्फ़ फ़ोटो बनाते हैं। वीज़ा में आपको क्या चाहिए, लिखें: हम हर अनुरोध का जवाब देते हैं, और अगर कंसल्टेंट की ज़रूरत हो, तो आपको इस देश का काम देखने वाले कंसल्टेंट से जोड़ते हैं; जहाँ देश लाइसेंस माँगता है, वहाँ लाइसेंस वाले से। उनकी सर्विस पेड है; वीज़ा की गारंटी कोई नहीं दे सकता।",
+    open: "सवाल पूछें",
     name: "नाम",
     contact: "ईमेल, फ़ोन या WhatsApp",
-    destination: "किस देश का वीज़ा",
-    other: "कोई और देश",
-    message: "किस चीज़ में मदद चाहिए?",
-    messageHint: "नागरिकता, वीज़ा का प्रकार, यात्रा की तारीखें",
-    consent: "मैं सहमत हूँ कि visayes ये जानकारी पार्टनर कंसल्टेंट को दे, ताकि वे मुझसे संपर्क कर सकें।",
+    topic: "किस बारे में है?",
+    choose: "चुनें",
+    topics: {
+      tourist: "टूरिस्ट या बिज़नेस यात्रा",
+      study: "पढ़ाई",
+      work: "नौकरी",
+      family: "परिवार के पास जाना, रेज़िडेंस",
+      refusal: "पहले वीज़ा रिजेक्ट हुआ",
+      "dv-selected": "लॉटरी में चुने जाने के बाद: DS-260 और इंटरव्यू",
+      "dv-entry": "एंट्री के बारे में सवाल",
+      other: "कुछ और",
+    },
+    message: "अपनी स्थिति कुछ शब्दों में",
+    messageHint: "नागरिकता, यात्रा कब करनी है, पहले कभी वीज़ा रिजेक्ट हुआ या नहीं",
+    consent: "मैं सहमत हूँ कि visayes मेरे अनुरोध को AI असिस्टेंट की मदद से भी देखे और उसे किसी वीज़ा कंसल्टेंट को दे सके, जो मुझसे संपर्क करेंगे।",
     privacy: "हम इसका क्या करते हैं",
-    submit: "अनुरोध भेजें",
+    submit: "भेजें",
     sending: "भेजा जा रहा है…",
-    sent: "अनुरोध भेज दिया गया। कंसल्टेंट आपके दिए संपर्क पर लिखेंगे।",
+    sent: "भेज दिया गया। हम आपके दिए संपर्क पर जवाब देंगे।",
     failed: "भेजा नहीं जा सका। एक मिनट बाद फिर कोशिश करें या info@superduperai.co पर लिखें।",
-    partnerTag: "पार्टनर",
+    tag: "वीज़ा सहायता",
     usVisa: {
-      heading: "अमेरिका का टूरिस्ट वीज़ा, कंसल्टेंट की मदद से",
-      body: "फ़ोटो हम बनाते हैं। B1/B2 वीज़ा के बाकी काम (DS-160 फ़ॉर्म, इंटरव्यू अपॉइंटमेंट और उसकी तैयारी) में हमारे पार्टनर वीज़ा कंसल्टेंट मदद कर सकते हैं। यह पेड सर्विस है: कंसल्टेंट काम शुरू करने से पहले फ़ीस बताते हैं। वीज़ा की गारंटी कोई नहीं दे सकता, फ़ैसला कॉन्सुलेट करता है।",
+      heading: "अमेरिका का वीज़ा, कंसल्टेंट की मदद से",
+      body: "फ़ोटो हम बनाते हैं। बाकी कामों (DS-160 फ़ॉर्म, इंटरव्यू अपॉइंटमेंट और उसकी तैयारी) के लिए अपनी स्थिति लिखें: हम जवाब देंगे, और ज़रूरत हो तो वीज़ा कंसल्टेंट से जोड़ देंगे। उनकी सर्विस पेड है, फ़ीस वे काम शुरू करने से पहले बताते हैं। वीज़ा की गारंटी कोई नहीं दे सकता, फ़ैसला कॉन्सुलेट करता है।",
       short: "DS-160, अपॉइंटमेंट और इंटरव्यू में मदद। पेड सर्विस; वीज़ा की गारंटी कोई नहीं दे सकता।",
     },
     usDv: {
-      heading: "अमेरिका का सामान्य टूरिस्ट वीज़ा चाहिए?",
-      body: "DV लॉटरी में हिस्सा लेने की फ़ीस $1 है, जो dvprogram.state.gov पर अमेरिकी विदेश विभाग को दी जाती है, और आवेदन आप खुद करते हैं: किसी एजेंट की ज़रूरत नहीं। अगर आप टूरिस्ट बनकर अमेरिका जाना चाहते हैं, तो B1/B2 वीज़ा (DS-160 फ़ॉर्म, अपॉइंटमेंट, इंटरव्यू) में हमारे पार्टनर वीज़ा कंसल्टेंट मदद करेंगे। सर्विस पेड है, फ़ीस आप उन्हीं से तय करें।",
-      short: "लॉटरी की फ़ीस $1 है, जो अमेरिकी विदेश विभाग लेता है; किसी एजेंट की ज़रूरत नहीं। B1/B2 टूरिस्ट वीज़ा में पार्टनर कंसल्टेंट मदद करेंगे, यह पेड है।",
+      heading: "DV लॉटरी में चुने गए?",
+      body: "लॉटरी में हिस्सा लेने की फ़ीस $1 है, जो dvprogram.state.gov पर अमेरिकी विदेश विभाग को दी जाती है, और आवेदन आप खुद करते हैं: किसी एजेंट की ज़रूरत नहीं, और हम एंट्री में मदद नहीं बेचते। चुने जाने के बाद काम मुश्किल होता है: DS-260 फ़ॉर्म, दस्तावेज़, कॉन्सुलेट में इंटरव्यू। अपनी स्थिति लिखें: हम जवाब देंगे, और ज़रूरत हो तो कंसल्टेंट से जोड़ देंगे, उनकी सर्विस पेड है। visayes का अमेरिकी सरकार से कोई संबंध नहीं है।",
+      short: "चुने जाने के बाद: DS-260, दस्तावेज़ और इंटरव्यू। एंट्री की फ़ीस $1 है, एजेंट की ज़रूरत नहीं। अमेरिकी सरकार से हमारा कोई संबंध नहीं।",
+      hint: "नागरिकता और क्या साफ़ नहीं है",
     },
-    usHint: "नागरिकता, यात्रा कब करनी है, पहले कभी वीज़ा रिजेक्ट हुआ या नहीं",
   },
   zh: {
-    heading: "签证本身需要帮助？",
-    body: "我们只负责照片。如果在填表、预约、面签或被拒后需要帮助，留下申请，我们会转交给签证顾问。顾问会直接联系你，费用和条件由你与顾问商定。",
-    open: "咨询签证顾问",
+    heading: (country) => `${country}：签证需要帮助？`,
+    body: "我们只负责照片。告诉我们你在签证上需要什么：每份申请我们都会回复；如需顾问，我们会为你联系负责该国家的顾问，在该国要求执照的情况下只联系持照顾问。顾问服务收费，任何人都无法保证签证获批。",
+    open: "提问",
     name: "姓名",
     contact: "邮箱、电话或微信",
-    destination: "签证国家",
-    other: "其他国家",
-    message: "需要哪方面的帮助？",
-    messageHint: "国籍、签证类型、出行日期",
-    consent: "我同意 visayes 将以上信息转交给合作顾问，以便其与我联系。",
+    topic: "咨询内容",
+    choose: "请选择",
+    topics: {
+      tourist: "旅游或商务出行",
+      study: "留学",
+      work: "工作",
+      family: "家庭团聚、居留",
+      refusal: "曾被拒签",
+      "dv-selected": "中签之后：DS-260 和面签",
+      "dv-entry": "关于报名的问题",
+      other: "其他",
+    },
+    message: "简要说明你的情况",
+    messageHint: "国籍、计划出行时间、是否被拒签过",
+    consent: "我同意 visayes 审阅我的申请（包括借助 AI 助手），并可将其转交给签证顾问，由顾问与我联系。",
     privacy: "我们如何处理这些信息",
-    submit: "提交申请",
+    submit: "提交",
     sending: "正在提交…",
-    sent: "申请已提交。顾问会通过你留下的联系方式与你联系。",
+    sent: "已提交。我们会通过你留下的联系方式回复。",
     failed: "提交失败。请一分钟后重试，或发邮件至 info@superduperai.co。",
-    partnerTag: "合作伙伴",
+    tag: "签证协助",
     usVisa: {
-      heading: "美国旅游签证，请顾问协助",
-      body: "照片由我们负责。B1/B2 签证的其余部分（DS-160 表格、面签预约和面签准备）可由合作签证顾问协助。这是付费服务：顾问会在开始前报价。任何人都无法保证签证获批，决定权在领事馆。",
+      heading: "美国签证，请顾问协助",
+      body: "照片由我们负责。其余部分（DS-160 表格、面签预约和面签准备）请说明你的情况：我们会回复，如有需要再为你联系签证顾问。顾问服务收费，会在开始前报价。任何人都无法保证签证获批，决定权在领事馆。",
       short: "协助 DS-160、预约和面签。付费服务，任何人都无法保证签证获批。",
     },
     usDv: {
-      heading: "需要普通的美国旅游签证吗？",
-      body: "参加 DV 抽签需支付 1 美元，这是美国国务院在 dvprogram.state.gov 上收取的费用，由你自己提交，不需要中介。如果你想以游客身份去美国，合作签证顾问可以协助办理 B1/B2 签证：DS-160 表格、预约和面签。服务收费，价格与顾问商定。",
-      short: "抽签费用 1 美元，由美国国务院收取，无需中介。B1/B2 旅游签证可由合作顾问协助，需付费。",
+      heading: "DV 抽签中签了？",
+      body: "参加抽签需支付 1 美元，这是美国国务院在 dvprogram.state.gov 上收取的费用，由你自己提交，不需要中介，我们也不出售报名协助。中签之后才更复杂：DS-260 表格、各类文件、领事馆面签。请说明你的情况：我们会回复，如有需要再为你联系顾问，顾问服务收费。visayes 与美国政府没有任何关联。",
+      short: "中签之后：DS-260、文件和面签。报名费 1 美元，无需中介。我们与美国政府无关联。",
+      hint: "国籍以及不清楚的地方",
     },
-    usHint: "国籍、计划出行时间、是否被拒签过",
   },
 };

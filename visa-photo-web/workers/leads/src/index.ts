@@ -23,6 +23,8 @@ export interface Lead {
   name: string;
   contact: string;
   destination: string;
+  /** What the page asked it to be about ("study", "dv-selected", ...), or "" from an older page. */
+  topic: string;
   message: string;
   lang: string;
   page: string;
@@ -69,6 +71,8 @@ export function parseLead(body: unknown): Lead | { error: string } {
   if (!contact || contact.length < 3) return { error: "contact" };
   const destination = text(b.destination, 40);
   if (!destination || !/^[a-z-]{2,40}$/.test(destination)) return { error: "destination" };
+  const topic = text(b.topic ?? "", 20);
+  if (topic === null || !/^[a-z-]*$/.test(topic)) return { error: "topic" };
   const message = text(b.message ?? "", LIMITS.message);
   if (message === null) return { error: "message" };
   const lang = text(b.lang, 5);
@@ -76,7 +80,7 @@ export function parseLead(body: unknown): Lead | { error: string } {
   const page = text(b.page ?? "", LIMITS.page);
   if (page === null || (page !== "" && !page.startsWith("/"))) return { error: "page" };
 
-  return { name, contact, destination, message, lang, page };
+  return { name, contact, destination, topic, message, lang, page };
 }
 
 /** Who gets the mail for this lead. Everyone gets LEAD_TO; US requests also go to LEAD_CC_US. */
@@ -100,6 +104,7 @@ export function mailBody(
     `Заявка на консультацию #${id}`,
     "",
     `Куда: ${lead.destination}`,
+    `Тема: ${lead.topic || "(нет)"}`,
     `Имя: ${lead.name}`,
     `Контакт: ${lead.contact}`,
     "",
@@ -128,7 +133,7 @@ async function notify(env: Bindings, id: number, lead: Lead, ipCountry: string |
       ...to,
       // Replying from the mail client then reaches the applicant, when they left an e-mail.
       ...(EMAIL_RE.test(lead.contact) ? { replyTo: lead.contact } : {}),
-      subject: `Заявка #${id}: ${lead.destination}, ${lead.name}`,
+      subject: `Заявка #${id}: ${lead.destination}${lead.topic ? `/${lead.topic}` : ""}, ${lead.name}`,
       text: mailBody(id, lead, env.ALLOWED_ORIGIN, ipCountry, at, note),
     });
 
@@ -191,10 +196,10 @@ async function handle(request: Request, env: Bindings, ctx: ExecutionContext): P
 
   const ipCountry = request.headers.get("cf-ipcountry");
   const row = await env.DB.prepare(
-    `INSERT INTO leads (name, contact, destination, message, lang, page, ip_country)
-     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7) RETURNING id, created_at`,
+    `INSERT INTO leads (name, contact, destination, topic, message, lang, page, ip_country)
+     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8) RETURNING id, created_at`,
   )
-    .bind(lead.name, lead.contact, lead.destination, lead.message, lead.lang, lead.page, ipCountry)
+    .bind(lead.name, lead.contact, lead.destination, lead.topic, lead.message, lead.lang, lead.page, ipCountry)
     .first<{ id: number; created_at: string }>();
   if (!row) return json(500, { ok: false, error: "store" });
 
@@ -216,7 +221,7 @@ export default {
    */
   async scheduled(_event, env) {
     const { results } = await env.DB.prepare(
-      `SELECT id, name, contact, destination, message, lang, page, ip_country, created_at FROM leads
+      `SELECT id, name, contact, destination, topic, message, lang, page, ip_country, created_at FROM leads
        WHERE emailed_at IS NULL AND created_at > strftime('%Y-%m-%dT%H:%M:%SZ', 'now', ?1)
        ORDER BY id LIMIT 20`,
     )

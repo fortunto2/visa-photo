@@ -11,6 +11,9 @@ CREATE TABLE IF NOT EXISTS leads (
   contact     TEXT NOT NULL,
   -- Catalog country slug ("united-states", "schengen", ...) or "other".
   destination TEXT NOT NULL,
+  -- What the page asked it to be about ("tourist", "study", "dv-selected", ...); '' before 2026-10-29.
+  -- Added to the live table with: ALTER TABLE leads ADD COLUMN topic TEXT NOT NULL DEFAULT '';
+  topic       TEXT NOT NULL DEFAULT '',
   message     TEXT NOT NULL DEFAULT '',
   lang        TEXT NOT NULL,
   -- Path the form was sent from, e.g. /ru/united-states/visa/.

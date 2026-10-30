@@ -4,7 +4,7 @@ import type { CatalogEntry } from "../data/catalog";
 import { CONSULT_COPY, consultOffer } from "../data/consult";
 
 /**
- * The partner's offer at the top of a US page, pointing at the banner with the form (#consult).
+ * The consultant offer at the top of a US page, pointing at the banner with the form (#consult).
  *
  * On a wide screen it is a card in the empty column beside the headline; on a narrow one it shrinks
  * to one line under the headline. Either way the tool keeps its full width and stays where it was:
@@ -29,7 +29,7 @@ const pitch = offer === "us-dv" ? c.usDv : c.usVisa;
   >
     <span class="teaser-tag">
       <svg width="20" height="14" viewBox="0 0 32 22" aria-hidden="true"><use href={`#fl-${entry.flag}`} /></svg>
-      {c.partnerTag}
+      {c.tag}
     </span>
     <strong>{pitch.heading}</strong>
     <span class="teaser-short">{pitch.short}</span>
