@@ -24,14 +24,16 @@ const pitch = offer === "us-dv" ? c.usDv : c.usVisa;
     placement={`${entry.country}:${entry.doc}`}
     tag={c.tag}
     flag={entry.flag}
-    heading={pitch.heading}
+    heading={offer === "us-dv" ? c.hooks.dv : c.hooks.us}
     short={pitch.short}
-    cta={c.open}
+    cta={c.hooks.cta}
   />
 )}
 
 <script>
   for (const link of document.querySelectorAll<HTMLAnchorElement>('a.teaser[href="#consult"]')) {
+    // The analytics snippet reads the placement on click, so the rotated variant rides along in it.
+    link.dataset.sdaPlacement = `${link.dataset.sdaPlacement}:v${document.documentElement.dataset.cv ?? "1"}`;
     link.addEventListener("click", () => {
       const banner = document.getElementById("consult");
       if (banner instanceof HTMLDetailsElement) banner.open = true;

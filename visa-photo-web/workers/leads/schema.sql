@@ -52,7 +52,10 @@ CREATE TABLE IF NOT EXISTS chats (
   cache_read_tokens  INTEGER NOT NULL DEFAULT 0,
   cache_write_tokens INTEGER NOT NULL DEFAULT 0,
   lead_id            INTEGER,
-  closed             INTEGER NOT NULL DEFAULT 0
+  closed             INTEGER NOT NULL DEFAULT 0,
+  -- The rotated hook (1-3) the person came in through. Added with:
+  -- ALTER TABLE chats ADD COLUMN variant TEXT NOT NULL DEFAULT '';
+  variant            TEXT NOT NULL DEFAULT ''
 );
 
 CREATE INDEX IF NOT EXISTS chats_created ON chats (created_at);

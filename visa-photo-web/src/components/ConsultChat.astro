@@ -14,6 +14,12 @@ import { path } from "../lib/site";
  * message is written here, not by the model: it costs nothing and says an AI is answering. Each
  * message after that goes to /api/chat, which keeps the history; the browser only remembers the
  * chat id until the page is left.
+ *
+ * The headline and button rotate between three hooks (consult.ts), one per visitor, and every
+ * event carries the variant. The form is also a WebMCP tool (Chrome's declarative API): an agent
+ * in the browser can fill the question, and the person still presses send. A link to
+ * `#consult?ask=…` opens the chat with the question typed in, for assistants that only hand out
+ * links; nothing is ever sent by a GET.
  */
 interface Props { lang: ActiveLang; entry: CatalogEntry; t: Dict }
 const { lang, entry, t } = Astro.props as Props;
@@ -24,6 +30,15 @@ const c = CONSULT_COPY[lang];
 const pitch = offer === "us-dv" ? c.usDv : c.usVisa;
 const countryName = t.country[idOf(entry)] ?? entry.country;
 const greeting = offer === "general" ? c.greet.general(countryName) : offer ? c.greet[offer] : "";
+const hook = offer === "us-dv" ? c.hooks.dv : offer === "us-visa" ? c.hooks.us : c.hooks.visa.map((f) => f(countryName));
+/** WebMCP declarative attributes. Spread, because Astro's HTML types do not know them yet. */
+const tool = {
+  toolname: "ask_visa_question",
+  tooldescription:
+    `Ask visayes about a ${countryName} visa or photo question in a chat. An AI assistant answers; ` +
+    "if the person includes an e-mail, phone or Telegram, a visa consultant follows up. The person presses send.",
+};
+const toolParam = { toolparamdescription: "The question, in the person's own words, with citizenship and travel dates if known." };
 ---
 
 {offer && (
@@ -36,17 +51,17 @@ const greeting = offer === "general" ? c.greet.general(countryName) : offer ? c.
             {c.tag}
           </span>
           <span class="consult-text">
-            <strong>{pitch.heading}</strong>
+            <strong>{hook.map((text, i) => <span class={`cv cv-${i + 1}`}>{text}</span>)}</strong>
             <span class="consult-pitch">{pitch.body}</span>
           </span>
-          <span class="consult-cta">{c.open}</span>
+          <span class="consult-cta">{c.hooks.cta.map((text, i) => <span class={`cv cv-${i + 1}`}>{text}</span>)}</span>
         </>
       ) : (
         <>
           <span class="consult-icon"><svg width="24" height="24" aria-hidden="true"><use href="#ic-question" /></svg></span>
           <span class="consult-text">
-            <strong>{c.heading(countryName)}</strong>
-            <span>{c.open}</span>
+            <strong>{hook.map((text, i) => <span class={`cv cv-${i + 1}`}>{text}</span>)}</strong>
+            <span>{c.hooks.cta.map((text, i) => <span class={`cv cv-${i + 1}`}>{text}</span>)}</span>
           </span>
           <svg class="consult-chevron" width="18" height="18" aria-hidden="true"><use href="#ic-arrow" /></svg>
         </>
@@ -65,8 +80,8 @@ const greeting = offer === "general" ? c.greet.general(countryName) : offer ? c.
       <ol class="chat-log" aria-live="polite">
         <li class="bot">{greeting}</li>
       </ol>
-      <form class="chat-input">
-        <textarea name="message" rows="2" maxlength="600" required placeholder={c.placeholder} aria-label={c.placeholder}></textarea>
+      <form class="chat-input" {...tool}>
+        <textarea name="message" rows="2" maxlength="600" required placeholder={c.placeholder} aria-label={c.placeholder} {...toolParam}></textarea>
         <button type="submit">{c.send}</button>
       </form>
       <p class="chat-notice">{c.notice}{" "}<a href={path(lang, "privacy")} target="_blank" rel="noopener">{c.privacy}</a></p>
@@ -92,13 +107,28 @@ const greeting = offer === "general" ? c.greet.general(countryName) : offer ? c.
     const button = form.querySelector<HTMLButtonElement>("button")!;
     const d = chat.dataset;
     const placement = `${d.country}:${d.doc}`;
+    const variant = document.documentElement.dataset.cv ?? "1";
     let chatId: string | null = null;
     let sent = 0;
+
+    // Seen, not just rendered: the share of people who saw the hook and opened it is the comparison.
+    const hookEl = document.querySelector<HTMLElement>('[data-testid="consult-teaser"]') ?? details.querySelector("summary")!;
+    const seen = new IntersectionObserver((entries) => {
+      if (!entries.some((e) => e.isIntersecting)) return;
+      track("consult_shown", { placement, variant });
+      seen.disconnect();
+    }, { threshold: 0.6 });
+    seen.observe(hookEl);
+
+    // `#consult` opens the chat on arrival, and `?ask=` types the question in without sending it.
+    const ask = new URLSearchParams(location.search).get("ask");
+    if (ask) input.value = ask.slice(0, 600);
+    if (location.hash === "#consult" || ask) details.open = true;
 
     // On `toggle`, not a click on <summary>: a click also closes it, and the teaser opens it by script.
     details.addEventListener("toggle", () => {
       if (!details.open) return;
-      track("consult_opened", { placement });
+      track("consult_opened", { placement, variant });
       input.focus({ preventScroll: true });
     });
 
@@ -128,20 +158,20 @@ const greeting = offer === "general" ? c.greet.general(countryName) : offer ? c.
       button.disabled = true;
       const answer = say("bot", "…");
       answer.classList.add("wait");
-      if (++sent === 1) track("consult_started", { placement });
+      if (++sent === 1) track("consult_started", { placement, variant });
 
       try {
         const res = await fetch("/api/chat", {
           method: "POST",
           headers: { "content-type": "application/json" },
-          body: JSON.stringify({ chatId, message, lang: d.lang, page: location.pathname, country: d.country, doc: d.doc }),
+          body: JSON.stringify({ chatId, message, lang: d.lang, page: location.pathname, country: d.country, doc: d.doc, variant }),
         });
         if (!res.ok) throw new Error(String(res.status));
         const r = (await res.json()) as { chatId: string; reply: string | null; closed: boolean; lead: boolean };
         chatId = r.chatId;
         answer.classList.remove("wait");
         answer.textContent = r.reply ?? (r.closed ? d.closed ?? "" : d.failed ?? "");
-        if (r.lead) track("consult_requested", { placement, country: d.country ?? "", doc: d.doc ?? "", source: "chat" });
+        if (r.lead) track("consult_requested", { placement, variant, country: d.country ?? "", doc: d.doc ?? "", source: "chat" });
         if (r.closed) {
           if (r.reply) say("bot", d.closed ?? "");
           input.disabled = true;
@@ -150,7 +180,7 @@ const greeting = offer === "general" ? c.greet.general(countryName) : offer ? c.
       } catch (e) {
         // An HTTP status (403 origin, 429 rate, 400 message, 502 model, 503 budget) or "network".
         const reason = String((e as Error).message);
-        track("consult_failed", { placement, reason: /^\d{3}$/.test(reason) ? reason : "network" });
+        track("consult_failed", { placement, variant, reason: /^\d{3}$/.test(reason) ? reason : "network" });
         answer.classList.remove("wait");
         answer.textContent = d.failed ?? "";
       }
@@ -177,7 +207,7 @@ const greeting = offer === "general" ? c.greet.general(countryName) : offer ? c.
   }
   .consult-text { display: flex; flex-direction: column; gap: 2px; flex: 1; }
   .consult-text strong { font-size: 17px; }
-  .consult-text span { color: var(--teal); font-weight: 700; font-size: 15px; }
+  .consult-text > span { color: var(--teal); font-weight: 700; font-size: 15px; }
   .consult-chevron { flex-shrink: 0; color: var(--ink-faint); transform: rotate(90deg); transition: transform .15s; }
   .consult[open] .consult-chevron { transform: rotate(-90deg); }
 

@@ -33,6 +33,8 @@ export interface Lead {
   page: string;
   /** The form, or a chat that turned into a request when the person typed a contact. */
   source?: "form" | "chat";
+  /** The rotated hook a chat started from; only mailed, the chat row keeps it too. */
+  variant?: string;
 }
 
 const LIMITS = { name: 100, contact: 200, message: 2000, page: 300 } as const;
@@ -118,6 +120,7 @@ export function mailBody(
     "",
     `Язык страницы: ${lead.lang}`,
     `Страница: ${lead.page ? origin + lead.page : "(нет)"}`,
+    ...(lead.variant ? [`Вариант заголовка: ${lead.variant}`] : []),
     `Страна по IP: ${ipCountry ?? "(нет)"}`,
     `Время: ${at}`,
   ].join("\n");

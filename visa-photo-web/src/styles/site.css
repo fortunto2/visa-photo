@@ -862,3 +862,8 @@ h1 {
   margin-top: 22px; padding: 14px 18px; border-inline-start: 3px solid var(--teal);
   background: var(--teal-soft); border-radius: var(--r-md); font-weight: 600;
 }
+
+/* Rotated copy (src/data/consult.ts hooks): Page.astro sets data-cv on <html> before the body
+   paints, so only one variant is ever drawn. Without script, variant 1 shows. */
+.cv { display: none; }
+html:not([data-cv]) .cv-1, html[data-cv="1"] .cv-1, html[data-cv="2"] .cv-2, html[data-cv="3"] .cv-3 { display: inline; }

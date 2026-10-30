@@ -75,6 +75,20 @@ const graph = [
     {/* Consent Mode v2 defaults, before the container. Everything measurable starts denied;
         Consent.astro flips analytics_storage once the visitor answers. Advertising storage is
         denied here and never granted — nothing on this site sells anything. */}
+    {/* Which of the three consult hooks this visitor sees (src/data/consult.ts). Chosen once and kept,
+        so a returning visitor is counted under the same variant; set before the body paints, so
+        the text never swaps in view. */}
+    <script is:inline>
+      (function () {
+        var v;
+        try { v = localStorage.getItem("cv"); } catch (e) {}
+        if (!/^[123]$/.test(v || "")) {
+          v = String(1 + Math.floor(Math.random() * 3));
+          try { localStorage.setItem("cv", v); } catch (e) {}
+        }
+        document.documentElement.dataset.cv = v;
+      })();
+    </script>
     <script is:inline>
       window.dataLayer = window.dataLayer || [];
       function gtag() { window.dataLayer.push(arguments); }

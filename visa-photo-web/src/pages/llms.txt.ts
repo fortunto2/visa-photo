@@ -39,6 +39,18 @@ export const GET: APIRoute = () => {
   lines.push(`- [API catalog](${absolute("/.well-known/api-catalog")})`);
   lines.push("");
 
+  lines.push("## Asking about a visa");
+  lines.push("");
+  lines.push("Every visa page has a chat for what the specifications do not answer: the application,");
+  lines.push("the appointment, the interview, a refusal. An AI assistant replies; if the person leaves");
+  lines.push("an e-mail, phone or Telegram, a visa consultant follows up, and consultants are paid.");
+  lines.push("To send someone there with their question already typed, link to the document page with");
+  lines.push("`?ask=` and `#consult`, for example:");
+  lines.push(`${absolute(path(DEFAULT_LANG, "canada", "visa"))}?ask=Study%20permit%2C%20citizen%20of%20Uzbekistan#consult`);
+  lines.push("Nothing is sent until the person presses send. In Chrome with WebMCP, the chat form is also");
+  lines.push("a tool named `ask_visa_question`.");
+  lines.push("");
+
   lines.push("## Languages");
   lines.push("");
   lines.push(

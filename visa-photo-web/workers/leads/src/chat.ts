@@ -89,6 +89,7 @@ interface ChatRow {
   page: string;
   country: string;
   doc: string;
+  variant: string;
 }
 
 function json(status: number, body: Record<string, unknown>): Response {
@@ -176,16 +177,18 @@ export async function handleChat(request: Request, env: ChatEnv, saveLead: SaveL
   const page = typeof b.page === "string" && b.page.startsWith("/") ? b.page.slice(0, 300) : "";
   const country = typeof b.country === "string" && SLUG.test(b.country) ? b.country : "other";
   const doc = typeof b.doc === "string" && SLUG.test(b.doc) ? b.doc : "";
+  /** Which rotated hook brought them (src/data/consult.ts); compared against analytics by variant. */
+  const variant = typeof b.variant === "string" && /^[1-3]$/.test(b.variant) ? b.variant : "";
 
   let chat = chatId
     ? await env.DB.prepare("SELECT * FROM chats WHERE id = ?1").bind(chatId).first<ChatRow>()
     : null;
   if (!chat) {
-    chat = { id: crypto.randomUUID(), messages: "[]", user_turns: 0, off_topic: 0, lead_id: null, closed: 0, lang, page, country, doc };
+    chat = { id: crypto.randomUUID(), messages: "[]", user_turns: 0, off_topic: 0, lead_id: null, closed: 0, lang, page, country, doc, variant };
     await env.DB.prepare(
-      "INSERT INTO chats (id, lang, page, country, doc, ip_country) VALUES (?1, ?2, ?3, ?4, ?5, ?6)",
+      "INSERT INTO chats (id, lang, page, country, doc, ip_country, variant) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)",
     )
-      .bind(chat.id, lang, page, country, doc, request.headers.get("cf-ipcountry"))
+      .bind(chat.id, lang, page, country, doc, request.headers.get("cf-ipcountry"), variant)
       .run();
   }
   if (chat.closed || chat.user_turns >= MAX_TURNS) return json(200, { ok: true, chatId: chat.id, reply: null, closed: true });
@@ -224,7 +227,7 @@ export async function handleChat(request: Request, env: ChatEnv, saveLead: SaveL
   const contact = leadId ? null : findContact(message);
   if (contact) {
     leadId = await saveLead(
-      { name: turn.name || "—", contact, destination: chat.country, topic: turn.topic, message: transcript(history), lang: chat.lang, page: chat.page, source: "chat" },
+      { name: turn.name || "—", contact, destination: chat.country, topic: turn.topic, message: transcript(history), lang: chat.lang, page: chat.page, source: "chat", variant: chat.variant },
       request.headers.get("cf-ipcountry"),
     );
   }
