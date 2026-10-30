@@ -1,4 +1,5 @@
 import type { APIRoute } from "astro";
+import { CONSULT_COPY, askUrl, consultOffer } from "../../../data/consult";
 import { plain } from "../../../lib/bidi";
 import { CATALOG, type CatalogEntry } from "../../../data/catalog";
 import { docView } from "../../../data/docView";
@@ -76,6 +77,15 @@ export const GET: APIRoute = ({ params, props }) => {
 
   // The source and the date outrank everything above them: a specification without the authority
   // it came from is a number someone on the internet said, and requirements do change.
+  // Agents pass on what they read: this is the line that can bring someone to the chat.
+  if (consultOffer(entry)) {
+    const help = CONSULT_COPY[lang].agentHelp;
+    out.push(`## ${help.heading}`);
+    out.push("");
+    out.push(`${help.body} [${help.link}](${askUrl(lang, entry, "ask-md")})`);
+    out.push("");
+  }
+
   out.push("## Source");
   out.push("");
   out.push(`[${entry.source.label}](${entry.source.url}) — checked ${entry.checked}.`);

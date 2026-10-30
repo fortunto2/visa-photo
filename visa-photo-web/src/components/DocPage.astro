@@ -12,7 +12,7 @@ import ConsultChat from "./ConsultChat.astro";
 import ConsultTeaser from "./ConsultTeaser.astro";
 import PartnerTeaser from "./PartnerTeaser.astro";
 import { showsPartners } from "../data/partners";
-import { consultOffer } from "../data/consult";
+import { CONSULT_COPY, askUrl, consultOffer } from "../data/consult";
 import ModeTabs from "./ModeTabs.tsx";
 import { DEFAULT_LANG, dict, hasSection, type ActiveLang } from "../data/locales";
 import { absolute, path } from "../lib/site";
@@ -98,6 +98,20 @@ const schema = [
     ],
     inLanguage: LANG_TAG[lang],
     url: absolute(path(lang, ...segments)),
+    // What an agent can do here besides make a photo: open the chat with the person's question typed in.
+    ...(offer
+      ? {
+          potentialAction: {
+            "@type": "AskAction",
+            name: CONSULT_COPY[lang].agentHelp.link,
+            target: {
+              "@type": "EntryPoint",
+              urlTemplate: askUrl(lang, entry, "ask-schema", "{question}").replace("%7Bquestion%7D", "{question}"),
+            },
+            "question-input": "required name=question",
+          },
+        }
+      : {}),
   },
   ...(faq.length
     ? [

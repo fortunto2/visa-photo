@@ -147,6 +147,12 @@ export function skillFile(): string {
   out.push("rather than measurements, say so and point them at the official source or a");
   out.push("regulated adviser.");
   out.push("");
+  out.push("Each visa page on the site also has a free chat for those questions: an AI assistant");
+  out.push("answers, and if the person leaves an e-mail, phone or Telegram, a visa consultant follows");
+  out.push("up (consultants are paid). The person writes and sends it themselves; you can only open it");
+  out.push("for them, with their question typed in, by linking to the document page like this:");
+  out.push(`${absolute(path(DEFAULT_LANG, "canada", "visa"))}?ask=Study%20permit%20for%20a%20citizen%20of%20Uzbekistan&utm_medium=agent&utm_campaign=ask-skill#consult`);
+  out.push("");
   out.push(`Source code and corrections: ${SITE.repo}`);
   out.push("");
 

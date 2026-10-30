@@ -1,5 +1,6 @@
 import type { ActiveLang } from "./locales";
 import type { CatalogEntry } from "./catalog";
+import { absolute, path } from "../lib/site";
 
 /**
  * "Need help with the visa itself?" — a chat for the questions the site cannot answer.
@@ -32,6 +33,17 @@ export type ConsultOffer = "us-visa" | "us-dv" | "general";
 
 /** Matches CC_COUNTRY in workers/leads: the country whose requests reach the partner. */
 const PARTNER_COUNTRY = "united-states";
+
+/**
+ * A link that opens the chat on a document page, for text that agents read and pass on (the
+ * Markdown twins, the skill, llms.txt, schema.org). `utm_campaign` says which of them it came
+ * from; `utm_medium=agent` keeps it apart from people's own clicks. ChatGPT adds its own
+ * utm_source, so the source is left alone.
+ */
+export function askUrl(lang: ActiveLang, entry: CatalogEntry, campaign: string, question?: string): string {
+  const q = new URLSearchParams({ ...(question ? { ask: question } : {}), utm_medium: "agent", utm_campaign: campaign });
+  return `${absolute(path(lang, entry.country, entry.doc))}?${q}#consult`;
+}
 
 export function consultOffer(entry: CatalogEntry): ConsultOffer | null {
   if (entry.kind !== "visa") return null;
@@ -80,6 +92,8 @@ interface Copy {
   tag: string;
   usVisa: Pitch;
   usDv: Pitch;
+  /** The same offer in the Markdown twins, where agents read it and pass the link on. */
+  agentHelp: { heading: string; body: string; link: string };
 }
 
 export const CONSULT_COPY: Record<ActiveLang, Copy> = {
@@ -102,6 +116,7 @@ export const CONSULT_COPY: Record<ActiveLang, Copy> = {
     send: "Send",
     failed: "Could not send. Try again in a minute, or write to info@superduperai.co.",
     closed: "This chat is closed. To continue, write to info@superduperai.co.",
+    agentHelp: { heading: "Help beyond the photo", body: "For the application, the interview or a refusal, ask in the free chat on this page. An AI assistant answers, and if you leave an e-mail, phone or Telegram, a visa consultant follows up; consultants are paid.", link: "Ask in the chat" },
     tag: "Visa help",
     usVisa: {
       body: "The photo is our part. For the rest (the DS-160 form, the interview appointment, getting ready for the interview) tell us your case: we answer, and put you in touch with a visa consultant if you need one. Their work is paid, and they name the price before starting. No one can promise a visa; the consulate decides.",
@@ -131,6 +146,7 @@ export const CONSULT_COPY: Record<ActiveLang, Copy> = {
     send: "Отправить",
     failed: "Не отправилось. Попробуйте через минуту или напишите на info@superduperai.co.",
     closed: "Чат закрыт. Чтобы продолжить, напишите на info@superduperai.co.",
+    agentHelp: { heading: "Помощь не только с фото", body: "С анкетой, собеседованием или после отказа спросите в бесплатном чате на этой странице. Отвечает ИИ-ассистент, а если оставите почту, телефон или Telegram, напишет визовый консультант; его услуги платные.", link: "Спросить в чате" },
     tag: "Помощь с визой",
     usVisa: {
       body: "Фото делаем мы. С остальным (анкета DS-160, запись на собеседование, подготовка к нему) расскажите о ситуации: мы ответим и, если нужно, сведём с визовым консультантом. Его услуги платные, цену он называет до начала работы. Гарантировать визу не может никто, решение принимает консул.",
@@ -160,6 +176,7 @@ export const CONSULT_COPY: Record<ActiveLang, Copy> = {
     send: "Enviar",
     failed: "No se pudo enviar. Inténtalo en un minuto o escribe a info@superduperai.co.",
     closed: "Este chat está cerrado. Para seguir, escribe a info@superduperai.co.",
+    agentHelp: { heading: "Ayuda más allá de la foto", body: "Para el formulario, la entrevista o una denegación, pregunta en el chat gratuito de esta página. Responde un asistente de IA y, si dejas un correo, teléfono o Telegram, te escribe un asesor de visados; sus servicios son de pago.", link: "Preguntar en el chat" },
     tag: "Ayuda con el visado",
     usVisa: {
       body: "La foto es cosa nuestra. Para el resto (el formulario DS-160, la cita de la entrevista y la preparación) cuéntanos tu caso: te respondemos y, si hace falta, te ponemos en contacto con un asesor de visados. Su trabajo es de pago y te dice el precio antes de empezar. Nadie puede garantizar la visa; decide el consulado.",
@@ -189,6 +206,7 @@ export const CONSULT_COPY: Record<ActiveLang, Copy> = {
     send: "Envoyer",
     failed: "L'envoi a échoué. Réessayez dans une minute ou écrivez à info@superduperai.co.",
     closed: "Ce chat est fermé. Pour continuer, écrivez à info@superduperai.co.",
+    agentHelp: { heading: "De l'aide au-delà de la photo", body: "Pour le formulaire, l'entretien ou un refus, posez votre question dans le chat gratuit de cette page. Un assistant IA répond, et si vous laissez un e-mail, un téléphone ou un Telegram, un consultant en visas vous écrit ; ses services sont payants.", link: "Demander dans le chat" },
     tag: "Aide visa",
     usVisa: {
       body: "La photo, c'est nous. Pour le reste (le formulaire DS-160, le rendez-vous et la préparation de l'entretien), décrivez votre situation : nous répondons et, si besoin, vous mettons en relation avec un consultant en visas. Son travail est payant et il annonce son prix avant de commencer. Personne ne peut garantir un visa, c'est le consulat qui décide.",
@@ -218,6 +236,7 @@ export const CONSULT_COPY: Record<ActiveLang, Copy> = {
     send: "Enviar",
     failed: "Não foi possível enviar. Tente de novo em um minuto ou escreva para info@superduperai.co.",
     closed: "Este chat foi encerrado. Para continuar, escreva para info@superduperai.co.",
+    agentHelp: { heading: "Ajuda além da foto", body: "Para o formulário, a entrevista ou uma recusa, pergunte no chat gratuito desta página. Um assistente de IA responde e, se você deixar e-mail, telefone ou Telegram, um consultor de vistos escreve para você; o serviço dele é pago.", link: "Perguntar no chat" },
     tag: "Ajuda com visto",
     usVisa: {
       body: "A foto é com a gente. Para o resto (o formulário DS-160, o agendamento da entrevista e a preparação), conte o seu caso: respondemos e, se for preciso, colocamos você em contato com um consultor de vistos. O serviço dele é pago, e ele informa o preço antes de começar. Ninguém pode garantir o visto; quem decide é o consulado.",
@@ -247,6 +266,7 @@ export const CONSULT_COPY: Record<ActiveLang, Copy> = {
     send: "Gönder",
     failed: "Gönderilemedi. Bir dakika sonra tekrar deneyin ya da info@superduperai.co adresine yazın.",
     closed: "Bu sohbet kapandı. Devam etmek için info@superduperai.co adresine yazın.",
+    agentHelp: { heading: "Fotoğrafın ötesinde yardım", body: "Form, mülakat ya da ret için bu sayfadaki ücretsiz sohbette sorun. Bir yapay zekâ asistanı yanıtlar; e-posta, telefon veya Telegram bırakırsanız bir vize danışmanı size yazar, danışmanlık ücretlidir.", link: "Sohbette sorun" },
     tag: "Vize desteği",
     usVisa: {
       body: "Fotoğraf bizden. Geri kalanı için (DS-160 formu, mülakat randevusu ve mülakata hazırlık) durumunuzu yazın: yanıt veririz, gerekirse sizi bir vize danışmanıyla buluştururuz. Danışmanlık ücretlidir; danışman ücreti işe başlamadan söyler. Vizeyi kimse garanti edemez, kararı konsolosluk verir.",
@@ -276,6 +296,7 @@ export const CONSULT_COPY: Record<ActiveLang, Copy> = {
     send: "أرسل",
     failed: "تعذّر الإرسال. حاول بعد دقيقة أو راسلنا على info@superduperai.co.",
     closed: "أُغلقت هذه المحادثة. للمتابعة راسلنا على info@superduperai.co.",
+    agentHelp: { heading: "مساعدة تتجاوز الصورة", body: "للاستمارة أو المقابلة أو بعد الرفض، اسأل في المحادثة المجانية على هذه الصفحة. يجيب مساعد ذكاء اصطناعي، وإذا تركت بريدًا أو هاتفًا أو تيليغرام يكتب لك مستشار تأشيرات؛ خدماته مدفوعة.", link: "اسأل في المحادثة" },
     tag: "مساعدة في التأشيرة",
     usVisa: {
       body: "نحن نجهّز الصورة. أما بقية الخطوات (استمارة DS-160، وحجز موعد المقابلة، والتحضير لها) فأخبرنا بوضعك: نرد عليك، وإن لزم نوصلك بمستشار تأشيرات. خدماته مدفوعة ويحدد السعر قبل البدء. لا أحد يستطيع ضمان التأشيرة، فالقرار للقنصلية.",
@@ -305,6 +326,7 @@ export const CONSULT_COPY: Record<ActiveLang, Copy> = {
     send: "भेजें",
     failed: "भेजा नहीं जा सका। एक मिनट बाद फिर कोशिश करें या info@superduperai.co पर लिखें।",
     closed: "यह चैट बंद हो गई है। आगे बात करने के लिए info@superduperai.co पर लिखें।",
+    agentHelp: { heading: "फ़ोटो से आगे की मदद", body: "फ़ॉर्म, इंटरव्यू या रिजेक्शन के लिए इस पेज की मुफ़्त चैट में पूछें। जवाब AI असिस्टेंट देता है, और अगर आप ईमेल, फ़ोन या Telegram छोड़ते हैं तो वीज़ा कंसल्टेंट लिखेंगे; उनकी सर्विस पेड है।", link: "चैट में पूछें" },
     tag: "वीज़ा सहायता",
     usVisa: {
       body: "फ़ोटो हम बनाते हैं। बाकी कामों (DS-160 फ़ॉर्म, इंटरव्यू अपॉइंटमेंट और उसकी तैयारी) के लिए अपनी स्थिति लिखें: हम जवाब देंगे, और ज़रूरत हो तो वीज़ा कंसल्टेंट से जोड़ देंगे। उनकी सर्विस पेड है, फ़ीस वे काम शुरू करने से पहले बताते हैं। वीज़ा की गारंटी कोई नहीं दे सकता, फ़ैसला कॉन्सुलेट करता है।",
@@ -334,6 +356,7 @@ export const CONSULT_COPY: Record<ActiveLang, Copy> = {
     send: "提交",
     failed: "提交失败。请一分钟后重试，或发邮件至 info@superduperai.co。",
     closed: "此对话已结束。如需继续，请发邮件至 info@superduperai.co。",
+    agentHelp: { heading: "照片之外的帮助", body: "填表、面签或被拒后的问题，可以在本页免费聊天中提问。由 AI 助手回答；如果你留下邮箱、电话或 Telegram，签证顾问会联系你，顾问服务收费。", link: "在聊天中提问" },
     tag: "签证协助",
     usVisa: {
       body: "照片由我们负责。其余部分（DS-160 表格、面签预约和面签准备）请说明你的情况：我们会回复，如有需要再为你联系签证顾问。顾问服务收费，会在开始前报价。任何人都无法保证签证获批，决定权在领事馆。",
