@@ -216,7 +216,8 @@ const notice = noticeFor(entry.country, entry.doc, lang);
     initial={mode} makeHref={path(lang, entry.country, entry.doc)}
     checkHref={path(lang, entry.country, entry.doc, "check")}>
     <div slot="check">
-      <p class="answer" style="margin-bottom:16px">{t.check.lead}</p>
+      {/* On the checker's own page the headline block already says this; only the make page's tab needs it. */}
+      {mode !== "check" && <p class="answer" style="margin-bottom:16px">{t.check.lead}</p>}
       <PhotoChecker
         client:visible
         preset={p}
