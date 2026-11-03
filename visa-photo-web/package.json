@@ -33,6 +33,7 @@
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^6.2.108",
     "preact": "^10.29.1",
+    "superduper-site-kit": "git+file:///Users/rustam/startups/shared/superduper-site-kit",
     "tailwindcss": "^4.2.2",
     "toml": "^4.1.1"
   },

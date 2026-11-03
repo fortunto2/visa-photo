@@ -41,6 +41,9 @@ importers:
       preact:
         specifier: ^10.29.1
         version: 10.29.8(preact-render-to-string@6.7.0)
+      superduper-site-kit:
+        specifier: git+file:///Users/rustam/startups/shared/superduper-site-kit
+        version: git+file:///Users/rustam/startups/shared/superduper-site-kit#198aeb932911c2f7a55495cf9bb18fc409daa458(astro@6.4.8(@types/node@26.1.2)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.4)(yaml@2.9.0))
       tailwindcss:
         specifier: ^4.2.2
         version: 4.3.3
@@ -2103,6 +2106,15 @@ packages:
   strip-ansi@7.2.0:
     resolution: {integrity: sha512-yDPMNjp4WyfYBkHnjIRLfca1i6KMyGCtsVgoKe/z1+6vukgaENdgGBZt+ZmKPc4gavvEZ5OgHfHdrazhgNyG7w==}
     engines: {node: '>=12'}
+
+  superduper-site-kit@git+file:///Users/rustam/startups/shared/superduper-site-kit#198aeb932911c2f7a55495cf9bb18fc409daa458:
+    resolution: {commit: 198aeb932911c2f7a55495cf9bb18fc409daa458, repo: file:///Users/rustam/startups/shared/superduper-site-kit, type: git}
+    version: 0.1.0
+    peerDependencies:
+      astro: '>=5.0.0'
+    peerDependenciesMeta:
+      astro:
+        optional: true
 
   svg-pathdata@6.0.3:
     resolution: {integrity: sha512-qsjeeq5YjBZ5eMdFuUa4ZosMLxgr5RZ+F+Y1OrDhuOCEInRMA3x74XdBtggJcj9kOeInz0WE+LgCPDkZFlBYJw==}
@@ -4826,6 +4838,10 @@ snapshots:
   strip-ansi@7.2.0:
     dependencies:
       ansi-regex: 6.2.2
+
+  superduper-site-kit@git+file:///Users/rustam/startups/shared/superduper-site-kit#198aeb932911c2f7a55495cf9bb18fc409daa458(astro@6.4.8(@types/node@26.1.2)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.4)(yaml@2.9.0)):
+    optionalDependencies:
+      astro: 6.4.8(@types/node@26.1.2)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.4)(yaml@2.9.0)
 
   svg-pathdata@6.0.3:
     optional: true

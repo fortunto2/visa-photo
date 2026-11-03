@@ -1,5 +1,7 @@
 ---
 import "../styles/site.css";
+import Analytics from "superduper-site-kit/astro/Analytics.astro";
+import LegalFooter from "superduper-site-kit/astro/LegalFooter.astro";
 import Sprite from "../components/Sprite.astro";
 import Consent from "../components/Consent.astro";
 import { toolsFor } from "../data/tools";
@@ -112,11 +114,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','${SITE.gtm}');`} />
 
-    <!-- Queue stub: the tool can fire an event before the deferred script has loaded. -->
-    <script is:inline>
-      window.sda = window.sda || function () { (window.sda.q = window.sda.q || []).push(arguments); };
-    </script>
-    <script is:inline defer src={SITE.analytics.src} data-source={SITE.analytics.source}></script>
+    <!-- superduper-site-kit: the queue stub (an event can fire before the deferred script loads) and the counter. -->
+    <Analytics source={SITE.analytics.source} script={SITE.analytics.src} />
   </head>
 
   <body>
@@ -191,6 +190,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           <a href="/llms.txt">llms.txt</a>
           <a href="/specs.json">specs.json</a>
         </nav>
+        <LegalFooter lang={lang} class="foot-legal" />
       </div>
     </footer>
 
