@@ -12,6 +12,7 @@
  */
 
 import { handleChat } from "./chat";
+import { handleNotify } from "./notify";
 
 /** Set with `wrangler secret put`; kept out of wrangler.jsonc because the repo is public. */
 interface Secrets {
@@ -226,10 +227,14 @@ type Row = Lead & { id: number; ip_country: string | null; created_at: string };
 
 export default {
   fetch(request, env, ctx) {
-    if (new URL(request.url).pathname === "/api/chat") {
+    const { pathname } = new URL(request.url);
+    if (pathname === "/api/chat") {
       return handleChat(request, env, (lead, ipCountry) => storeLead(env, ctx, lead, ipCountry));
     }
-    return handle(request, env, ctx);
+    if (pathname === "/api/notify") return handleNotify(request, env);
+    if (pathname === "/api/lead") return handle(request, env, ctx);
+    // The notify route ends in a star (see wrangler.jsonc), so other paths under it land here.
+    return json(404, { ok: false, error: "path" });
   },
   /**
    * Hourly. Retries mail that did not go out — so requests that arrive while mail is broken or
@@ -250,5 +255,12 @@ export default {
         .bind(`-${KEEP_DAYS} days`)
         .run();
     }
+    // A notify address has done its job a month after the message went out, and waits a year at most.
+    await env.DB.prepare(
+      `DELETE FROM subscribers WHERE notified_at < strftime('%Y-%m-%dT%H:%M:%SZ', 'now', '-30 days')
+       OR created_at < strftime('%Y-%m-%dT%H:%M:%SZ', 'now', ?1)`,
+    )
+      .bind(`-${KEEP_DAYS} days`)
+      .run();
   },
 } satisfies ExportedHandler<Bindings>;

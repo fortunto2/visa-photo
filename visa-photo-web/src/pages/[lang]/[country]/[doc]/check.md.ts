@@ -46,6 +46,12 @@ export const GET: APIRoute = ({ params, props }) => {
     out.push(`> **${notice.copy.title}**`);
     out.push(">");
     out.push(`> ${notice.copy.body} [${notice.copy.sourceLabel}](${notice.source}) · [${notice.official.label}](${notice.official.url})`);
+    if (notice.notify && notice.copy.notify) {
+      // The person subscribes on the page; an agent can point there or fill the WebMCP tool for them.
+      out.push(">");
+      out.push(`> ${notice.copy.notify.button}: ${notice.copy.notify.note} The form is under this notice on the page ` +
+        `(WebMCP tool \`notify_${notice.notify.replace(/-/g, "_")}\`).`);
+    }
     out.push("");
   }
   out.push("| | |");

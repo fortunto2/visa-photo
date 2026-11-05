@@ -10,6 +10,7 @@ import PhotoChecker from "./PhotoChecker.tsx";
 import NextSteps from "./NextSteps.astro";
 import ConsultChat from "./ConsultChat.astro";
 import ConsultTeaser from "./ConsultTeaser.astro";
+import NoticeNotify from "./NoticeNotify.astro";
 import PartnerTeaser from "./PartnerTeaser.astro";
 import { showsPartners } from "../data/partners";
 import { CONSULT_COPY, askUrl, consultOffer } from "../data/consult";
@@ -187,6 +188,7 @@ const notice = noticeFor(entry.country, entry.doc, lang);
         <a href={notice.official.url} rel="noopener">{notice.official.label}</a>
         <a href={notice.source} rel="noopener">{notice.copy.sourceLabel}</a>
       </p>
+      {notice.notify && notice.copy.notify && <NoticeNotify topic={notice.notify} lang={lang} copy={notice.copy.notify} />}
     </aside>
   )}
   {guide && guideCopy && (

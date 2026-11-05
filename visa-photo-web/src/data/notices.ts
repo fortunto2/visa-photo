@@ -15,6 +15,19 @@ export interface NoticeText {
   body: string;
   /** link text for the primary source */
   sourceLabel: string;
+  /** The "tell me when it changes" form, drawn only when the notice has a `notify` topic. */
+  notify?: NotifyText;
+}
+
+export interface NotifyText {
+  button: string;
+  /** What the address is for, next to the field: one message, then it is deleted. */
+  note: string;
+  done: string;
+  failed: string;
+  /** Accessible name of the e-mail field. */
+  label: string;
+  privacy: string;
 }
 
 export interface Notice {
@@ -26,6 +39,11 @@ export interface Notice {
   /** the one official place to act */
   official: { label: string; url: string };
   checked: string;
+  /**
+   * Visitors may leave an e-mail to hear once when this is resolved (workers/leads/src/notify.ts
+   * keeps the list per topic). The worker accepts only topics listed in its NOTIFY_TOPICS.
+   */
+  notify?: string;
   text: Partial<Record<ActiveLang, NoticeText>>;
 }
 
@@ -43,6 +61,7 @@ export const NOTICES: Notice[] = [
     source: "https://www.courtlistener.com/docket/74994271/red-eagle-law-lc-v-rubio/",
     official: { label: "dvprogram.state.gov", url: "https://dvprogram.state.gov/" },
     checked: "2026-10-30",
+    notify: "dv-2027",
     text: {
       en: {
         title: "DV-2027 is on hold again: the appeals court paused the order to open entries",
@@ -54,6 +73,14 @@ export const NOTICES: Notice[] = [
           "passport's biographic and signature page besides the photo, and the photo must be under " +
           "six months old. Anyone taking DV-2027 entries or money before then is not the State Department.",
         sourceLabel: "Appeals court docket (Red Eagle Law v. Rubio)",
+        notify: {
+          button: "Email me when DV-2027 opens",
+          note: "One email when the State Department announces the dates. No newsletter; the address is deleted after that.",
+          done: "Done. We will write once, when entries open.",
+          failed: "That did not go through. Try again in a minute.",
+          label: "Email",
+          privacy: "Privacy",
+        },
       },
       ru: {
         title: "DV-2027 снова на паузе: апелляционный суд приостановил решение об открытии регистрации",
@@ -65,6 +92,14 @@ export const NOTICES: Notice[] = [
           "паспорта (страница с данными и подписью), фото не старше шести месяцев. Кто принимает " +
           "заявки или деньги за DV-2027 до этого, тот не Госдеп.",
         sourceLabel: "Дело в апелляционном суде (Red Eagle Law v. Rubio)",
+        notify: {
+          button: "Сообщить, когда откроют DV-2027",
+          note: "Одно письмо, когда Госдеп объявит даты. Без рассылок, после этого адрес удаляется.",
+          done: "Готово. Напишем один раз, когда откроют регистрацию.",
+          failed: "Не отправилось. Попробуйте через минуту.",
+          label: "Почта",
+          privacy: "Конфиденциальность",
+        },
       },
       ar: {
         title: "DV-2027 معلّقة من جديد: محكمة الاستئناف أوقفت أمر فتح التسجيل",
@@ -76,6 +111,14 @@ export const NOTICES: Notice[] = [
           "التوقيع في جواز السفر، ويجب ألا يزيد عمر الصورة على ستة أشهر. من يقبل طلبات أو أموالًا " +
           "لـ DV-2027 قبل ذلك ليس وزارة الخارجية.",
         sourceLabel: "ملف القضية في محكمة الاستئناف (Red Eagle Law v. Rubio)",
+        notify: {
+          button: "أخبرني عند فتح DV-2027",
+          note: "رسالة واحدة عندما تعلن وزارة الخارجية المواعيد. بلا نشرات بريدية، ويُحذف العنوان بعدها.",
+          done: "تم. سنراسلك مرة واحدة عند فتح التسجيل.",
+          failed: "لم يتم الإرسال. حاول مرة أخرى بعد دقيقة.",
+          label: "البريد الإلكتروني",
+          privacy: "الخصوصية",
+        },
       },
       fr: {
         title: "La DV-2027 de nouveau suspendue : la cour d'appel a gelé l'ordre d'ouverture",
@@ -89,6 +132,14 @@ export const NOTICES: Notice[] = [
           "six mois. Quiconque prend des inscriptions ou de l'argent pour la DV-2027 d'ici là n'est pas " +
           "le Département d'État.",
         sourceLabel: "Dossier à la cour d'appel (Red Eagle Law v. Rubio)",
+        notify: {
+          button: "Me prévenir à l'ouverture de la DV-2027",
+          note: "Un seul e-mail quand le Département d'État annoncera les dates. Pas de newsletter ; l'adresse est ensuite supprimée.",
+          done: "C'est noté. Nous écrirons une fois, à l'ouverture des inscriptions.",
+          failed: "L'envoi a échoué. Réessayez dans une minute.",
+          label: "E-mail",
+          privacy: "Confidentialité",
+        },
       },
       tr: {
         title: "DV-2027 yine askıda: istinaf mahkemesi başvuruların açılması kararını durdurdu",
@@ -100,6 +151,14 @@ export const NOTICES: Notice[] = [
           "yanında pasaportun kimlik ve imza sayfasının taraması gerekiyor ve fotoğraf altı aydan eski " +
           "olmamalı. O zamana kadar DV-2027 için başvuru ya da para alan kişi Dışişleri Bakanlığı değildir.",
         sourceLabel: "İstinaf dosyası (Red Eagle Law v. Rubio)",
+        notify: {
+          button: "DV-2027 açılınca bana haber ver",
+          note: "Dışişleri Bakanlığı tarihleri açıkladığında tek bir e-posta. Bülten yok; ardından adres silinir.",
+          done: "Tamam. Başvurular açılınca bir kez yazacağız.",
+          failed: "Gönderilemedi. Bir dakika sonra tekrar deneyin.",
+          label: "E-posta",
+          privacy: "Gizlilik",
+        },
       },
       es: {
         title: "La DV-2027 vuelve a estar en pausa: el tribunal de apelaciones suspendió la orden de abrir el registro",
@@ -112,6 +171,14 @@ export const NOTICES: Notice[] = [
           "de la página de datos y la de firma del pasaporte, y la foto debe tener menos de seis meses. " +
           "Quien acepte inscripciones o dinero para la DV-2027 antes de eso no es el Departamento de Estado.",
         sourceLabel: "Expediente de apelación (Red Eagle Law v. Rubio)",
+        notify: {
+          button: "Avísame cuando abra la DV-2027",
+          note: "Un solo correo cuando el Departamento de Estado anuncie las fechas. Sin boletines; después se borra la dirección.",
+          done: "Listo. Te escribiremos una vez, cuando abra el registro.",
+          failed: "No se envió. Inténtalo de nuevo en un minuto.",
+          label: "Correo",
+          privacy: "Privacidad",
+        },
       },
       pt: {
         title: "A DV-2027 está em pausa de novo: o tribunal de apelação suspendeu a ordem de abrir as inscrições",
@@ -124,6 +191,14 @@ export const NOTICES: Notice[] = [
           "da página de assinatura do passaporte, e a foto deve ter menos de seis meses. Quem aceitar " +
           "inscrições ou dinheiro para a DV-2027 antes disso não é o Departamento de Estado.",
         sourceLabel: "Processo no tribunal de apelação (Red Eagle Law v. Rubio)",
+        notify: {
+          button: "Avise-me quando a DV-2027 abrir",
+          note: "Um único e-mail quando o Departamento de Estado anunciar as datas. Sem newsletter; depois o endereço é apagado.",
+          done: "Pronto. Vamos escrever uma vez, quando as inscrições abrirem.",
+          failed: "Não foi enviado. Tente de novo em um minuto.",
+          label: "E-mail",
+          privacy: "Privacidade",
+        },
       },
     },
   },

@@ -1,0 +1,101 @@
+---
+import type { NotifyText } from "../data/notices";
+import type { ActiveLang } from "../data/locales";
+import { path } from "../lib/site";
+
+/**
+ * "Tell me when it changes", inside a notice: one e-mail field and a button.
+ *
+ * Built for the DV lottery pause, when the people on the page have nothing to do but wait and no
+ * reason to come back each day to check. The address goes to /api/notify (workers/leads) under
+ * the notice's topic and is used for that one message. Nothing is sent until the person presses
+ * the button; an agent driving the page through WebMCP fills the field, the person submits.
+ */
+interface Props {
+  topic: string;
+  lang: ActiveLang;
+  copy: NotifyText;
+}
+const { topic, lang, copy } = Astro.props as Props;
+
+/** WebMCP declarative attributes. Spread, because Astro's HTML types do not know them yet. */
+const tool = {
+  toolname: `notify_${topic.replace(/-/g, "_")}`,
+  tooldescription:
+    "Leave the person's e-mail address to get one message from visayes when the situation in this notice " +
+    "is resolved (for DV-2027: when the State Department opens entries). Only with the person's agreement; " +
+    "the address is used for that message alone and then deleted.",
+};
+const toolParam = { toolparamdescription: "The person's own e-mail address." };
+---
+
+<form class="notify" data-topic={topic} data-lang={lang} data-done={copy.done} data-failed={copy.failed} data-testid="notify" {...tool}>
+  <div class="notify-row">
+    <input type="email" name="email" required maxlength="200" autocomplete="email" inputmode="email"
+      aria-label={copy.label} placeholder="name@example.com" {...toolParam} />
+    {/* People never see this field; a bot that fills every input does. */}
+    <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" class="notify-trap" />
+    <button type="submit">{copy.button}</button>
+  </div>
+  <p class="notify-note">{copy.note} <a href={path(lang, "privacy")}>{copy.privacy}</a></p>
+  <p class="notify-status" role="status" aria-live="polite"></p>
+</form>
+
+<script>
+  import { track } from "../lib/analytics";
+
+  for (const form of document.querySelectorAll<HTMLFormElement>("form.notify")) {
+    const d = form.dataset;
+    const status = form.querySelector<HTMLElement>(".notify-status")!;
+    const button = form.querySelector<HTMLButtonElement>("button")!;
+    const placement = location.pathname;
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (button.disabled) return;
+      const data = new FormData(form);
+      button.disabled = true;
+      try {
+        const res = await fetch("/api/notify", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            email: String(data.get("email") ?? "").trim(),
+            website: String(data.get("website") ?? ""),
+            topic: d.topic,
+            lang: d.lang,
+            page: location.pathname,
+          }),
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        track("notify_requested", { topic: d.topic ?? "", placement });
+        form.classList.add("is-done");
+        status.textContent = d.done ?? "";
+      } catch (e) {
+        const reason = String((e as Error).message);
+        track("notify_failed", { topic: d.topic ?? "", reason: /^\d{3}$/.test(reason) ? reason : "network" });
+        status.textContent = d.failed ?? "";
+        button.disabled = false;
+      }
+    });
+  }
+</script>
+
+<style>
+  .notify { margin-top: 11px; }
+  .notify-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .notify input[type="email"] {
+    flex: 1 1 220px; min-width: 0; padding: 9px 12px; font: inherit; font-size: 15px;
+    border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--surface); color: inherit;
+  }
+  .notify button {
+    flex: 0 0 auto; padding: 9px 14px; font: inherit; font-size: 15px; font-weight: 700;
+    border: 0; border-radius: var(--r-sm); background: var(--teal); color: var(--on-teal); cursor: pointer;
+  }
+  .notify button:disabled { opacity: 0.6; cursor: default; }
+  .notify .notify-note { margin-top: 6px; font-size: 13px; opacity: 0.85; }
+  .notify .notify-status:empty { display: none; }
+  .notify .notify-status { margin-top: 6px; font-weight: 700; }
+  .notify.is-done .notify-row, .notify.is-done .notify-note { display: none; }
+  .notify-trap { position: absolute; inset-inline-start: -9999px; width: 1px; height: 1px; opacity: 0; }
+</style>

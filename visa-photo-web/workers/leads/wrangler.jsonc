@@ -8,7 +8,10 @@
   // A Worker route runs before the Pages project behind the same hostname.
   "routes": [
     { "pattern": "visayes.app/api/lead", "zone_name": "visayes.app" },
-    { "pattern": "visayes.app/api/chat", "zone_name": "visayes.app" }
+    { "pattern": "visayes.app/api/chat", "zone_name": "visayes.app" },
+    // With the star: a route without one does not match a URL with a query string, and the
+    // unsubscribe link is /api/notify?unsubscribe=<token> (found 2026-11-04).
+    { "pattern": "visayes.app/api/notify*", "zone_name": "visayes.app" }
   ],
   "workers_dev": false,
 

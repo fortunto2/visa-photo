@@ -60,3 +60,20 @@ CREATE TABLE IF NOT EXISTS chats (
 
 CREATE INDEX IF NOT EXISTS chats_created ON chats (created_at);
 CREATE INDEX IF NOT EXISTS chats_updated ON chats (updated_at);
+
+-- "Tell me when it changes" (workers/leads/src/notify.ts): one row per address and notice topic.
+-- Not a lead and never passed on; used for the one message, then deleted 30 days after it is sent.
+CREATE TABLE IF NOT EXISTS subscribers (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  created_at  TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
+  email       TEXT NOT NULL,
+  -- A notice's `notify` topic, e.g. "dv-2027".
+  topic       TEXT NOT NULL,
+  -- The language to write the message in, and the page the address was left on.
+  lang        TEXT NOT NULL,
+  page        TEXT NOT NULL DEFAULT '',
+  -- Random; the unsubscribe link in the message is /api/notify?unsubscribe=<token>.
+  token       TEXT NOT NULL UNIQUE,
+  notified_at TEXT,
+  UNIQUE (email, topic)
+);
