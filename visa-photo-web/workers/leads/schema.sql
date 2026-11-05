@@ -75,5 +75,17 @@ CREATE TABLE IF NOT EXISTS subscribers (
   -- Random; the unsubscribe link in the message is /api/notify?unsubscribe=<token>.
   token       TEXT NOT NULL UNIQUE,
   notified_at TEXT,
+  -- Set with notified_at when Cloudflare refused this one address (src/notify-send.ts). Added
+  -- 2026-11-05; on a database created before: ALTER TABLE subscribers ADD COLUMN notify_error TEXT;
+  notify_error TEXT,
   UNIQUE (email, topic)
+);
+
+-- A row here starts the one message for a topic (src/notify-send.ts); the hourly cron sends it.
+CREATE TABLE IF NOT EXISTS notify_sends (
+  topic       TEXT PRIMARY KEY,
+  -- YYYY-MM-DD, as the State Department announced them.
+  opens       TEXT NOT NULL,
+  closes      TEXT NOT NULL,
+  created_at  TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))
 );

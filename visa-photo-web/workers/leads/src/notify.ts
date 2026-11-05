@@ -3,8 +3,8 @@
  *
  * POST /api/notify {email, topic, lang, page} adds an address; GET /api/notify?unsubscribe=<token>
  * deletes it, and that link goes into the one message the list exists for. Nothing is mailed from
- * here: the message is sent by hand once the State Department announces dates, so this only
- * stores. The address is not a lead and is not passed to consultants; the privacy page says so.
+ * here: the message is src/notify-send.ts, started by hand once the State Department announces
+ * dates. The address is not a lead and is not passed to consultants; the privacy page says so.
  *
  * A repeated address is accepted and stored once. The answer is the same either way, so the form
  * cannot be used to learn whether someone is on the list.
@@ -57,7 +57,9 @@ function page(status: number, text: string): Response {
 export async function handleNotify(request: Request, env: Env): Promise<Response> {
   const url = new URL(request.url);
 
-  if (request.method === "GET") {
+  // The link in the message (GET), and the mail client's one-click button (RFC 8058: a POST from
+  // the provider's servers, so no origin to check; the 128-bit token is the whole credential).
+  if (request.method === "GET" || (request.method === "POST" && url.searchParams.has("unsubscribe"))) {
     const token = url.searchParams.get("unsubscribe") ?? "";
     if (!/^[0-9a-f]{32}$/.test(token)) return page(400, "This link is not complete.");
     await env.DB.prepare("DELETE FROM subscribers WHERE token = ?1").bind(token).run();

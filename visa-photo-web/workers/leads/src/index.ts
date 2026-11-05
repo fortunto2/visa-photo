@@ -13,6 +13,7 @@
 
 import { handleChat } from "./chat";
 import { handleNotify } from "./notify";
+import { sendDue } from "./notify-send";
 
 /** Set with `wrangler secret put`; kept out of wrangler.jsonc because the repo is public. */
 interface Secrets {
@@ -262,5 +263,8 @@ export default {
     )
       .bind(`-${KEEP_DAYS} days`)
       .run();
+
+    // The one message per notify topic, once a row in notify_sends has started it.
+    await sendDue(env);
   },
 } satisfies ExportedHandler<Bindings>;
