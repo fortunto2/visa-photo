@@ -4,11 +4,9 @@ import { absolute } from "../../lib/site";
 /**
  * RFC 9727 API catalog: a linkset naming what a machine can fetch here.
  *
- * Published because it is true — /specs.json is a real, stable, documented endpoint. The
- * neighbouring well-known files an audit also asks for (MCP server card, A2A agent card,
- * OAuth resource) are deliberately absent: this site runs no MCP server, no agent and no
- * auth, and advertising capabilities that do not exist is the failure mode the audit is
- * meant to catch, not a box to tick.
+ * Published because it is true — /specs.json is a real, stable, documented endpoint, and
+ * /mcp answers. The OAuth resource is deliberately absent: there is no auth, and advertising
+ * a protection that does not exist is the failure mode the audit is meant to catch.
  */
 export const GET: APIRoute = () => {
   const body = {
@@ -31,12 +29,27 @@ export const GET: APIRoute = () => {
             type: "application/json",
             title: "MCP server (POST /mcp, no auth)",
           },
+          {
+            href: absolute("/.well-known/agent-card.json"),
+            type: "application/json",
+            title: "Agent card",
+          },
+          {
+            href: absolute("/.well-known/ard.json"),
+            type: "application/json",
+            title: "Agentic resource catalogue",
+          },
         ],
         "service-doc": [
           {
             href: absolute("/llms.txt"),
             type: "text/plain",
             title: "Plain-text site map with the full specification table",
+          },
+          {
+            href: absolute("/agents.txt"),
+            type: "text/plain",
+            title: "What an agent may do here",
           },
         ],
       },
