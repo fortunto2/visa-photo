@@ -622,7 +622,7 @@ h1 {
 .agent-actions .chip { background: var(--surface); padding: 12px 20px 12px 16px; }
 .copy-btn {
   display: inline-flex; align-items: center; gap: 9px; cursor: pointer;
-  border: 0; border-radius: var(--r-pill); padding: 12px 22px;
+  border: 0; border-radius: var(--r-pill); padding: 12px 22px; min-height: 44px;
   font-family: var(--ui); font-size: 16px; font-weight: 700;
   background: var(--teal); color: var(--on-teal); box-shadow: var(--sh-sm);
 }
