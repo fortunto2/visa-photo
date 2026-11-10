@@ -1,5 +1,5 @@
 import { useState } from "preact/hooks";
-import { copyText } from "superduper-tools/shell";
+import { copyWithMethod, reportCopy } from "superduper-tools/shell";
 
 interface Props {
   /** the text placed on the clipboard */
@@ -13,17 +13,26 @@ interface Props {
  * Copy-to-clipboard with the payload rendered server-side.
  *
  * The text is built during the build from the same data the page shows, so what an agent
- * receives cannot drift from what a human reads two lines above it. The copy itself is the
- * superduper-tools cascade (clipboard API, then execCommand for in-app browsers); a refusal is
- * shown (a warning sign on the label) instead of claiming success.
+ * receives cannot drift from what a human reads two lines above it. The copy is the shared
+ * superduper-tools cascade (clipboard API, then execCommand for in-app browsers) and the copy
+ * event comes from the same module; a refusal is shown (a warning sign on the label) instead of
+ * claiming success.
  */
 export default function CopyButton({ payload, label, done, variant = "primary" }: Props) {
   const [state, setState] = useState<"idle" | "copied" | "failed">("idle");
 
   const copy = async () => {
-    const ok = await copyText(payload);
+    const { ok, method } = await copyWithMethod(payload);
     setState(ok ? "copied" : "failed");
-    if (ok) (window as unknown as { sda?: (n: string, p?: Record<string, string>) => void }).sda?.("code_copied", { path: location.pathname, placement: variant });
+    reportCopy({
+      text: payload,
+      kind: "prompt",
+      placement: variant,
+      slug: location.pathname.split("/").filter(Boolean).pop() ?? "",
+      path: location.pathname,
+      method,
+      ok,
+    });
     setTimeout(() => setState("idle"), ok ? 2000 : 4000);
   };
 

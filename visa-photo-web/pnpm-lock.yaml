@@ -46,7 +46,7 @@ importers:
         version: git+file:///Users/rustam/startups/shared/superduper-site-kit#f49fca7ce9030b3047aeceb64759e4d8f2107cfa(astro@6.4.8(@types/node@26.1.2)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.4)(yaml@2.9.0))
       superduper-tools:
         specifier: git+file:///Users/rustam/startups/shared/superduper-tools
-        version: git+file:///Users/rustam/startups/shared/superduper-tools#836dbf30c008f3f920ef47a569f35d78e12fec7a(astro@6.4.8(@types/node@26.1.2)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.4)(yaml@2.9.0))
+        version: git+file:///Users/rustam/startups/shared/superduper-tools#4abee32927f155a3da2f1c296ec39f50acd81275(astro@6.4.8(@types/node@26.1.2)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.4)(yaml@2.9.0))
       tailwindcss:
         specifier: ^4.2.2
         version: 4.3.3
@@ -2119,8 +2119,8 @@ packages:
       astro:
         optional: true
 
-  superduper-tools@git+file:///Users/rustam/startups/shared/superduper-tools#836dbf30c008f3f920ef47a569f35d78e12fec7a:
-    resolution: {commit: 836dbf30c008f3f920ef47a569f35d78e12fec7a, repo: file:///Users/rustam/startups/shared/superduper-tools, type: git}
+  superduper-tools@git+file:///Users/rustam/startups/shared/superduper-tools#4abee32927f155a3da2f1c296ec39f50acd81275:
+    resolution: {commit: 4abee32927f155a3da2f1c296ec39f50acd81275, repo: file:///Users/rustam/startups/shared/superduper-tools, type: git}
     version: 0.1.1
     peerDependencies:
       astro: '>=5.0.0'
@@ -4855,7 +4855,7 @@ snapshots:
     optionalDependencies:
       astro: 6.4.8(@types/node@26.1.2)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.4)(yaml@2.9.0)
 
-  superduper-tools@git+file:///Users/rustam/startups/shared/superduper-tools#836dbf30c008f3f920ef47a569f35d78e12fec7a(astro@6.4.8(@types/node@26.1.2)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.4)(yaml@2.9.0)):
+  superduper-tools@git+file:///Users/rustam/startups/shared/superduper-tools#4abee32927f155a3da2f1c296ec39f50acd81275(astro@6.4.8(@types/node@26.1.2)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.4)(yaml@2.9.0)):
     optionalDependencies:
       astro: 6.4.8(@types/node@26.1.2)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.4)(yaml@2.9.0)
 
